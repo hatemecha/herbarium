@@ -84,6 +84,12 @@ function rolesInsecto(p) {
   const azul = base;
   const color = (h, s, l) => deHsl(h, s / 100, l / 100);
   return {
+    campanaSombra: color(azul, 46, 21),
+    campana: color((azul + 330) % 360, 64, 56),
+    campanaLuz: mezcla(p.ink, color(azul, 75, 63), 0.45),
+    hongoSombra: mezcla(p.bg, p.brand, 0.33),
+    hongo: mezcla(p.brand, p.spark, 0.28),
+    hongoLuz: mezcla(p.ink, p.brand, 0.25),
     insectoSombra: color(violeta, 40, 9),
     insecto: color(violeta, 38, 24),
     insectoLuz: color(violeta, 44, 38),

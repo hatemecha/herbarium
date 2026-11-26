@@ -1,0 +1,413 @@
+{
+  "semillas": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "horizonte": 1200,
+  "configuraciones": {
+    "final": {},
+    "espinoOriginal": {
+      "espino": {
+        "vida": 36,
+        "reflejo": 1
+      }
+    },
+    "espino48": {
+      "espino": {
+        "vida": 48,
+        "reflejo": 2
+      }
+    },
+    "espino60": {
+      "espino": {
+        "vida": 60,
+        "reflejo": 3
+      }
+    },
+    "hongo3": {
+      "area": {
+        "dano": 3
+      }
+    },
+    "hongoAmplio": {
+      "area": {
+        "alcance": 1.75
+      }
+    },
+    "energiaRapida": {
+      "energia": 1.12
+    },
+    "costeFijo": {
+      "economia": {
+        "creciente": false,
+        "incremento": 2,
+        "grupo": 4
+      }
+    },
+    "masAmenaza": {
+      "oleadas": {
+        "lineal": 5,
+        "cuadratica": 1
+      }
+    },
+    "gruposApretados": {
+      "oleadas": {
+        "grupoMax": 5,
+        "compensaViaje": 1,
+        "ventanaPorK": 3
+      }
+    }
+  },
+  "resultados": {
+    "final": {
+      "principiante": {
+        "medianaSegundos": 201,
+        "censuradas": 1
+      },
+      "intermedio": {
+        "medianaSegundos": 969,
+        "censuradas": 4
+      },
+      "soloCerbatanas": {
+        "medianaSegundos": 519,
+        "censuradas": 0
+      },
+      "proteccion": {
+        "medianaSegundos": 531,
+        "censuradas": 0
+      },
+      "area": {
+        "medianaSegundos": 563,
+        "censuradas": 0
+      },
+      "ralentizacion": {
+        "medianaSegundos": 1200,
+        "censuradas": 7
+      },
+      "diversificado": {
+        "medianaSegundos": 998,
+        "censuradas": 5
+      },
+      "especializado": {
+        "medianaSegundos": 1200,
+        "censuradas": 10
+      }
+    },
+    "espinoOriginal": {
+      "principiante": {
+        "medianaSegundos": 201,
+        "censuradas": 1
+      },
+      "intermedio": {
+        "medianaSegundos": 969,
+        "censuradas": 4
+      },
+      "soloCerbatanas": {
+        "medianaSegundos": 519,
+        "censuradas": 0
+      },
+      "proteccion": {
+        "medianaSegundos": 531,
+        "censuradas": 0
+      },
+      "area": {
+        "medianaSegundos": 563,
+        "censuradas": 0
+      },
+      "ralentizacion": {
+        "medianaSegundos": 1200,
+        "censuradas": 7
+      },
+      "diversificado": {
+        "medianaSegundos": 998,
+        "censuradas": 5
+      },
+      "especializado": {
+        "medianaSegundos": 1200,
+        "censuradas": 10
+      }
+    },
+    "espino48": {
+      "principiante": {
+        "medianaSegundos": 201,
+        "censuradas": 1
+      },
+      "intermedio": {
+        "medianaSegundos": 969,
+        "censuradas": 4
+      },
+      "soloCerbatanas": {
+        "medianaSegundos": 519,
+        "censuradas": 0
+      },
+      "proteccion": {
+        "medianaSegundos": 531,
+        "censuradas": 0
+      },
+      "area": {
+        "medianaSegundos": 563,
+        "censuradas": 0
+      },
+      "ralentizacion": {
+        "medianaSegundos": 1200,
+        "censuradas": 7
+      },
+      "diversificado": {
+        "medianaSegundos": 998,
+        "censuradas": 5
+      },
+      "especializado": {
+        "medianaSegundos": 1200,
+        "censuradas": 10
+      }
+    },
+    "espino60": {
+      "principiante": {
+        "medianaSegundos": 201,
+        "censuradas": 1
+      },
+      "intermedio": {
+        "medianaSegundos": 969,
+        "censuradas": 4
+      },
+      "soloCerbatanas": {
+        "medianaSegundos": 519,
+        "censuradas": 0
+      },
+      "proteccion": {
+        "medianaSegundos": 531,
+        "censuradas": 0
+      },
+      "area": {
+        "medianaSegundos": 563,
+        "censuradas": 0
+      },
+      "ralentizacion": {
+        "medianaSegundos": 1200,
+        "censuradas": 7
+      },
+      "diversificado": {
+        "medianaSegundos": 998,
+        "censuradas": 5
+      },
+      "especializado": {
+        "medianaSegundos": 1200,
+        "censuradas": 10
+      }
+    },
+    "hongo3": {
+      "principiante": {
+        "medianaSegundos": 201,
+        "censuradas": 1
+      },
+      "intermedio": {
+        "medianaSegundos": 969,
+        "censuradas": 4
+      },
+      "soloCerbatanas": {
+        "medianaSegundos": 519,
+        "censuradas": 0
+      },
+      "proteccion": {
+        "medianaSegundos": 531,
+        "censuradas": 0
+      },
+      "area": {
+        "medianaSegundos": 508,
+        "censuradas": 0
+      },
+      "ralentizacion": {
+        "medianaSegundos": 1200,
+        "censuradas": 7
+      },
+      "diversificado": {
+        "medianaSegundos": 981,
+        "censuradas": 3
+      },
+      "especializado": {
+        "medianaSegundos": 1200,
+        "censuradas": 10
+      }
+    },
+    "hongoAmplio": {
+      "principiante": {
+        "medianaSegundos": 201,
+        "censuradas": 1
+      },
+      "intermedio": {
+        "medianaSegundos": 969,
+        "censuradas": 4
+      },
+      "soloCerbatanas": {
+        "medianaSegundos": 519,
+        "censuradas": 0
+      },
+      "proteccion": {
+        "medianaSegundos": 531,
+        "censuradas": 0
+      },
+      "area": {
+        "medianaSegundos": 572,
+        "censuradas": 0
+      },
+      "ralentizacion": {
+        "medianaSegundos": 1200,
+        "censuradas": 7
+      },
+      "diversificado": {
+        "medianaSegundos": 1066,
+        "censuradas": 5
+      },
+      "especializado": {
+        "medianaSegundos": 1200,
+        "censuradas": 9
+      }
+    },
+    "energiaRapida": {
+      "principiante": {
+        "medianaSegundos": 227,
+        "censuradas": 1
+      },
+      "intermedio": {
+        "medianaSegundos": 1131,
+        "censuradas": 5
+      },
+      "soloCerbatanas": {
+        "medianaSegundos": 519,
+        "censuradas": 0
+      },
+      "proteccion": {
+        "medianaSegundos": 532,
+        "censuradas": 0
+      },
+      "area": {
+        "medianaSegundos": 590,
+        "censuradas": 0
+      },
+      "ralentizacion": {
+        "medianaSegundos": 1200,
+        "censuradas": 7
+      },
+      "diversificado": {
+        "medianaSegundos": 937,
+        "censuradas": 5
+      },
+      "especializado": {
+        "medianaSegundos": 1200,
+        "censuradas": 12
+      }
+    },
+    "costeFijo": {
+      "principiante": {
+        "medianaSegundos": 201,
+        "censuradas": 3
+      },
+      "intermedio": {
+        "medianaSegundos": 960,
+        "censuradas": 3
+      },
+      "soloCerbatanas": {
+        "medianaSegundos": 519,
+        "censuradas": 0
+      },
+      "proteccion": {
+        "medianaSegundos": 531,
+        "censuradas": 0
+      },
+      "area": {
+        "medianaSegundos": 651,
+        "censuradas": 0
+      },
+      "ralentizacion": {
+        "medianaSegundos": 766,
+        "censuradas": 1
+      },
+      "diversificado": {
+        "medianaSegundos": 999,
+        "censuradas": 2
+      },
+      "especializado": {
+        "medianaSegundos": 1200,
+        "censuradas": 12
+      }
+    },
+    "masAmenaza": {
+      "principiante": {
+        "medianaSegundos": 173,
+        "censuradas": 0
+      },
+      "intermedio": {
+        "medianaSegundos": 763,
+        "censuradas": 1
+      },
+      "soloCerbatanas": {
+        "medianaSegundos": 489,
+        "censuradas": 0
+      },
+      "proteccion": {
+        "medianaSegundos": 490,
+        "censuradas": 0
+      },
+      "area": {
+        "medianaSegundos": 486,
+        "censuradas": 0
+      },
+      "ralentizacion": {
+        "medianaSegundos": 745,
+        "censuradas": 2
+      },
+      "diversificado": {
+        "medianaSegundos": 684,
+        "censuradas": 0
+      },
+      "especializado": {
+        "medianaSegundos": 1200,
+        "censuradas": 10
+      }
+    },
+    "gruposApretados": {
+      "principiante": {
+        "medianaSegundos": 214,
+        "censuradas": 2
+      },
+      "intermedio": {
+        "medianaSegundos": 695,
+        "censuradas": 3
+      },
+      "soloCerbatanas": {
+        "medianaSegundos": 478,
+        "censuradas": 0
+      },
+      "proteccion": {
+        "medianaSegundos": 534,
+        "censuradas": 0
+      },
+      "area": {
+        "medianaSegundos": 600,
+        "censuradas": 0
+      },
+      "ralentizacion": {
+        "medianaSegundos": 879,
+        "censuradas": 4
+      },
+      "diversificado": {
+        "medianaSegundos": 621,
+        "censuradas": 1
+      },
+      "especializado": {
+        "medianaSegundos": 1200,
+        "censuradas": 11
+      }
+    }
+  }
+}

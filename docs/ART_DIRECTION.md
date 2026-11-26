@@ -95,6 +95,8 @@ Dibujados a mano como matrices de 16 caracteres. `.` es transparente. `src/sprit
 | Escarabajo | `src/sprites/escarabajo.js` | 1 de perfil, espejo izquierda/derecha | Sin rediseño en la etapa 06. Su calidad sigue sin aprobación del propietario. |
 | Pulgón alado | `src/sprites/pulgon.js` | 1 de perfil, espejo | Abdomen azul, patas finas y alas cortas ancladas al tórax en sus dos cuadros de vuelo. |
 | Oruga | `src/sprites/oruga.js` | 1 de perfil, espejo | Segmentos violáceos con luces escalonadas. Se estira y se contrae sobre el suelo. |
+| Campanilla | `src/sprites/campanilla.js` | 1 | Tallo arqueado, flor colgante fría y pulso breve. |
+| Hongo | `src/sprites/hongo.js` | 1 | Sombrero ancho, franja en la superficie y destello breve al esporar. |
 | Espino | `src/sprites/espino.js` | 1 | Mata baja con púas. Luz más tenue que la cerbatana, definida en el catálogo. |
 
 La comparación a escala 1 y 4 está en `galeria.html`. No se enlaza desde la partida.
@@ -155,7 +157,7 @@ Derrota: la luz de la central se atenúa con su opacidad. Su halo y el ambiente 
 
 ## Interfaz
 
-La HUD alinea energía a la izquierda, oleada al centro y estado a la derecha sobre una misma línea MonoMEK. El punto de energía y el valor comparten el color del coste en las cartas. Cada carta vertical mide 60×68 px lógicos, tiene un contorno de un píxel y presenta el sprite animado a 2× arriba y el nombre y coste debajo. Una marca superior señala la selección. La energía insuficiente atenúa la carta y el foco visible usa un filete discontinuo.
+La HUD alinea energía a la izquierda, oleada al centro y estado a la derecha sobre una misma línea MonoMEK. El ancho de la barra sigue al del jardín (`--ancho-jardin`). Etiquetas a 14 px y valores a 24 px, sin suavizado de fuente. El punto de energía y el valor comparten el color del coste en las cartas. Cada carta vertical mide 60×68 px lógicos, tiene un contorno de un píxel y presenta el sprite animado a 2× arriba y el nombre y coste debajo. Una marca superior señala la selección. La energía insuficiente atenúa la carta y el foco visible usa un filete discontinuo. La ficha de la barra es una sola línea (planta seleccionada o aviso).
 
 El aviso de derrota es una frase y un botón de texto subrayado: “el jardín cayó” / “reiniciar”. Sin menú ni panel. No tiene fondo: el jardín queda visible, con la central apagada. El texto aparece en la mitad superior del escenario con un fundido de 1,8 s, después de que la marchitez termine, así no tapa la planta que se está apagando.
 
@@ -169,10 +171,32 @@ El aviso de derrota es una frase y un botón de texto subrayado: “el jardín c
 
 ## Responsive y movimiento reducido
 
-`styles.css`: `100dvh`, safe areas, `touch-action: none` solo en el canvas, sin selección de texto ni callout táctil en el tablero. El catálogo va abajo en vertical; a un lado en horizontal bajo o en escritorio ancho. `--escala-carta` pasa de 2 a 1 cuando hay poca altura. El botón de reinicio reserva 2,75 rem de alto.
+`styles.css`: `100dvh`, safe areas, `touch-action: none` solo en el canvas, sin selección de texto ni callout táctil en el tablero. El catálogo va abajo en vertical; a un lado en horizontal bajo o en escritorio ancho. `--escala-carta` es 2 por defecto y en escritorio ancho; baja a 1 con poca altura o en móvil estrecho. El botón de reinicio reserva 2,75 rem de alto.
 
 `prefers-reduced-motion` (leído en cada paso, no solo al cargar): idle en el primer fotograma, luz sin pulso ni ondulación, hormigas quietas, sin partículas de ambiente, ráfagas de combate ni ráfaga al sumar energía. Las plantas no retroceden al disparar. El escarabajo vuela con un cuadro fijo y no oscila. El combate sigue, y los cambios de estado (aterrizaje, mordida, desintegración) se muestran con cuadros y fundidos, no con desplazamientos.
 
 ## Al añadir un efecto
 
 Que se entienda a 16 px. Pocos píxeles que cambian, no una nube. Si necesita blur, va en la capa de resplandor, con alfa baja y un color de rol (`resplandor`, `ambiental`, `boca`, `particula`). Probar al menos una paleta distinta de la base, porque los roles se mezclan: un sprite que solo se lee con el rosa y el verde de fábrica está mal construido.
+
+
+## Señales de la etapa 07
+
+La Campanilla deja una señal de dos píxeles junto al enemigo que pierde velocidad y el Hongo usa una ráfaga corta con destello en cada insecto alcanzado. El radio punteado aparece mientras se inspecciona una planta o se previsualiza una compra. El catálogo conserva las cartas verticales y usa una fila inferior o una zona lateral según el espacio.
+
+Capturas reales de Chromium con reloj controlado. [Galería comparativa](capturas/etapa07-galeria.png), [previsualización táctil](capturas/etapa07-alcance.png) y [primera oleada](capturas/etapa07-partida.png).
+
+## Etapa 08 · feedback y lectura de estados
+
+La etapa 07 se sentía rígida porque la fase solo cambiaba de texto y la ralentización se perdía entre las patas. El HUD conserva las tres columnas y las cartas verticales. Debajo del estado, cinco trazos se apagan durante la preparación y cambian de acento cuando empieza la oleada y luego se consumen con las apariciones pendientes. La energía gana un latido por entero y la compra tiene prioridad sobre ese latido. Las cartas pulsan al habilitarse o seleccionarse y sus reposos se desfasaron. La ficha de la barra es una línea; el consejo de compra vive en el panel de la carta.
+
+Los gestos comparten pulsos breves dibujados en la grilla. La selección y la confirmación de posición usan la tinta de marca. Plantar usa el acento de energía. La casilla inválida usa el color de pétalo. El radio seleccionado se dibuja con puntos distribuidos a lo largo del perímetro y toma el acento de la función. El Espino marca su propia posición de bloqueo.
+
+La ralentización cambia el filete del insecto al matiz de la Campanilla y deja dos rastros discretos a nivel del suelo. El proyectil usa un golpe frío, las esporas un destello cálido y el reflejo del Espino el acento de chispa. Una planta crítica muestra un trazo a ras del suelo y la ficha adopta la marca. El Hongo recupera el brillo bajo el sombrero hasta tener otro pulso disponible. Las luces de apoyo tienen una oscilación leve desfasada por casilla. Los efectos de movimiento se omiten o quedan fijos con movimiento reducido. Las señales de estado y los destellos de impacto siguen siendo visibles.
+
+[Antes, previsualización en etapa 07](capturas/etapa07-alcance.png) · [HUD móvil en etapa 08](capturas/etapa08-movil.png) · [HUD al arrancar una oleada](capturas/etapa08-hud.png) · [Avance, ralentización, esporas y reflejo](capturas/etapa08-estados.png)
+
+
+### Lectura del catálogo
+
+Cada carta muestra su papel incluso antes de que se pueda comprar. Pasar el puntero, enfocar, tocar una carta sin energía o entrar en colocación abre un ala de la carta: al costado en columnas laterales, hacia arriba en la fila inferior (móvil). Mismo relleno (`hover`), borde continuo (el lienzo deja abierta esa arista) y esquina de 1 px. El texto va a 14 px (12 px en móvil estrecho). Aparece de golpe. Lleva el consejo y, si hace falta, el coste que falta o la instrucción de colocación. La barra no repite ese consejo: solo muestra la planta inspeccionada en el tablero o un aviso. La energía usa trazos que se llenan hasta el coste de la carta consultada o hasta la compra más barata cuando no hay una carta en vista.

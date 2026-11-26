@@ -1,0 +1,846 @@
+{
+  "semillas": [
+    10001,
+    10002,
+    10003,
+    10004,
+    10005,
+    10006,
+    10007,
+    10008,
+    10009,
+    10010,
+    10011,
+    10012,
+    10013,
+    10014,
+    10015,
+    10016,
+    10017,
+    10018,
+    10019,
+    10020,
+    10021,
+    10022,
+    10023,
+    10024,
+    10025,
+    10026,
+    10027,
+    10028,
+    10029,
+    10030,
+    10031,
+    10032,
+    10033,
+    10034,
+    10035,
+    10036,
+    10037,
+    10038,
+    10039,
+    10040,
+    10041,
+    10042,
+    10043,
+    10044,
+    10045,
+    10046,
+    10047,
+    10048,
+    10049,
+    10050,
+    10051,
+    10052,
+    10053,
+    10054,
+    10055,
+    10056,
+    10057,
+    10058,
+    10059,
+    10060,
+    10061,
+    10062,
+    10063,
+    10064,
+    10065,
+    10066,
+    10067,
+    10068,
+    10069,
+    10070,
+    10071,
+    10072,
+    10073,
+    10074,
+    10075,
+    10076,
+    10077,
+    10078,
+    10079,
+    10080,
+    10081,
+    10082,
+    10083,
+    10084,
+    10085,
+    10086,
+    10087,
+    10088,
+    10089,
+    10090,
+    10091,
+    10092,
+    10093,
+    10094,
+    10095,
+    10096,
+    10097,
+    10098,
+    10099,
+    10100
+  ],
+  "horizonte": 1200,
+  "segundos": 33.659418460999994,
+  "informe": {
+    "principiante": {
+      "n": 100,
+      "censuradas": 23,
+      "tiempo": {
+        "p10": 110.29833333332834,
+        "p50": 403.25833333329524,
+        "p90": 1199.9999999992374
+      },
+      "oleada": {
+        "p10": 3,
+        "p50": 8.5,
+        "p90": 20
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 24.5,
+        "espino": 2.5,
+        "campanilla": 0,
+        "hongo": 0
+      },
+      "danoPorPlanta": {
+        "cerbatana": 1052.5,
+        "espino": 15,
+        "hongo": 0
+      },
+      "tiempoRalentizado": 0,
+      "danoAbsorbidoEspino": 9,
+      "perdidasPorPlanta": {
+        "cerbatana": 1.5,
+        "espino": 0,
+        "campanilla": 0,
+        "hongo": 0
+      },
+      "primeraCompra": 16.533333333333676,
+      "primeraAmenaza": 20.83333333333343,
+      "intervaloCompraMaximo": 20.66666666664787,
+      "tiempoCritico": 3.0833333333333273,
+      "energiaGenerada": 403.25833333322703,
+      "energiaGastada": 394,
+      "perdidas": 1.5,
+      "ocupacion": 0.21487603305785125,
+      "energiaFinal": 15.291666666670205,
+      "maxSimultaneos": 13,
+      "desperdicio": 287.5,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1562.0166666666908,
+          "dano": 352,
+          "duracionMedia": 15.620166666666908,
+          "danoMedio": 3.52
+        },
+        "pinza": {
+          "n": 227,
+          "duracion": 9552.266666666412,
+          "dano": 521,
+          "duracionMedia": 42.080469897208864,
+          "danoMedio": 2.2951541850220263
+        },
+        "concentrada": {
+          "n": 233,
+          "duracion": 9072.88333333312,
+          "dano": 239,
+          "duracionMedia": 38.93941344778163,
+          "danoMedio": 1.0257510729613735
+        },
+        "enjambre": {
+          "n": 206,
+          "duracion": 8933.249999999754,
+          "dano": 202,
+          "duracionMedia": 43.36529126213473,
+          "danoMedio": 0.9805825242718447
+        },
+        "distraccion": {
+          "n": 176,
+          "duracion": 7994.96666666644,
+          "dano": 141,
+          "duracionMedia": 45.42594696969568,
+          "danoMedio": 0.8011363636363636
+        }
+      }
+    },
+    "intermedio": {
+      "n": 100,
+      "censuradas": 27,
+      "tiempo": {
+        "p10": 612.2399999997718,
+        "p50": 963.8083333327854,
+        "p90": 1199.9999999992374
+      },
+      "oleada": {
+        "p10": 12,
+        "p50": 17,
+        "p90": 20
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 30,
+        "espino": 3,
+        "campanilla": 26,
+        "hongo": 0
+      },
+      "danoPorPlanta": {
+        "cerbatana": 5230.5,
+        "espino": 6,
+        "hongo": 0
+      },
+      "tiempoRalentizado": 376.1583333333199,
+      "danoAbsorbidoEspino": 4,
+      "perdidasPorPlanta": {
+        "cerbatana": 15.5,
+        "espino": 0,
+        "campanilla": 11.5,
+        "hongo": 0
+      },
+      "primeraCompra": 10.333333333333426,
+      "primeraAmenaza": 20.83333333333343,
+      "intervaloCompraMaximo": 56.31666666661545,
+      "tiempoCritico": 2.2416666666666636,
+      "energiaGenerada": 963.8083333327843,
+      "energiaGastada": 925,
+      "perdidas": 26.5,
+      "ocupacion": 0.2644628099173554,
+      "energiaFinal": 12.000000000006969,
+      "maxSimultaneos": 16,
+      "desperdicio": 621,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1392.0666666666914,
+          "dano": 0,
+          "duracionMedia": 13.920666666666914,
+          "danoMedio": 0
+        },
+        "pinza": {
+          "n": 392,
+          "duracion": 17767.966666666154,
+          "dano": 376,
+          "duracionMedia": 45.326445578229986,
+          "danoMedio": 0.9591836734693877
+        },
+        "concentrada": {
+          "n": 369,
+          "duracion": 15497.733333332933,
+          "dano": 226,
+          "duracionMedia": 41.99927732610551,
+          "danoMedio": 0.6124661246612466
+        },
+        "enjambre": {
+          "n": 345,
+          "duracion": 15653.899999999556,
+          "dano": 224,
+          "duracionMedia": 45.37362318840451,
+          "danoMedio": 0.6492753623188405
+        },
+        "distraccion": {
+          "n": 322,
+          "duracion": 15355.483333332882,
+          "dano": 341,
+          "duracionMedia": 47.687836438922,
+          "danoMedio": 1.0590062111801242
+        }
+      }
+    },
+    "especializado": {
+      "n": 100,
+      "censuradas": 89,
+      "tiempo": {
+        "p10": 1187.2316666659158,
+        "p50": 1199.9999999992374,
+        "p90": 1199.9999999992374
+      },
+      "oleada": {
+        "p10": 20,
+        "p50": 20,
+        "p90": 21
+      },
+      "danoCentral": 0,
+      "compras": {
+        "cerbatana": 34,
+        "espino": 4,
+        "campanilla": 23,
+        "hongo": 14
+      },
+      "danoPorPlanta": {
+        "cerbatana": 7684.5,
+        "espino": 50.5,
+        "hongo": 550
+      },
+      "tiempoRalentizado": 470.04999999990116,
+      "danoAbsorbidoEspino": 38.5,
+      "perdidasPorPlanta": {
+        "cerbatana": 19,
+        "espino": 0,
+        "campanilla": 14,
+        "hongo": 11
+      },
+      "primeraCompra": 10.333333333333426,
+      "primeraAmenaza": 20.83333333333343,
+      "intervaloCompraMaximo": 20.149999999981674,
+      "tiempoCritico": 0,
+      "energiaGenerada": 1199.9999999992365,
+      "energiaGastada": 1190,
+      "perdidas": 43,
+      "ocupacion": 0.2727272727272727,
+      "energiaFinal": 10.000000000017518,
+      "maxSimultaneos": 15,
+      "desperdicio": 962.5,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1341.7500000000239,
+          "dano": 0,
+          "duracionMedia": 13.417500000000238,
+          "danoMedio": 0
+        },
+        "pinza": {
+          "n": 484,
+          "duracion": 23025.066666665953,
+          "dano": 74,
+          "duracionMedia": 47.57245179063214,
+          "danoMedio": 0.15289256198347106
+        },
+        "concentrada": {
+          "n": 458,
+          "duracion": 19878.24999999943,
+          "dano": 64,
+          "duracionMedia": 43.40229257641797,
+          "danoMedio": 0.13973799126637554
+        },
+        "enjambre": {
+          "n": 433,
+          "duracion": 19909.34999999942,
+          "dano": 56,
+          "duracionMedia": 45.980023094686885,
+          "danoMedio": 0.12933025404157045
+        },
+        "distraccion": {
+          "n": 410,
+          "duracion": 19597.71666666609,
+          "dano": 53,
+          "duracionMedia": 47.79930894308802,
+          "danoMedio": 0.12926829268292683
+        }
+      }
+    },
+    "soloCerbatanas": {
+      "n": 100,
+      "censuradas": 0,
+      "tiempo": {
+        "p10": 380.1833333333162,
+        "p50": 541.4499999998362,
+        "p90": 686.7183333330374
+      },
+      "oleada": {
+        "p10": 8,
+        "p50": 10.5,
+        "p90": 13
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 16.5,
+        "espino": 0,
+        "campanilla": 0,
+        "hongo": 0
+      },
+      "danoPorPlanta": {
+        "cerbatana": 1668,
+        "espino": 0,
+        "hongo": 0
+      },
+      "tiempoRalentizado": 0,
+      "danoAbsorbidoEspino": 0,
+      "perdidasPorPlanta": {
+        "cerbatana": 2.5,
+        "espino": 0,
+        "campanilla": 0,
+        "hongo": 0
+      },
+      "primeraCompra": 10.333333333333426,
+      "primeraAmenaza": 20.83333333333343,
+      "intervaloCompraMaximo": 201.49999999994094,
+      "tiempoCritico": 7.066666666666647,
+      "energiaGenerada": 541.4499999997261,
+      "energiaGastada": 216,
+      "perdidas": 2.5,
+      "ocupacion": 0.11570247933884298,
+      "energiaFinal": 301.0750000000492,
+      "maxSimultaneos": 12,
+      "desperdicio": 342,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1391.133333333358,
+          "dano": 0,
+          "duracionMedia": 13.91133333333358,
+          "danoMedio": 0
+        },
+        "pinza": {
+          "n": 234,
+          "duracion": 8670.399999999805,
+          "dano": 352,
+          "duracionMedia": 37.05299145299062,
+          "danoMedio": 1.5042735042735043
+        },
+        "concentrada": {
+          "n": 237,
+          "duracion": 8397.583333333154,
+          "dano": 197,
+          "duracionMedia": 35.43284106891626,
+          "danoMedio": 0.8312236286919831
+        },
+        "enjambre": {
+          "n": 216,
+          "duracion": 8729.083333333112,
+          "dano": 303,
+          "duracionMedia": 40.41242283950515,
+          "danoMedio": 1.4027777777777777
+        },
+        "distraccion": {
+          "n": 168,
+          "duracion": 7055.366666666481,
+          "dano": 321,
+          "duracionMedia": 41.996230158729055,
+          "danoMedio": 1.9107142857142858
+        }
+      }
+    },
+    "area": {
+      "n": 100,
+      "censuradas": 0,
+      "tiempo": {
+        "p10": 362.80333333333203,
+        "p50": 556.4166666664893,
+        "p90": 793.9866666662733
+      },
+      "oleada": {
+        "p10": 8,
+        "p50": 11,
+        "p90": 14.100000000000009
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 18,
+        "espino": 0,
+        "campanilla": 0,
+        "hongo": 15
+      },
+      "danoPorPlanta": {
+        "cerbatana": 1628,
+        "espino": 0,
+        "hongo": 184
+      },
+      "tiempoRalentizado": 0,
+      "danoAbsorbidoEspino": 0,
+      "perdidasPorPlanta": {
+        "cerbatana": 3,
+        "espino": 0,
+        "campanilla": 0,
+        "hongo": 1
+      },
+      "primeraCompra": 10.333333333333426,
+      "primeraAmenaza": 20.83333333333343,
+      "intervaloCompraMaximo": 24.283333333311248,
+      "tiempoCritico": 3.7499999999999916,
+      "energiaGenerada": 556.4166666664755,
+      "energiaGastada": 555,
+      "perdidas": 4.5,
+      "ocupacion": 0.23140495867768596,
+      "energiaFinal": 9.441666666671985,
+      "maxSimultaneos": 12,
+      "desperdicio": 362,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1391.133333333358,
+          "dano": 0,
+          "duracionMedia": 13.91133333333358,
+          "danoMedio": 0
+        },
+        "pinza": {
+          "n": 251,
+          "duracion": 9667.449999999768,
+          "dano": 351,
+          "duracionMedia": 38.5157370517919,
+          "danoMedio": 1.3984063745019921
+        },
+        "concentrada": {
+          "n": 255,
+          "duracion": 9280.649999999798,
+          "dano": 217,
+          "duracionMedia": 36.39470588235215,
+          "danoMedio": 0.8509803921568627
+        },
+        "enjambre": {
+          "n": 222,
+          "duracion": 9089.033333333096,
+          "dano": 226,
+          "duracionMedia": 40.94159159159052,
+          "danoMedio": 1.018018018018018
+        },
+        "distraccion": {
+          "n": 182,
+          "duracion": 7735.883333333124,
+          "dano": 286,
+          "duracionMedia": 42.50485347985233,
+          "danoMedio": 1.5714285714285714
+        }
+      }
+    },
+    "proteccion": {
+      "n": 100,
+      "censuradas": 0,
+      "tiempo": {
+        "p10": 426.1499999999411,
+        "p50": 567.0583333331463,
+        "p90": 721.0616666663398
+      },
+      "oleada": {
+        "p10": 9,
+        "p50": 11,
+        "p90": 13.100000000000009
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 18,
+        "espino": 3,
+        "campanilla": 0,
+        "hongo": 0
+      },
+      "danoPorPlanta": {
+        "cerbatana": 1934,
+        "espino": 0,
+        "hongo": 0
+      },
+      "tiempoRalentizado": 0,
+      "danoAbsorbidoEspino": 0,
+      "perdidasPorPlanta": {
+        "cerbatana": 4,
+        "espino": 0,
+        "campanilla": 0,
+        "hongo": 0
+      },
+      "primeraCompra": 10.333333333333426,
+      "primeraAmenaza": 20.83333333333343,
+      "intervaloCompraMaximo": 227.33333333319393,
+      "tiempoCritico": 3.7749999999999915,
+      "energiaGenerada": 567.0583333331158,
+      "energiaGastada": 263,
+      "perdidas": 4,
+      "ocupacion": 0.14049586776859505,
+      "energiaFinal": 308.5583333333791,
+      "maxSimultaneos": 12,
+      "desperdicio": 357.5,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1391.133333333358,
+          "dano": 0,
+          "duracionMedia": 13.91133333333358,
+          "danoMedio": 0
+        },
+        "pinza": {
+          "n": 253,
+          "duracion": 9548.199999999779,
+          "dano": 347,
+          "duracionMedia": 37.739920948615726,
+          "danoMedio": 1.3715415019762847
+        },
+        "concentrada": {
+          "n": 258,
+          "duracion": 9205.533333333144,
+          "dano": 232,
+          "duracionMedia": 35.68036175710521,
+          "danoMedio": 0.8992248062015504
+        },
+        "enjambre": {
+          "n": 228,
+          "duracion": 9057.483333333113,
+          "dano": 222,
+          "duracionMedia": 39.72580409356629,
+          "danoMedio": 0.9736842105263158
+        },
+        "distraccion": {
+          "n": 185,
+          "duracion": 7655.533333333136,
+          "dano": 270,
+          "duracionMedia": 41.3812612612602,
+          "danoMedio": 1.4594594594594594
+        }
+      }
+    },
+    "ralentizacion": {
+      "n": 100,
+      "censuradas": 20,
+      "tiempo": {
+        "p10": 497.684999999876,
+        "p50": 973.8999999994429,
+        "p90": 1199.9999999992374
+      },
+      "oleada": {
+        "p10": 10,
+        "p50": 17,
+        "p90": 20
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 29,
+        "espino": 0,
+        "campanilla": 23,
+        "hongo": 0
+      },
+      "danoPorPlanta": {
+        "cerbatana": 5324,
+        "espino": 0,
+        "hongo": 0
+      },
+      "tiempoRalentizado": 326.1083333333654,
+      "danoAbsorbidoEspino": 0,
+      "perdidasPorPlanta": {
+        "cerbatana": 14,
+        "espino": 0,
+        "campanilla": 6.5,
+        "hongo": 0
+      },
+      "primeraCompra": 10.333333333333426,
+      "primeraAmenaza": 20.83333333333343,
+      "intervaloCompraMaximo": 71.29999999993515,
+      "tiempoCritico": 2.883333333333328,
+      "energiaGenerada": 973.8999999994409,
+      "energiaGastada": 872,
+      "perdidas": 22,
+      "ocupacion": 0.256198347107438,
+      "energiaFinal": 15.999999999992104,
+      "maxSimultaneos": 17.10000000000001,
+      "desperdicio": 650,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1391.133333333358,
+          "dano": 0,
+          "duracionMedia": 13.91133333333358,
+          "danoMedio": 0
+        },
+        "pinza": {
+          "n": 376,
+          "duracion": 16848.649999999525,
+          "dano": 347,
+          "duracionMedia": 44.810239361700866,
+          "danoMedio": 0.9228723404255319
+        },
+        "concentrada": {
+          "n": 356,
+          "duracion": 14583.716666666282,
+          "dano": 345,
+          "duracionMedia": 40.965496254680566,
+          "danoMedio": 0.9691011235955056
+        },
+        "enjambre": {
+          "n": 343,
+          "duracion": 15520.049999999552,
+          "dano": 294,
+          "duracionMedia": 45.247959183672165,
+          "danoMedio": 0.8571428571428571
+        },
+        "distraccion": {
+          "n": 302,
+          "duracion": 14085.066666666255,
+          "dano": 366,
+          "duracionMedia": 46.63929359823263,
+          "danoMedio": 1.2119205298013245
+        }
+      }
+    },
+    "diversificado": {
+      "n": 100,
+      "censuradas": 9,
+      "tiempo": {
+        "p10": 475.53666666656284,
+        "p50": 764.9833333329663,
+        "p90": 1138.9999999992933
+      },
+      "oleada": {
+        "p10": 10,
+        "p50": 14,
+        "p90": 19
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 22,
+        "espino": 3,
+        "campanilla": 16.5,
+        "hongo": 8
+      },
+      "danoPorPlanta": {
+        "cerbatana": 3120,
+        "espino": 0,
+        "hongo": 164
+      },
+      "tiempoRalentizado": 120.77499999999444,
+      "danoAbsorbidoEspino": 0,
+      "perdidasPorPlanta": {
+        "cerbatana": 7,
+        "espino": 0,
+        "campanilla": 4,
+        "hongo": 2
+      },
+      "primeraCompra": 10.333333333333426,
+      "primeraAmenaza": 20.83333333333343,
+      "intervaloCompraMaximo": 20.149999999981674,
+      "tiempoCritico": 6.808333333333314,
+      "energiaGenerada": 764.9833333329655,
+      "energiaGastada": 760,
+      "perdidas": 14,
+      "ocupacion": 0.2809917355371901,
+      "energiaFinal": 9.008333333345877,
+      "maxSimultaneos": 15,
+      "desperdicio": 500,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1391.133333333358,
+          "dano": 0,
+          "duracionMedia": 13.91133333333358,
+          "danoMedio": 0
+        },
+        "pinza": {
+          "n": 336,
+          "duracion": 14422.749999999623,
+          "dano": 443,
+          "duracionMedia": 42.92485119047507,
+          "danoMedio": 1.318452380952381
+        },
+        "concentrada": {
+          "n": 319,
+          "duracion": 12629.399999999701,
+          "dano": 291,
+          "duracionMedia": 39.59059561128433,
+          "danoMedio": 0.9122257053291536
+        },
+        "enjambre": {
+          "n": 298,
+          "duracion": 12947.566666666318,
+          "dano": 208,
+          "duracionMedia": 43.44821029082657,
+          "danoMedio": 0.697986577181208
+        },
+        "distraccion": {
+          "n": 260,
+          "duracion": 11812.383333333008,
+          "dano": 370,
+          "duracionMedia": 45.432243589742335,
+          "danoMedio": 1.4230769230769231
+        }
+      }
+    },
+    "reactivo": {
+      "n": 100,
+      "censuradas": 84,
+      "tiempo": {
+        "p10": 1113.146666665983,
+        "p50": 1199.9999999992374,
+        "p90": 1199.9999999992374
+      },
+      "oleada": {
+        "p10": 18.900000000000002,
+        "p50": 20,
+        "p90": 21
+      },
+      "danoCentral": 0,
+      "compras": {
+        "cerbatana": 34,
+        "espino": 4,
+        "campanilla": 24,
+        "hongo": 12.5
+      },
+      "danoPorPlanta": {
+        "cerbatana": 7638,
+        "espino": 47.5,
+        "hongo": 496
+      },
+      "tiempoRalentizado": 451.40833333325145,
+      "danoAbsorbidoEspino": 33.5,
+      "perdidasPorPlanta": {
+        "cerbatana": 19,
+        "espino": 0,
+        "campanilla": 16,
+        "hongo": 9
+      },
+      "primeraCompra": 10.333333333333426,
+      "primeraAmenaza": 20.83333333333343,
+      "intervaloCompraMaximo": 20.149999999981674,
+      "tiempoCritico": 0,
+      "energiaGenerada": 1199.9999999992365,
+      "energiaGastada": 1188,
+      "perdidas": 45,
+      "ocupacion": 0.2603305785123967,
+      "energiaFinal": 9.00000000001842,
+      "maxSimultaneos": 15,
+      "desperdicio": 1008,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1341.7500000000239,
+          "dano": 0,
+          "duracionMedia": 13.417500000000238,
+          "danoMedio": 0
+        },
+        "pinza": {
+          "n": 479,
+          "duracion": 22765.499999999316,
+          "dano": 41,
+          "duracionMedia": 47.527139874737614,
+          "danoMedio": 0.08559498956158663
+        },
+        "concentrada": {
+          "n": 452,
+          "duracion": 19622.416666666133,
+          "dano": 84,
+          "duracionMedia": 43.412426253686135,
+          "danoMedio": 0.18584070796460178
+        },
+        "enjambre": {
+          "n": 429,
+          "duracion": 19685.033333332758,
+          "dano": 32,
+          "duracionMedia": 45.88585858585724,
+          "danoMedio": 0.07459207459207459
+        },
+        "distraccion": {
+          "n": 399,
+          "duracion": 19144.04999999942,
+          "dano": 114,
+          "duracionMedia": 47.980075187968474,
+          "danoMedio": 0.2857142857142857
+        }
+      }
+    }
+  }
+}

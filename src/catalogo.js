@@ -1,6 +1,8 @@
 import { BALANCE, LUZ } from './config.js';
 import * as madre from './sprites/planta.js';
 import * as cerbatana from './sprites/cerbatana.js';
+import * as campanilla from './sprites/campanilla.js';
+import * as hongo from './sprites/hongo.js';
 import * as espino from './sprites/espino.js';
 import * as escarabajo from './sprites/escarabajo.js';
 import * as pulgon from './sprites/pulgon.js';
@@ -70,6 +72,30 @@ export const PLANTAS = {
       intensidad: 0.1,
     },
   },
+  campanilla: {
+    id: 'campanilla',
+    nombre: 'Campanilla',
+    comprable: true,
+    coste: BALANCE.campanilla.coste,
+    vida: BALANCE.campanilla.vida,
+    ralentiza: BALANCE.campanilla,
+    arte: { matriz: campanilla.MATRIZ, codigos: campanilla.CODIGOS, variantes: campanilla.VARIANTES, secuencia: campanilla.SECUENCIA, nucleo: campanilla.NUCLEO },
+    propia: 0.46,
+    resplandor: { radio: 8, alfa: 0.08, color: 'campana' },
+    luz: { nucleo: { radio: 2, intensidad: 0.24 }, radio: 16, intensidad: 0.1 },
+  },
+  hongo: {
+    id: 'hongo',
+    nombre: 'Hongo',
+    comprable: true,
+    coste: BALANCE.hongo.coste,
+    vida: BALANCE.hongo.vida,
+    area: BALANCE.hongo,
+    arte: { matriz: hongo.MATRIZ, codigos: hongo.CODIGOS, variantes: hongo.VARIANTES, secuencia: hongo.SECUENCIA, nucleo: hongo.NUCLEO },
+    propia: 0.46,
+    resplandor: { radio: 8, alfa: 0.08, color: 'hongoLuz' },
+    luz: { nucleo: { radio: 2, intensidad: 0.24 }, radio: 16, intensidad: 0.1 },
+  },
 };
 
 export const COMPRABLES = Object.values(PLANTAS).filter((tipo) => tipo.comprable);
@@ -114,6 +140,7 @@ export const ENEMIGOS = {
     nombre: 'Oruga',
     vida: BALANCE.oruga.vida,
     velocidad: BALANCE.oruga.velocidad,
+    preparacionAtaque: BALANCE.oruga.preparacionAtaque,
     dano: BALANCE.oruga.dano,
     intervalo: BALANCE.oruga.intervalo,
     radio: BALANCE.oruga.radio,

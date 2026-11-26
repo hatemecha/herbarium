@@ -1,8 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { punteroFino } from '../src/entrada.js';
-import { textoFicha } from '../src/ficha.js';
-import { PLANTAS } from '../src/catalogo.js';
+import { funcionDe, textoFicha } from '../src/ficha.js';
+import { BALANCE } from '../src/config.js';
+import { COMPRABLES, PLANTAS } from '../src/catalogo.js';
 
 test('el dedo no cuenta como puntero fino y el ratón sí', () => {
   assert.equal(punteroFino({ pointerType: 'touch' }), false);
@@ -18,8 +19,14 @@ test('la ficha muestra vida y el dato principal solo con una planta elegida', ()
     muerta: false,
   };
   assert.match(textoFicha(cerbatana), /Cerbatana\s+8\/12\s+daño 4\s+alcance 3/);
-  const espino = { tipo: PLANTAS.espino, vida: 36, vidaMax: 36, muerta: false };
-  assert.match(textoFicha(espino), /Espino\s+36\/36\s+refleja 1/);
+  const espino = { tipo: PLANTAS.espino, vida: 36, vidaMax: BALANCE.espino.vida, muerta: false };
+  assert.match(textoFicha(espino), /Espino\s+36\/54\s+refleja 3/);
   assert.equal(textoFicha(null), '');
   assert.equal(textoFicha({ ...cerbatana, muerta: true }), '');
+});
+
+test('todas las cartas comprables informan su función antes de plantar', () => {
+  const funciones = COMPRABLES.map(({ id }) => funcionDe(id));
+  assert.deepEqual(funciones.map(({ corta }) => corta), ['Disparo', 'Escudo', 'Freno', 'Área']);
+  assert.ok(funciones.every(({ consejo }) => consejo.length > 0));
 });

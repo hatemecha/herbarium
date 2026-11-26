@@ -2,7 +2,7 @@
 
 Fuente de verdad: `src/config.js`, leído por `src/catalogo.js` y `src/combate.js`. Si un número de aquí no coincide con ese archivo, gana el archivo. Esta nota no se importa desde el juego.
 
-Todos los valores son provisionales. No hay en el repositorio una justificación distinta de “son los de la etapa 04”. Las relaciones y los resultados de abajo son una lectura de esos números, no una segunda configuración.
+La configuración de la etapa 07 y sus resultados están al final de esta nota. Las cifras anteriores se conservan como referencia histórica para comparar etapas.
 
 Unidades: vida y daño en puntos, tiempo en segundos, distancia en casillas, velocidad en casillas/segundo. El tablero es 11×11 y la central está en `(5, 5)`.
 
@@ -121,3 +121,69 @@ El detalle agregado está en `docs/simulacion.json`. Estas políticas no miden d
 ## Qué no entra en el balance
 
 No hay recompensa por baja ni otra fuente de energía. La propuesta previa, ya superada, está en [PROPUESTA_OLEADAS.md](PROPUESTA_OLEADAS.md).
+
+## Etapa 07 · profundidad estratégica
+
+La [simulación de la etapa 06](simulacion.json) queda como referencia histórica. Allí llegaban a 20 minutos el 60 % de las partidas de solo Cerbatanas, el 52 % de las intermedias y el 13 % de las especializadas. Las políticas y el director cambiaron en esta etapa. Esas cifras permiten comparar el resultado global de dos versiones, sin aislar por sí solas la contribución de una planta.
+
+### Configuración jugable experimental
+
+| Planta | Coste base | Vida | Efecto |
+| --- | ---: | ---: | --- |
+| Cerbatana | 10 | 12 | 4 por proyectil, intervalo 1 s, alcance inicial 3 |
+| Espino | 8 | 54 | 3 de reflejo por mordida |
+| Campanilla | 14 | 16 | −30 % a la velocidad de desplazamiento dentro de 2 casillas |
+| Hongo | 18 | 16 | 4 por enemigo cada 2,5 s dentro de 1,5 casillas |
+
+- **Cerbatana.** 4 puntos por segundo en el caso ideal, 0,4 por segundo y por energía base. Una ráfaga sobre un solo carril puede desperdiciar proyectiles por trayectorias agotadas o daño sobrante. El coste de repetirla sigue creciendo por bloques de cuatro plantas vivas.
+- **Campanilla.** En un trayecto totalmente cubierto, 2 s se convierten en 2,86 s. Este 43 % adicional depende de cuánto trayecto cruza el radio y de si una planta ofensiva puede disparar en ese tramo. Se aplica el efecto más fuerte, solo durante el avance. Las mordidas mantienen su ritmo.
+- **Hongo.** Tiene 1,6 puntos por segundo por objetivo frente a los 4 de una Cerbatana. Tres insectos dentro llevan el rendimiento a 4,8 puntos por segundo. En rendimiento por energía base, el punto de cruce está en cinco insectos (8/18 ≈ 0,44). Subir el pulso de 3 a 4 permite dar de baja a un pulgón de un solo pulso. Activación y daño comparten el radio de 1,5 para evitar disparos vacíos y mantenerlo especializado.
+- **Espino.** Pasa de 4,5 a 6,75 puntos de vida por energía base. Ante mordidas de 3, absorbe hasta 18 golpes y devuelve hasta 54 puntos en total mientras siga vivo, con daño efectivo menor cuando hay remates. El efecto exige que los insectos lo alcancen. Frente a cinco orugas con una Cerbatana detrás, el Espino de 36/1 absorbió 36 puntos y la central cayó. El de 54/3 absorbió 54, se perdió y la Cerbatana y la central sobrevivieron. El de 60/3 también defendió la central en ese escenario. Se eligió la menor vida de esos dos resultados favorables. El coste de reponerlo sigue siendo 8 al perder el único Espino.
+- **Oruga y pulgón.** La primera mordida de la oruga tarda 0,45 s al fijar un bloqueo. Después conserva el intervalo de 1,25 s. Los pulgones de un paquete nacen juntos y varían entre 94 % y 106 % de su velocidad nominal para que el grupo se estire sin perder cohesión.
+- **Economía y presión.** La partida permite comprar Cerbatana a los 10 s, Espino a los 8 s o esperar a Campanilla/Hongo a los 14/18 s. El primer insecto entra alrededor de 21 s. El descanso posterior sigue en 15 s. El presupuesto usa `redondear(12 + 4k + 0,7k²)` hasta la oleada 12 (`k = oleada − 1`) y suma 18 por oleada después. Se redujo el crecimiento de amenaza al observar que la revisión, con la curva anterior, comprimía casi todas las estrategias a unos pocos minutos.
+
+### Escenarios controlados
+
+`node scripts/escenarios-etapa07.mjs` recrea los enfrentamientos descritos arriba. Frente a cinco pulgones agrupados, el Hongo causó los 20 puntos de daño requeridos y terminó sin bajas propias. La Cerbatana causó 12 y terminó en derrota. Es una comparación situacional con costes de 18 y 10, respectivamente.
+
+Se compararon patrones en la oleada 9 con el mismo jardín, la misma composición por semilla y 24 semillas. El daño medio a la central fue 2,46 en concentrada, 0,38 en pinza, 0,08 en enjambre y 0,88 en distracción. Las duraciones medianas quedaron entre 52,7 y 54,1 s. La concentrada sigue requiriendo una respuesta más fuerte en ese jardín concreto. Los datos agregados de oleadas completadas en partidas completas están disponibles en el JSON, pero incluyen jardines, presupuestos y estados distintos.
+
+### Validación con semillas independientes
+
+`node tests/corrida.mjs 10001 100 1200 > docs/simulacion-etapa07.json` reproduce la [validación](simulacion-etapa07.json). Se usaron las semillas 10001–10100 después de calibrar con 1–12. El horizonte de 20 minutos es del simulador. Las partidas que llegaron al horizonte están censuradas y no cuentan como derrotas ni prueban cuánto habrían seguido.
+
+| Política | Supervivencia p10 / mediana / p90 (min) | Al horizonte de 20 min |
+| --- | --- | ---: |
+| Principiante | 1,8 / 6,7 / 20,0 | 23 |
+| Intermedia | 10,2 / 16,1 / 20,0 | 27 |
+| Especializada | 19,8 / 20,0 / 20,0 | 89 |
+| Solo Cerbatanas | 6,3 / 9,0 / 11,4 | 0 |
+| Daño de área | 6,0 / 9,3 / 13,2 | 0 |
+| Protección | 7,1 / 9,5 / 12,0 | 0 |
+| Ralentización | 8,3 / 16,2 / 20,0 | 20 |
+| Diversificada | 7,9 / 12,7 / 19,0 | 9 |
+| Reactiva | 18,6 / 20,0 / 20,0 | 84 |
+
+Las cinco políticas de composición comparten evaluación de costes y casillas, con distinto catálogo disponible. La reactiva añade la presión de los insectos visibles. La especializada, además, puede guardar energía para apoyo entre ataques. La principiante conserva una heurística de colocación simple y la intermedia alterna oportunidades de compra.
+
+En la política intermedia, la primera compra fue a los 10,3 s y la primera amenaza a los 20,8 s en mediana. El intervalo más largo entre compras fue de 56,3 s en mediana, contando también hasta el final de la corrida. El registro además conserva daño efectivo por planta, energía generada/gastada/sobrante, compras y pérdidas, ocupación final, tiempo crítico y exposición conjunta a la ralentización en enemigo-segundos. El daño absorbido por el Espino registra golpes efectivos. El daño realmente evitado a otras plantas solo se puede estimar comparando jardines en el mismo escenario. La economía carece de tope, por lo que el saldo final mide energía sin gastar y no energía descartada.
+
+Las políticas de protección y área mejoran poco la mediana respecto de solo Cerbatanas, aun cuando ganan enfrentamientos concretos. La colocación sigue explicando buena parte de esa brecha. La política reactiva llega con frecuencia al horizonte, por lo que quedan por caracterizar la presión después de 20 minutos, la dispersión de las primeras derrotas principiantes y la conducción de una partida humana. Las comprobaciones en Chromium cubren compra, previsualización táctil emulada, primera oleada con las plantas nuevas, derrota y reinicio. Falta evaluar una sesión humana completa y teléfonos físicos.
+
+### Variantes descartadas en calibración
+
+`node scripts/calibrar-etapa07.mjs` reproduce la [calibración comparativa](calibracion-etapa07.json) con 12 semillas. Cada variante cambia una familia de parámetros. Para aislar la utilidad del catálogo, comparar solo Cerbatanas, protección, área, ralentización y jardín diversificado dentro de la misma fila.
+
+| Variante respecto de la elegida | Resultado de la exploración | Decisión |
+| --- | --- | --- |
+| Espino 36/1, 48/2 o 60/3 | Sin diferencia en las medianas de estas 12 semillas. El escenario fijo sí mostró una diferencia cuando el Espino interceptó a las orugas. | 54/3 por el escenario de desgaste. |
+| Hongo con 3 de daño | Mediana de área de 508 s frente a 563 s. | 4 de daño para resolver el grupo de pulgones. |
+| Hongo con radio 1,75 | Área de 572 s y diversificada de 1066 s frente a 563 y 998 s. | 1,5 para preservar la distinción de alcance con la Cerbatana. |
+| Energía a 1,12 por segundo | Principiante 227 s e intermedia 1131 s frente a 201 y 969 s. | Mantener una unidad por segundo. |
+| Coste fijo | Área 651 s y ralentización 766 s frente a 563 y 1200 s. | Mantener el incremento por cantidad viva. |
+| Mayor presupuesto de amenaza | Intermedia 763 s y diversificada 684 s frente a 969 y 998 s. | Mantener la curva gradual. |
+| Grupos más apretados | Intermedia 695 s y diversificada 621 s frente a 969 y 998 s. | Conservar la ventana y la compensación parcial elegidas. |
+
+Las medianas de calibración sirven para seleccionar variantes. La tabla de validación usa semillas distintas.
+
+La [corrida extendida](simulacion-etapa07-extendida.json) repitió las 100 semillas de las políticas especializada y reactiva con horizonte de 30 minutos. Sus medianas fueron 24,5 y 23,5 minutos. Llegaron al nuevo horizonte 2 y 1 partidas, respectivamente. Se reproduce con `node tests/corrida.mjs 10001 100 1800 especializado reactivo`.

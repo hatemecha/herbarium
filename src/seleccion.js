@@ -4,7 +4,7 @@ import { celdaDeCliente } from './escala.js';
 
 const igual = (a, b) => a && b && a.x === b.x && a.y === b.y;
 
-export function crearSeleccion({ tablero, canvas }) {
+export function crearSeleccion({ tablero, canvas, alPulsarCelda }) {
   const marcas = {
     sobrevuelo: { celda: null, activa: false, presencia: 0 },
     seleccion: { celda: null, activa: false, presencia: 0 },
@@ -37,6 +37,7 @@ export function crearSeleccion({ tablero, canvas }) {
     const celda = celdaDe(e);
     if (celda && tablero.ocupante(celda.x, celda.y)) fijar(marcas.seleccion, celda);
     else marcas.seleccion.activa = false;
+    if (celda) alPulsarCelda?.(celda);
   };
 
   const alPulsarFuera = (e) => {

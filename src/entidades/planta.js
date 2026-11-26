@@ -25,7 +25,7 @@ export function crearPlanta({ tablero, celda, tipo, frames, desfase = 0 }) {
     animacion: crearAnimacion({ secuencia: tipo.arte.secuencia, desfase }),
 
     fotograma() {
-      const variante = this.disparo > 0 ? VARIANTE_DISPARO : this.animacion.variante();
+      const variante = this.disparo > 0 ? (tipo.area ? 1 : VARIANTE_DISPARO) : this.animacion.variante();
       return frames[this.direccion][variante];
     },
 

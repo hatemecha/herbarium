@@ -24,9 +24,9 @@ function plan(semilla, numero, ocupado = () => false) {
 
 test('el presupuesto cuadrático corta después de la oleada 12', () => {
   assert.equal(presupuestoDe(1), 12);
-  assert.equal(presupuestoDe(2), 23);
-  assert.equal(presupuestoDe(12), 463);
-  assert.equal(presupuestoDe(13), 493);
+  assert.equal(presupuestoDe(2), 17);
+  assert.equal(presupuestoDe(12), 141);
+  assert.equal(presupuestoDe(13), 159);
   assert.equal(ventanaDe(1), 18);
   assert.equal(maxSimultaneos(1), 6);
   assert.equal(maxSimultaneos(20), 48);
@@ -123,7 +123,7 @@ test('tras la derrota el director no sigue soltando enemigos', () => {
   assert.equal(combate.derrota(), true);
 });
 
-test('un espino devuelve un punto por mordida y no encadena', () => {
+test('un espino devuelve daño por mordida y no encadena', () => {
   const estado = { energia: 100 };
   const jardin = crearJardin({ tablero, estado, catalogo: PLANTAS, frames: { espino: [] } });
   jardin.sembrar('central', tablero.centro);
@@ -141,5 +141,6 @@ test('un espino devuelve un punto por mordida y no encadena', () => {
   const reflejos = combate.eventos().filter((evento) => evento.tipo === 'reflejo');
   assert.equal(reflejos.length, 1);
   assert.equal(enemigo.vida, vida - BALANCE.espino.reflejo);
+  assert.equal(enemigo.colorImpacto, 'ambiental');
   assert.equal(tablero.ocupante(5, 4).vida, BALANCE.espino.vida - BALANCE.escarabajo.dano);
 });

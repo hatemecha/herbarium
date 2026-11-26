@@ -11,6 +11,7 @@ if (!isMainThread) {
       semilla: tarea.semilla,
       horizonte: tarea.horizonte,
       estrategia: ESTRATEGIAS[tarea.estrategia],
+      ajustes: tarea.ajustes,
     }),
     estrategia: tarea.estrategia,
   }));
@@ -50,10 +51,23 @@ function resumir(partidas) {
       p90: percentil(oleadas, 0.9),
     },
     danoCentral: percentil(partidas.map((partida) => partida.danoCentral), 0.5),
-    compras: {
-      cerbatana: percentil(partidas.map((partida) => partida.compras.cerbatana), 0.5),
-      espino: percentil(partidas.map((partida) => partida.compras.espino), 0.5),
-    },
+    compras: Object.fromEntries(Object.keys(partidas[0].compras).map((id) => [
+      id, percentil(partidas.map((partida) => partida.compras[id]), 0.5),
+    ])),
+    danoPorPlanta: Object.fromEntries(Object.keys(partidas[0].danoPorPlanta).map((id) => [
+      id, percentil(partidas.map((partida) => partida.danoPorPlanta[id]), 0.5),
+    ])),
+    tiempoRalentizado: percentil(partidas.map((partida) => partida.tiempoRalentizado), 0.5),
+    danoAbsorbidoEspino: percentil(partidas.map((partida) => partida.danoAbsorbidoEspino), 0.5),
+    perdidasPorPlanta: Object.fromEntries(Object.keys(partidas[0].perdidasPorPlanta).map((id) => [
+      id, percentil(partidas.map((partida) => partida.perdidasPorPlanta[id]), 0.5),
+    ])),
+    primeraCompra: percentil(partidas.map((partida) => partida.primeraCompra).filter((t) => t !== null), 0.5),
+    primeraAmenaza: percentil(partidas.map((partida) => partida.primeraAmenaza).filter((t) => t !== null), 0.5),
+    intervaloCompraMaximo: percentil(partidas.map((partida) => partida.intervaloCompraMaximo), 0.5),
+    tiempoCritico: percentil(partidas.map((partida) => partida.tiempoCritico), 0.5),
+    energiaGenerada: percentil(partidas.map((partida) => partida.energiaGenerada), 0.5),
+    energiaGastada: percentil(partidas.map((partida) => partida.energiaGastada), 0.5),
     perdidas: percentil(partidas.map((partida) => partida.plantasPerdidas), 0.5),
     ocupacion: percentil(partidas.map((partida) => partida.ocupacion), 0.5),
     energiaFinal: percentil(partidas.map((partida) => partida.energiaFinal), 0.5),
@@ -63,12 +77,12 @@ function resumir(partidas) {
   };
 }
 
-export async function correr({ semillas, horizonte = 20 * 60, estrategias = Object.keys(ESTRATEGIAS) }) {
+export async function correr({ semillas, horizonte = 20 * 60, estrategias = Object.keys(ESTRATEGIAS), ajustes }) {
   const tareas = [];
   for (const nombre of estrategias) {
-    for (const semilla of semillas) tareas.push({ semilla, estrategia: nombre, horizonte });
+    for (const semilla of semillas) tareas.push({ semilla, estrategia: nombre, horizonte, ajustes });
   }
-  const cpus = Math.min(availableParallelism(), tareas.length);
+  const cpus = Math.min(availableParallelism(), 12, tareas.length);
   const tam = Math.ceil(tareas.length / cpus);
   const lotes = Array.from({ length: cpus }, (_, i) => tareas.slice(i * tam, (i + 1) * tam)).filter((lote) => lote.length);
   const partes = await Promise.all(lotes.map((lote) => new Promise((resolve, reject) => {
@@ -91,7 +105,8 @@ if (isMainThread && process.argv[1] && fileURLToPath(import.meta.url) === proces
   const cantidad = Number(process.argv[3] ?? 8);
   const horizonte = Number(process.argv[4] ?? 20 * 60);
   const semillas = Array.from({ length: cantidad }, (_, i) => desde + i);
+  const estrategias = process.argv.slice(5);
   const t0 = performance.now();
-  const informe = await correr({ semillas, horizonte });
+  const informe = await correr({ semillas, horizonte, estrategias: estrategias.length ? estrategias : undefined });
   console.log(JSON.stringify({ semillas, horizonte, segundos: (performance.now() - t0) / 1000, informe }, null, 2));
 }

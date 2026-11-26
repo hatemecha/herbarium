@@ -6,7 +6,7 @@ asegurarVariables();
 const roles = crearRoles(leerPaleta());
 const lienzo = document.querySelector('#galeria');
 const ctx = lienzo.getContext('2d');
-const piezas = [PLANTAS.central, PLANTAS.cerbatana, PLANTAS.espino, ...Object.values(ENEMIGOS)];
+const piezas = [...Object.values(PLANTAS), ...Object.values(ENEMIGOS)];
 const frames = Object.fromEntries(piezas.map((tipo) => [tipo.id, construirFotogramas(tipo.arte, roles)]));
 const maximo = 4;
 const escala = 4;

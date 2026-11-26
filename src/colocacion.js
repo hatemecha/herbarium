@@ -2,21 +2,24 @@ import { COLOCACION } from './config.js';
 import { punteroFino } from './entrada.js';
 import { celdaDeCliente } from './escala.js';
 
-export function crearColocacion({ tablero, canvas, jardin, zona, alActivar }) {
+export function crearColocacion({ tablero, canvas, jardin, zona, alActivar, alIntentar }) {
   let tipoId = null;
   let puntero = null;
   let presencia = 0;
+  let confirmacion = null;
 
   const celdaDe = (e) => celdaDeCliente(canvas, e.clientX, e.clientY, tablero);
 
   function activar(id) {
     tipoId = id;
+    confirmacion = null;
     puntero = null;
     alActivar?.();
   }
 
   function cancelar() {
     tipoId = null;
+    confirmacion = null;
     puntero = null;
   }
 
@@ -26,17 +29,26 @@ export function crearColocacion({ tablero, canvas, jardin, zona, alActivar }) {
   }
 
   function alSalir() {
-    puntero = null;
+    puntero = confirmacion;
   }
 
   function alPulsar(e) {
     if (!tipoId) return;
     e.stopImmediatePropagation();
     const celda = celdaDe(e);
-    if (celda && jardin.colocable(tipoId, celda)) {
-      jardin.plantar(tipoId, celda);
-      cancelar();
+    if (!celda) return;
+    if (!jardin.colocable(tipoId, celda)) {
+      alIntentar?.('invalida', celda);
+      return;
     }
+    if (!punteroFino(e) && (confirmacion?.x !== celda.x || confirmacion?.y !== celda.y)) {
+      confirmacion = celda;
+      puntero = celda;
+      alIntentar?.('preview', celda);
+      return;
+    }
+    jardin.plantar(tipoId, celda);
+    cancelar();
   }
 
   function alPulsarFuera(e) {
@@ -56,6 +68,7 @@ export function crearColocacion({ tablero, canvas, jardin, zona, alActivar }) {
 
   return {
     activa: () => tipoId !== null,
+    cancelar,
     tipoActivo: () => tipoId,
     alternar(id) {
       if (tipoId === id) cancelar();

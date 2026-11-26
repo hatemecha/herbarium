@@ -15,11 +15,11 @@ export function apagar(estado, dt) {
 }
 
 // Devuelve true cuando se completa una unidad de energía.
-export function avanzar(estado, dt) {
+export function avanzar(estado, dt, porSegundo = ENERGIA.porSegundo) {
   estado.tiempo += dt;
   estado.impulso = Math.max(0, estado.impulso - dt * LUZ.impulso.caida);
   const antes = Math.floor(estado.energia);
-  estado.energia += ENERGIA.porSegundo * dt;
+  estado.energia += porSegundo * dt;
   const genero = Math.floor(estado.energia) > antes;
   if (genero) estado.impulso = 1;
   return genero;

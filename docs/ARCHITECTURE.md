@@ -147,3 +147,14 @@ Choques a resolver cuando toque, no antes:
 - `touch-action: none` está en el canvas. El resto de la página debe poder hacer scroll.
 - El juego ocupa la altura de la vista (`100dvh`) cuando es la página entera. Embebido, el contenedor tiene que darle alto.
 - No hay build. Copiar los estáticos o servirlos como están evita meter un bundler solo para el juego.
+
+
+## Etapa 07
+
+La Campanilla y el Hongo se registran en `catalogo.js` con `ralentiza` y `area`. El combate aplica la ralentización mayor solo al desplazar, y usa el mismo evento de impacto para proyectiles y esporas. El renderer lee el estado y dibuja el alcance desde la selección o la previsualización. El toque confirma sobre la misma casilla. Son los mismos módulos en escritorio y móvil.
+
+El director planifica composición, sector, punto de referencia y tiempo. Al emitir, resuelve el punto efectivo contra la ocupación vigente. Las pinzas intercalan lados y corrigen el tiempo de salida según el trayecto estimado. La política del simulador recibe enemigos presentes y el estado del jardín. La cola del director permanece fuera de ese contrato.
+
+## Etapa 08
+
+`juego.js` coordina pulsos breves de entrada y de fase usando el reloj de la partida. La compra y la colocación notifican sus señales desde los caminos existentes. `render.js` dibuja marcas, alcance y estados en la capa luminosa, sobre la grilla interna. El combate expone el color semántico del último golpe junto con los temporizadores visuales ya existentes. Los contadores escriben en el DOM al cambiar de texto y la región de anuncio comunica los cambios de fase.

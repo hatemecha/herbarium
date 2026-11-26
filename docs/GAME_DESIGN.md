@@ -55,13 +55,13 @@ No hay otras fuentes de energía, regeneración ni recompensa por matar. El deta
 
 ## Plantas, catálogo y expansión
 
-Implementados dos tipos comprables. **Cerbatana**, coste base 10, vida 12, dispara. **Espino**, coste base 8, vida 36, no dispara, refleja 1 por mordida efectiva. El catálogo son tarjetas en canvas (`src/catalogoUI.js`). Estados: disponible, seleccionada e insuficiente. El número de la tarjeta es el coste actual, no el base.
+Hay cuatro tipos comprables. La **Cerbatana** concentra daño individual. El **Espino** absorbe mordidas y devuelve parte de la presión. La **Campanilla** reduce la velocidad de avance en su radio. El **Hongo** libera esporas cuando hay insectos dentro de su radio efectivo. El catálogo son tarjetas en canvas (`src/catalogoUI.js`). Estados: disponible, seleccionada e insuficiente. El número de la tarjeta es el coste actual, no el base.
 
 La colocación (`src/colocacion.js`, `src/jardin.js`):
 
 - Modo colocación al pulsar la tarjeta, si hay energía.
 - Volver a pulsarla, pulsar fuera del tablero y del catálogo, o Escape, cancela.
-- Un toque o clic en una casilla válida planta, gasta la energía y sale del modo.
+- El clic en una casilla válida confirma. Con dedo, el primer toque muestra la posición y el alcance y el segundo en esa casilla confirma.
 - Una casilla inválida no gasta nada.
 - En modo colocación se marcan las casillas válidas y, con puntero fino, se previsualiza el sprite.
 
@@ -71,13 +71,13 @@ El espino es la planta defensiva. Bloquea porque ocupa una casilla, igual que la
 
 Implementado solo sobre casillas ocupadas. Persiste hasta otra planta, una casilla vacía, un pulsar fuera del canvas (el catálogo y el aviso de derrota, marcados `data-interfaz`, no cuentan) o hasta entrar en modo colocación, que la limpia.
 
-Al seleccionar una planta, la barra muestra su vida actual y máxima y el dato principal (daño y alcance, o reflejo). No hay barras sobre el tablero. No abre mejoras.
+Al seleccionar una planta, la barra muestra su vida actual y máxima, el efecto, el daño y la cadencia cuando corresponden. Un contorno punteado en el tablero indica su alcance. No hay barras sobre el tablero. No abre mejoras.
 
 El hover (borde de hormigas) solo sigue a mouse y lápiz. El toque no genera hover.
 
 ## Enemigos y combate
 
-Tres enemigos comparten `src/combate.js`. El escarabajo conserva vida 12, velocidad 0,5, daño 2 e intervalo 1. El pulgón alado: vida 4, velocidad 1,05, daño 1, intervalo 0,65. La oruga: vida 28, velocidad 0,28, daño 3, intervalo 1,25; camina, no vuela. Esas cifras son el punto de partida medido en [BALANCE.md](BALANCE.md), no un cierre.
+Tres enemigos comparten `src/combate.js`. El escarabajo conserva vida 12, velocidad 0,5, daño 2 e intervalo 1. El pulgón alado: vida 4, velocidad 1,05, daño 1, intervalo 0,65. La oruga: vida 28, velocidad 0,28, daño 3, intervalo 1,25. Camina, se toma un momento al fijar una planta y sostiene la presión con mordidas sucesivas. Los pulgones comparten puntos de salida por grupo y varían ligeramente su marcha. Esas cifras son el punto de partida medido en [BALANCE.md](BALANCE.md), no un cierre.
 
 - Las oleadas las arma `src/oleadas.js` con una semilla. La primera es fija. Desde la tercera puede salir la oruga.
 - Si el perímetro está ocupado, el insecto aparece justo afuera y muerde la planta del borde. No hay reintento infinito.
@@ -96,7 +96,7 @@ Tres enemigos comparten `src/combate.js`. El escarabajo conserva vida 12, veloci
 No hay cartas ni preguntas. No inventarlas.
 
 - **Oleadas.** Implementadas como director procedural. El presupuesto y el ritmo son experimentales.
-- **Más plantas y enemigos.** Hay dos plantas comprables y tres insectos. No hay una cuarta especie.
+- **Más plantas y enemigos.** Hay cuatro plantas comprables y tres insectos. No hay una cuarta especie.
 - **Economía.** El goteo de 1/s sigue. El coste crece con las vivas. No hay cosecha ni recompensa.
 - **Preguntas de personalidad.** Durante la partida, no como un RPG narrativo. El gancho entre oleadas está vacío.
 - **Tarot.** La respuesta entrega una carta. El símbolo, la respuesta y la modificación de una o varias plantas tienen que relacionarse de verdad. No hay lista de arcanos ni de efectos.
@@ -105,6 +105,6 @@ No hay cartas ni preguntas. No inventarlas.
 ## Pendiente de diseño
 
 - Si el presupuesto calibrado se queda. La medición de 100 semillas está en [BALANCE.md](BALANCE.md). No es una prueba de diversión humana.
-- Si el espino debe reflejar más. En el simulador, una distribución de solo cerbatanas dura al menos tanto como la que compra espinos.
+- Cuánto vale un Espino situado en una ruta real de ataque. Los resultados de la etapa 07 separan la eficacia bajo presión de la supervivencia de una política concreta.
 - Qué hace el insecto vivo cuando la central cae.
 - Licencia y visibilidad del repositorio. No están elegidas.

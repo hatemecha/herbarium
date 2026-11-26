@@ -47,10 +47,12 @@ export const BALANCE = {
     coste: 10,
   },
   espino: {
-    vida: 36,
+    vida: 54,
     coste: 8,
-    reflejo: 1,
+    reflejo: 3,
   },
+  campanilla: { coste: 14, vida: 16, alcance: 2, reduccion: 0.3 },
+  hongo: { coste: 18, vida: 16, alcance: 1.5, dano: 4, intervalo: 2.5 },
   escarabajo: {
     vida: 12,
     velocidad: 0.5,
@@ -70,6 +72,7 @@ export const BALANCE = {
   oruga: {
     vida: 28,
     velocidad: 0.28,
+    preparacionAtaque: 0.45,
     dano: 3,
     intervalo: 1.25,
     radio: 0.42,
@@ -84,6 +87,7 @@ export const BALANCE = {
     aterrizaje: 0.3,
     despegue: 0.25,
     mordisco: 0.2,
+    esporas: 0.75,
   },
 };
 
@@ -102,6 +106,7 @@ export const PULGON = {
   altura: 2,
   balanceo: 0.45,
   aleteo: 0.04,
+  marcha: { base: 0.94, variacion: 0.24 },
 };
 
 export const ORUGA = {
@@ -120,12 +125,14 @@ export const OLEADAS = {
   preparacionInicial: 20,
   preparacion: 15,
   base: 12,
-  lineal: 8,
-  cuadratica: 3,
+  lineal: 4,
+  cuadratica: 0.7,
   cuadraticaHasta: 12,
-  continuacion: 30,
+  continuacion: 18,
+  grupoMax: 4,
+  compensaViaje: 0.8,
   ventanaBase: 18,
-  ventanaPorK: 3,
+  ventanaPorK: 4,
   ventanaMax: 48,
   simultaneosBase: 6,
   simultaneosPorK: 3,
@@ -138,6 +145,13 @@ export const OLEADAS = {
     plantasUmbral: 2,
     rapidez: 0.45,
   },
+};
+
+export const FEEDBACK = {
+  gesto: 0.36,
+  oleada: 0.65,
+  critico: 1 / 3,
+  pausaCampana: 0.18,
 };
 
 export const MARCADORES = {

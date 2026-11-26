@@ -12,8 +12,8 @@ export function presupuestoDe(numero, oleadas = OLEADAS) {
   const k = numero - 1;
   const tope = oleadas.cuadraticaHasta;
   const en = (kk) => oleadas.base + oleadas.lineal * kk + oleadas.cuadratica * kk * kk;
-  if (numero <= tope) return en(k);
-  return en(tope - 1) + oleadas.continuacion * (numero - tope);
+  if (numero <= tope) return Math.round(en(k));
+  return Math.round(en(tope - 1) + oleadas.continuacion * (numero - tope));
 }
 
 export function ventanaDe(numero, oleadas = OLEADAS) {
@@ -50,20 +50,19 @@ export function elegirPatron(numero, recientes, rng) {
   return ops[ops.length - 1];
 }
 
-function especiesDe(numero) {
+function especiesDe(numero, oleadas) {
   const lista = ['pulgon', 'escarabajo'];
-  if (numero >= OLEADAS.orugaDesde) lista.push('oruga');
+  if (numero >= oleadas.orugaDesde) lista.push('oruga');
   return lista;
 }
 
-function componer(numero, presupuesto, rng) {
-  const especies = especiesDe(numero);
+function componer(numero, presupuesto, rng, oleadas) {
+  const especies = especiesDe(numero, oleadas);
   const conteo = { pulgon: 0, escarabajo: 0, oruga: 0 };
   const salida = [];
   let resto = presupuesto;
-  let guardia = 0;
 
-  while (resto >= AMENAZA.pulgon && guardia++ < 240) {
+  while (resto >= AMENAZA.pulgon) {
     const posibles = especies.filter((id) => {
       const costo = AMENAZA[id];
       if (costo > resto) return false;
@@ -72,9 +71,8 @@ function componer(numero, presupuesto, rng) {
       return !(presupuesto >= 12 && salida.length >= 2 && usado + costo > presupuesto * cupo);
     });
     if (!posibles.length) break;
-    const presentes = new Set(salida);
-    const bolsa = presentes.size === 1 && posibles.some((id) => !presentes.has(id))
-      ? posibles.filter((id) => !presentes.has(id))
+    const bolsa = Object.values(conteo).filter(Boolean).length === 1 && posibles.some((id) => !conteo[id])
+      ? posibles.filter((id) => !conteo[id])
       : posibles;
     const id = bolsa[Math.floor(rng() * bolsa.length)];
     salida.push(id);
@@ -82,7 +80,7 @@ function componer(numero, presupuesto, rng) {
     resto -= AMENAZA[id];
   }
 
-  while (resto >= AMENAZA.pulgon && guardia++ < 480) {
+  while (resto >= AMENAZA.pulgon) {
     const id = resto >= AMENAZA.escarabajo && rng() < 0.45 ? 'escarabajo' : 'pulgon';
     if (AMENAZA[id] > resto) break;
     salida.push(id);
@@ -90,19 +88,20 @@ function componer(numero, presupuesto, rng) {
     resto -= AMENAZA[id];
   }
 
-  while (salida.length < 2) {
-    salida.push('pulgon');
-    conteo.pulgon += 1;
+  if (resto === AMENAZA.escarabajo - AMENAZA.pulgon && conteo.pulgon > 0) {
+    salida[salida.lastIndexOf('pulgon')] = 'escarabajo';
+    conteo.pulgon -= 1;
+    conteo.escarabajo += 1;
+    resto = 0;
   }
-
   return { unidades: salida, conteo, sobrante: resto };
 }
 
-function agrupar(unidades, rng) {
+function agrupar(unidades, rng, maximo) {
   const grupos = [];
   let i = 0;
   while (i < unidades.length) {
-    const tam = 1 + Math.floor(rng() * Math.min(3, unidades.length - i));
+    const tam = 1 + Math.floor(rng() * Math.min(maximo, unidades.length - i));
     grupos.push(unidades.slice(i, i + tam));
     i += tam;
   }
@@ -130,13 +129,6 @@ function programar(grupos, ventana, rng, factor) {
   return marcas;
 }
 
-function elegirCelda(celdas, ocupado, rng) {
-  const libres = [];
-  for (const celda of celdas) if (!ocupado(celda.x, celda.y)) libres.push(celda);
-  const bolsa = libres.length ? libres : celdas;
-  return bolsa[Math.floor(rng() * bolsa.length)];
-}
-
 function punto(celda, ocupada, tablero, rng) {
   const j = (rng() - 0.5) * 0.28;
   if (!ocupada) {
@@ -149,10 +141,17 @@ function punto(celda, ocupada, tablero, rng) {
   return { x: celda.x + 0.5 + j, y: tablero.filas + 0.2 };
 }
 
-function colocar(id, lado, tablero, ocupado, rng) {
-  const celda = elegirCelda(celdasDeLado(lado, tablero), ocupado, rng);
-  const pos = punto(celda, ocupado(celda.x, celda.y), tablero, rng);
-  return { id, ...pos };
+function ancla(lado, tablero, rng) {
+  const celdas = celdasDeLado(lado, tablero);
+  return celdas[Math.floor(rng() * celdas.length)];
+}
+
+function colocar(id, celda, tablero, ocupado, rng) {
+  return { id, celda, ...punto(celda, ocupado(celda.x, celda.y), tablero, rng) };
+}
+
+function tiempoViaje(id, celda, tablero) {
+  return Math.hypot(celda.x - tablero.centro.x, celda.y - tablero.centro.y) / BALANCE[id].velocidad;
 }
 
 function oleadaInicial(rng, tablero, ocupado) {
@@ -166,9 +165,10 @@ function oleadaInicial(rng, tablero, ocupado) {
     { id: 'pulgon', lado: secundario },
     { id: 'pulgon', lado: secundario },
   ], rng);
+  const anclas = new Map([primario, secundario].map((lado) => [lado, ancla(lado, tablero, rng)]));
   const bases = [0.7, 1.5, 5.2, 6.1, 9.4];
   const cola = piezas.map((pieza, i) => ({
-    ...colocar(pieza.id, pieza.lado, tablero, ocupado, rng),
+    ...colocar(pieza.id, anclas.get(pieza.lado), tablero, ocupado, rng),
     en: bases[i] + rng() * 0.3,
   }));
   cola.sort((a, b) => a.en - b.en);
@@ -189,7 +189,7 @@ function ladosDelPatron(patron, rng) {
   return { a: rotar(0), b: rotar(0), enjambre: false };
 }
 
-function ordenarDistraccion(unidades, rng) {
+function ordenarDistraccion(unidades, rng, maximo) {
   const pulgones = unidades.filter((id) => id === 'pulgon');
   const resto = unidades.filter((id) => id !== 'pulgon');
   const fuente = pulgones.length ? pulgones : unidades;
@@ -198,39 +198,48 @@ function ordenarDistraccion(unidades, rng) {
     ? [...resto, ...pulgones.slice(senuelo.length)]
     : unidades.slice(senuelo.length);
   const grupos = [barajar(senuelo, rng)];
-  if (principal.length) grupos.push(...agrupar(barajar(principal, rng), rng));
+  if (principal.length) grupos.push(...agrupar(barajar(principal, rng), rng, maximo));
   return grupos;
 }
 
-export function generarOleada({ numero, rng, tablero, ocupado, recientes = [], factor = 1 }) {
+export function generarOleada({ numero, rng, tablero, ocupado, recientes = [], factor = 1, oleadas = OLEADAS, patronForzado }) {
   if (numero === 1) return oleadaInicial(rng, tablero, ocupado);
 
-  const presupuesto = presupuestoDe(numero);
-  const patron = elegirPatron(numero, recientes, rng);
-  const { unidades, conteo, sobrante } = componer(numero, presupuesto, rng);
+  const presupuesto = presupuestoDe(numero, oleadas);
+  const sugerido = elegirPatron(numero, recientes, rng);
+  const patron = patronForzado ?? sugerido;
+  const { unidades, conteo, sobrante } = componer(numero, presupuesto, rng, oleadas);
   const lados = ladosDelPatron(patron, rng);
   const grupos = patron === 'distraccion'
-    ? ordenarDistraccion(unidades, rng).filter((grupo) => grupo.length)
-    : agrupar(barajar(unidades, rng), rng);
-  const tiempos = programar(grupos, ventanaDe(numero), rng, factor);
+    ? ordenarDistraccion(unidades, rng, oleadas.grupoMax).filter((grupo) => grupo.length)
+    : agrupar(barajar(unidades, rng), rng, oleadas.grupoMax);
+  const tiempos = programar(grupos, ventanaDe(numero, oleadas), rng, factor);
   let cursor = 0;
   const cola = [];
   grupos.forEach((grupo, indice) => {
     let lado = lados.a;
     if (lados.enjambre) lado = LADOS[Math.floor(rng() * 4)];
     else if (patron === 'distraccion') lado = indice === 0 ? lados.a : lados.b;
-    else if (patron === 'pinza') lado = indice < grupos.length / 2 ? lados.a : lados.b;
-    for (const id of grupo) {
-      cola.push({ ...colocar(id, lado, tablero, ocupado, rng), en: tiempos[cursor].en });
+    else if (patron === 'pinza') lado = indice % 2 === 0 ? lados.a : lados.b;
+    const celda = ancla(lado, tablero, rng);
+    const pareja = patron === 'pinza' ? tiempos[cursor - (indice % 2 ? grupos[indice - 1].length : 0)].en : null;
+    for (const [local, id] of grupo.entries()) {
+      const marca = pareja === null
+        ? tiempos[cursor].en
+        : pareja - tiempoViaje(id, celda, tablero) * oleadas.compensaViaje + local * 0.3;
+      cola.push({ ...colocar(id, celda, tablero, ocupado, rng), en: marca });
       cursor += 1;
     }
   });
   cola.sort((a, b) => a.en - b.en);
+  if (patron === 'pinza' && cola.length) {
+    const ajuste = cola[0].en - 0.35;
+    for (const orden of cola) orden.en -= ajuste;
+  }
   return { patron, presupuesto, conteo, sobrante, cola };
 }
 
-function factorDe(presion, ventana) {
-  const ajuste = OLEADAS.adaptacion;
+function factorDe(presion, ventana, ajuste) {
   if (!ajuste.activa || !presion) return 1;
   if (presion.danoCentral >= ajuste.danoUmbral || presion.plantasPerdidas >= ajuste.plantasUmbral) {
     return 1 + ajuste.margen;
@@ -241,12 +250,12 @@ function factorDe(presion, ventana) {
 
 // Programa oleadas. No elige el lado según la cobertura del jardín.
 // `alEntreOleadas` es el punto reservado para preguntas y cartas; hoy no abre nada.
-export function crearDirector({ tablero, aleatorio, semilla = 0, ocupante, alEntreOleadas }) {
+export function crearDirector({ tablero, aleatorio, semilla = 0, ocupante, alEntreOleadas, oleadas = OLEADAS }) {
   const ocupado = (x, y) => Boolean(ocupante?.(x, y));
   let numero = 1;
   let fase = 'preparacion';
   let tiempoFase = 0;
-  let duracionPrep = OLEADAS.preparacionInicial;
+  let duracionPrep = oleadas.preparacionInicial;
   let cola = [];
   let emitidos = 0;
   let patron = 'inicial';
@@ -259,8 +268,8 @@ export function crearDirector({ tablero, aleatorio, semilla = 0, ocupante, alEnt
   const historial = [];
 
   function planificar() {
-    const factor = factorDe(presion, ventanaDe(numero));
-    const plan = generarOleada({ numero, rng: aleatorio, tablero, ocupado, recientes, factor });
+    const factor = factorDe(presion, ventanaDe(numero, oleadas), oleadas.adaptacion);
+    const plan = generarOleada({ numero, rng: aleatorio, tablero, ocupado: () => false, recientes, factor, oleadas });
     patron = plan.patron;
     presupuesto = plan.presupuesto;
     conteo = plan.conteo;
@@ -290,7 +299,7 @@ export function crearDirector({ tablero, aleatorio, semilla = 0, ocupante, alEnt
     numero += 1;
     fase = 'preparacion';
     tiempoFase = 0;
-    duracionPrep = OLEADAS.preparacion;
+    duracionPrep = oleadas.preparacion;
     cola = [];
     emitidos = 0;
   }
@@ -310,8 +319,11 @@ export function crearDirector({ tablero, aleatorio, semilla = 0, ocupante, alEnt
         return [];
       }
       const nacen = [];
-      const cupo = maxSimultaneos(numero);
-      while (cola.length && cola[0].en <= tiempoFase && vivos + nacen.length < cupo) nacen.push(cola.shift());
+      const cupo = maxSimultaneos(numero, oleadas);
+      while (cola.length && cola[0].en <= tiempoFase && vivos + nacen.length < cupo) {
+        const { id, celda } = cola.shift();
+        nacen.push({ id, ...punto(celda, ocupado(celda.x, celda.y), tablero, aleatorio) });
+      }
       emitidos += nacen.length;
       return nacen;
     },

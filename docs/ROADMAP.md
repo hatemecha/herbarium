@@ -14,8 +14,8 @@ Ninguna etapa está aceptada formalmente por el propietario en esta consolidaci�
 | 4 | Primer escarabajo y combate básico | Implementada. Lógica y pruebas en verde. |
 | 5 | Consolidación artística y jugable del combate | Implementada en código y verificada en navegador (ver abajo). Pendiente de aceptación del propietario. |
 | 6 | Oleadas, especies, espino y director | Implementada en código. Valores experimentales, medidos en [BALANCE.md](BALANCE.md). Pendiente de aceptación. |
-| 7 | Nuevas plantas y enemigos | Parcial: entraron el espino, el pulgón y la oruga dentro de la etapa 06. No hay más especies. |
-| 8 | Economía y progresión de dificultad | Parcial: coste creciente por plantas vivas y presupuesto de amenaza. Sin recompensas ni otras fuentes de energía. |
+| 7 | Profundidad estratégica, diversidad y balance | Campanilla, Hongo, Espino revisado, director y políticas de evaluación implementados. Configuración experimental para evaluación del propietario. |
+| 8 | Game feel, HUD y claridad de estados | Implementados pulsos de interfaz y tablero, lectura de ralentización, alcance diferenciado y destellos por fuente. Ver la revisión visual en [ART_DIRECTION.md](ART_DIRECTION.md). |
 | 9 | Preguntas de personalidad | No empezada. No hay preguntas escritas. |
 | 10 | Tarot y mejoras | No empezada. No hay cartas ni efectos. |
 | 11 | Balance de una partida completa | No empezada. Los números actuales son provisionales. |

@@ -1,4 +1,4 @@
-import { BALANCE, COLOCACION, INSECTO, LUZ, MARCADORES, SPRITE } from './config.js';
+import { BALANCE, COLOCACION, FEEDBACK, INSECTO, LUZ, MARCADORES, SPRITE } from './config.js';
 import { elevacion, fotogramaEnemigo } from './entidades/enemigo.js';
 import { crearIluminacion } from './iluminacion.js';
 import { dibujarHormigas, resplandorCelda, resplandorPunto } from './marcadores.js';
@@ -80,6 +80,35 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
     ctxSalida.fillRect(0, 0, salida.width, salida.height);
   }
 
+  function esquinas(casilla, color, alfa, margen = 0) {
+    const { x, y } = tablero.origen(casilla.x, casilla.y);
+    const ladoMarca = celda - 1 + margen * 2;
+    ctxLuminosa.fillStyle = rgb(color, alfa);
+    for (const [dx, dy] of [[0, 0], [ladoMarca - 2, 0], [0, ladoMarca], [ladoMarca - 2, ladoMarca]]) {
+      ctxLuminosa.fillRect(x - margen + dx, y - margen + dy, 3, 1);
+    }
+  }
+
+  function dibujarAlcance(alcance, t, reducido) {
+    if (alcance.tipo === 'espino') {
+      esquinas(alcance, roles.ambiental, 0.8, 1);
+      return;
+    }
+    const radio = alcance.radio * celda;
+    const cx = (alcance.x + 0.5) * celda;
+    const cy = (alcance.y + 0.5) * celda;
+    const color = alcance.tipo === 'campanilla' ? roles.campanaLuz
+      : alcance.tipo === 'hongo' ? roles.hongoLuz : roles.bocaBrillo;
+    const puntos = Math.round(radio * 1.25);
+    const paso = reducido ? 0 : Math.floor(t * 3);
+    for (let i = 0; i < puntos; i++) {
+      const angulo = i * Math.PI * 2 / puntos;
+      const alfa = (i + paso) % 5 === 0 ? 0.62 : 0.28;
+      ctxLuminosa.fillStyle = rgb(color, alfa);
+      ctxLuminosa.fillRect(Math.round(cx + Math.cos(angulo) * radio), Math.round(cy + Math.sin(angulo) * radio), 1, 1);
+    }
+  }
+
   function dibujarColocacion(vista, t, reducido) {
     const animar = !reducido;
     const hover = vista.puntero && vista.candidatas.find((c) => c.x === vista.puntero.x && c.y === vista.puntero.y);
@@ -148,8 +177,8 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
 
   function dibujarContorno(ctx, enemigo, reducido) {
     const { x, y, frame } = posicionEnemigo(enemigo, reducido);
-    const contorno = siluetaDe(frame, roles.insectoBrillo);
-    ctx.globalAlpha = AUTOLUZ_ENEMIGO * INSECTO.contorno + 0.4 * intensidadGolpe(enemigo);
+    const contorno = siluetaDe(frame, enemigo.ralentizado ? roles.campana : roles.insectoBrillo);
+    ctx.globalAlpha = (enemigo.ralentizado ? 0.38 : AUTOLUZ_ENEMIGO * INSECTO.contorno) + 0.4 * intensidadGolpe(enemigo);
     for (const [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1]]) {
       dibujarFrame(ctx, contorno, x + dx, y + dy, enemigo.mirada);
     }
@@ -165,7 +194,7 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
     const intensidad = intensidadGolpe(enemigo);
     if (intensidad <= 0) return;
     ctx.globalAlpha = Math.sqrt(intensidad) * INSECTO.destello;
-    dibujarFrame(ctx, siluetaDe(frame, roles.insectoImpacto), x, y, enemigo.mirada);
+    dibujarFrame(ctx, siluetaDe(frame, roles[enemigo.colorImpacto] ?? roles.insectoImpacto), x, y, enemigo.mirada);
     ctx.globalAlpha = 1;
   }
 
@@ -199,8 +228,8 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
       if (planta.fuente) iluminacion.quitarFuente(planta.fuente);
       planta.fuente = null;
     },
-    dibujar({ t, impulso, reducido, central, plantas, enemigos, proyectiles, particulas, marcas, vista }) {
-      const luz = iluminacion.actualizar(t, impulso, reducido, central.nucleo, central.opacidad);
+    dibujar({ t, impulso, reducido, central, plantas, enemigos, proyectiles, particulas, marcas, vista, alcance, gesto, pulsoCentro = 0 }) {
+      const luz = iluminacion.actualizar(t, reducido ? impulso : Math.max(impulso, pulsoCentro * 0.65), reducido, central.nucleo, central.opacidad);
 
       for (const planta of plantas) {
         if (planta.fuente) planta.fuente.factor = planta.opacidad;
@@ -225,12 +254,22 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
         const { x, y } = planta.origen;
         const d = reducido ? { x: 0, y: 0 } : planta.desplazamiento();
         ctxLuminosa.globalAlpha = planta.tipo.propia * planta.opacidad;
-        ctxLuminosa.drawImage(planta.fotograma(), x + d.x, y + d.y);
+        const frame = planta.fotograma();
+        ctxLuminosa.drawImage(frame, x + d.x, y + d.y);
         if (planta.destello > 0) {
-          ctxLuminosa.globalCompositeOperation = 'lighter';
-          ctxLuminosa.globalAlpha = planta.destello * 2 * planta.opacidad;
-          ctxLuminosa.drawImage(planta.fotograma(), x + d.x, y + d.y);
-          ctxLuminosa.globalCompositeOperation = 'source-over';
+          ctxLuminosa.globalAlpha = planta.opacidad * 0.65 * planta.destello / BALANCE.visual.destello;
+          ctxLuminosa.drawImage(siluetaDe(frame, planta.tipo.reflejo ? roles.ambiental : roles.marca), x + d.x, y + d.y);
+        }
+        ctxLuminosa.globalAlpha = 1;
+        if (planta.muerta) continue;
+        if (planta.vida <= planta.vidaMax * FEEDBACK.critico) {
+          ctxLuminosa.fillStyle = rgb(roles.marca, 0.8);
+          ctxLuminosa.fillRect(x + 6, y + 15, 4, 1);
+        }
+        if (planta.tipo.area) {
+          const recarga = planta.enfriamiento / planta.tipo.area.intervalo;
+          ctxLuminosa.fillStyle = rgb(roles.hongoLuz, 0.35 + 0.55 * (1 - recarga));
+          ctxLuminosa.fillRect(planta.nucleo.x - 1, planta.nucleo.y - 1, planta.disparo > 0 ? 3 : 1, 1);
         }
       }
       for (const enemigo of enemigos) {
@@ -240,7 +279,17 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
         }
         dibujarContorno(ctxLuminosa, enemigo, reducido);
         dibujarEnemigo(ctxLuminosa, enemigo, AUTOLUZ_ENEMIGO, reducido);
-        dibujarDestello(ctxLuminosa, enemigo, posicionEnemigo(enemigo, reducido));
+        const posicion = posicionEnemigo(enemigo, reducido);
+        if (enemigo.ralentizado) {
+          const x = Math.round(enemigo.x * celda);
+          const y = Math.round(enemigo.y * celda) + SOMBRA_Y + 1;
+          const paso = reducido ? 0 : Math.floor(enemigo.reloj / FEEDBACK.pausaCampana) % 2;
+          ctxLuminosa.fillStyle = rgb(roles.campanaLuz, 0.75);
+          ctxLuminosa.fillRect(x - 2 - paso, y, 2, 1);
+          ctxLuminosa.fillStyle = rgb(roles.campana, 0.52);
+          ctxLuminosa.fillRect(x + 2 + paso, y, 1, 1);
+        }
+        dibujarDestello(ctxLuminosa, enemigo, posicion);
       }
       ctxLuminosa.globalAlpha = 1;
 
@@ -256,6 +305,17 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
       }
 
       particulas.dibujar(ctxLuminosa, roles.particula);
+      if (alcance) dibujarAlcance(alcance, t, reducido);
+      if (gesto) {
+        const color = gesto.tipo === 'invalida' ? roles.petalo
+          : gesto.tipo === 'plantada' ? roles.ambiental : roles.marca;
+        esquinas(gesto.celda, color, reducido ? 0.8 : gesto.intensidad,
+          reducido ? 0 : Math.floor((1 - gesto.intensidad) * 3));
+      }
+      if (pulsoCentro > 0 && central.opacidad > 0) {
+        esquinas(central.celda, roles.marcaSuave, reducido ? 0.4 : pulsoCentro * 0.65,
+          reducido ? 0 : Math.floor((1 - pulsoCentro) * 3));
+      }
       if (vista) dibujarColocacion(vista, t, reducido);
       for (const marca of marcas) {
         const estilo = estiloMarca(marca.tipo, roles);
@@ -285,7 +345,8 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
           resplandorPunto(ctxSalida, planta.nucleo, {
             escala: e,
             radio: planta.tipo.resplandor.radio,
-            alfa: planta.tipo.resplandor.alfa * planta.opacidad,
+            alfa: planta.tipo.resplandor.alfa * planta.opacidad
+              * (reducido ? 1 : 1 + 0.12 * Math.sin(t * 1.7 + planta.celda.x + planta.celda.y * 2)),
             color: roles[planta.tipo.resplandor.color],
           });
         }
