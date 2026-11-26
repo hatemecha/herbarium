@@ -18,7 +18,7 @@ export function crearJardin({ tablero, estado, catalogo, frames, alPlantar, alRe
 
   function colocable(id, celda) {
     const tipo = catalogo[id];
-    if (!tipo?.comprable) return false;
+    if (!tipo?.comprable || central?.muerta) return false;
     if (!tablero.contiene(celda.x, celda.y)) return false;
     if (tablero.ocupante(celda.x, celda.y)) return false;
     if (!tieneVecinaOcupada(celda)) return false;

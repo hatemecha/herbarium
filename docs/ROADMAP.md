@@ -1,6 +1,6 @@
 # Hoja de ruta
 
-Orientativa. No autoriza a implementar la etapa siguiente. El estado de abajo sale de leer el código y de correr `npm test` el 26 de noviembre de 2026, no de dar por cerrada una etapa porque un agente anterior la diera por hecha.
+Orientativa. No autoriza a implementar la etapa siguiente. El estado de abajo sale de leer el código y de correr `npm test` y el navegador en la etapa 05, no de dar por cerrada una etapa porque un agente anterior la diera por hecha.
 
 Ninguna etapa está aceptada formalmente por el propietario en esta consolidación.
 
@@ -8,12 +8,12 @@ Ninguna etapa está aceptada formalmente por el propietario en esta consolidaci�
 
 | # | Etapa | Estado |
 | --- | --- | --- |
-| 1 | Tablero, planta central, iluminación y energía | Implementada en código. Esta auditoría no repitió la matriz de viewports (320×568, 360×640, 390×844, 844×390, 768×1024, 1280×720, 1920×1080). |
+| 1 | Tablero, planta central, iluminación y energía | Implementada en código. La matriz de viewports de la etapa 1 sigue sin repetirse en esta consolidación; ver “Compatibilidad” abajo. |
 | 2 | Hover, selección y hormigas | Implementada. La selección solo cae en casillas ocupadas. Sigue sin efecto de juego. |
 | 3 | Catálogo, cerbatana y expansión por adyacencia | Implementada. Tarjeta en canvas, no un control web genérico. |
-| 4 | Primer escarabajo y combate básico | Lógica implementada. 14 pruebas de combate en verde. El duelo completo en el navegador (tiro, baja, desintegración, luz que se va, derrota, reinicio) no se rejugó aquí. |
-| 5 | Evaluación y ajuste del combate | No empezada. Depende de jugar la etapa 4 y de una decisión del propietario. |
-| 6 | Oleadas | No empezada. |
+| 4 | Primer escarabajo y combate básico | Implementada. Lógica y pruebas en verde. |
+| 5 | Consolidación artística y jugable del combate | Implementada en código y verificada en navegador (ver abajo). Pendiente de aceptación del propietario. |
+| 6 | Oleadas | No empezada. Propuesta en [PROPUESTA_OLEADAS.md](PROPUESTA_OLEADAS.md). |
 | 7 | Nuevas plantas y enemigos | No empezada. |
 | 8 | Economía y progresión de dificultad | No empezada. Hoy solo existe +1 energía/s y el coste 10. |
 | 9 | Preguntas de personalidad | No empezada. No hay preguntas escritas. |
@@ -22,17 +22,25 @@ Ninguna etapa está aceptada formalmente por el propietario en esta consolidaci�
 | 12 | Sonido y detalle artístico | No empezada. No hay audio. |
 | 13 | Integración en la web personal | No empezada. Notas en [ARCHITECTURE.md](ARCHITECTURE.md). |
 
+## Etapa 05: lo hecho y lo verificado
+
+- **Escarabajo rediseñado** desde cero, de perfil, con siete cuadros de pixel art. Ver [ART_DIRECTION.md](ART_DIRECTION.md).
+- **Familia cromática de insectos** derivada de los colores activos (`rolesInsecto`), no de hex nuevos.
+- **Vuelo, despegue, aterrizaje, alimentación y caída** como estados visuales derivados de temporizadores que no tocan la simulación.
+- **Derrota** con economía y combate detenidos, marchitez y desintegración terminadas, luz de la central apagada de forma continua y aviso retardado.
+- **Pruebas**: 46 en verde, en `tests/`. Incluyen escenarios de balance deterministas (`tests/escenario.mjs`, `tests/escenarios.test.mjs`) y pruebas del sprite, los estados visuales y la paleta (`tests/insecto.test.mjs`).
+- **Navegador (Chromium headless, reloj falso y semilla fija)**: partidas con cerbatana y sin defensa, derrota, reinicio en dos rondas (energía a 0 y los mismos tiempos de aparición), movimiento reducido, viewport 390×844 a dpr 3, horizontal 844×390 y marca distinta. Sin errores de página ni de consola. El único 404 es `/favicon.ico`, que el proyecto no incluye.
+
 ## Problemas conocidos
 
-- **Duelo sin verificar en vivo.** Una cerbatana en `(6, 5)` no alcanza el perímetro. El escarabajo puede tardar unos 10–14 s en acercarse. Mirar a los 5 s del spawn y no ver una baja no demuestra un fallo. Tampoco hay una partida de esta auditoría en la que se lo vea morir.
-- **Derrota congelada.** En cuanto `derrota()` es verdadero, `simular` no vuelve a avanzar el jardín ni el combate. La marchitez de la central y la desintegración que estuviera en curso se quedan en el frame de la muerte, debajo del aviso.
-- **Selección inerte.** Marca la planta y se limpia al colocar. No abre estadísticas. El propietario todavía no eligió entre quitarla o reservarla.
-- **Movimiento reducido a medias.** El pulso, el idle, las hormigas, la emisión ambiente y la ráfaga de energía se calman. Las ráfagas de impacto, mordida y disparo se siguen pidiendo.
-- **Pausa al ocultar la pestaña.** El código corta el frame y no recupera el tiempo perdido. No se comprobó con una pestaña real: un `document.hidden` forzado no gobierna el `requestAnimationFrame` del navegador.
 - **Sin dispositivo físico.** No hay prueba en un teléfono, ni en Safari iOS, ni en Android. Los toques sintéticos no sustituyen eso.
-- **MIME de la fuente.** `servidor.mjs` no declara `.otf`. Chromium la aplicó igual en la captura. Otro navegador puede rechazar `application/octet-stream`.
-- **`package.json`.** La descripción vieja hablaba solo de la etapa 01. Quedó actualizada en esta consolidación. El comportamiento del juego no cambió.
-- **Git.** El directorio no era un repositorio al auditarlo. No hay remoto, ni commit, ni licencia del juego.
+- **Pausa al ocultar la pestaña.** Verificada la lógica: con `document.hidden` forzado y `visibilitychange`, la energía se congela y se reanuda sin saltos. No verificada con una pestaña oculta de verdad: en headless no se puede ocultar una pestaña.
+- **Selección inerte.** Marca la planta y se limpia al colocar. No abre estadísticas. El propietario todavía no eligió entre quitarla o reservarla.
+- **Escarabajo que sobrevive a la derrota.** Si la central cae con un escarabajo vivo, queda congelado en su último cuadro debajo del aviso. Es una decisión visual, no un error: el combate se detiene. Confirmar con el propietario si debe posarse, irse o desaparecer.
+- **Derrota y el primer encuentro.** El balance del primer escarabajo está medido, no ajustado. Una cerbatana bien colocada basta. Ver [BALANCE.md](BALANCE.md).
+- **Movimiento reducido.** Cubierto para pulso, idle, hormigas, emisión ambiente, ráfaga de energía, ráfagas de combate, retroceso de la cerbatana y aleteo del escarabajo. Los fundidos (muerte y marchitez) se mantienen porque son opacidad, no desplazamiento.
+- **Compatibilidad con la web personal.** `--mono` de `nicotinalex-web` no incluye MonoMEK; hay que decidir la pila al integrar. `touch-action: none` en el canvas; hay que revisar el scroll al embeberlo.
+- **Git.** No hay commit de esta etapa. Ver el estado en la respuesta de consolidación.
 
 ## Fuera de alcance hasta nuevo pedido
 

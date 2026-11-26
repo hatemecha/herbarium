@@ -13,6 +13,7 @@ const tipos = {
   '.json': 'application/json; charset=utf-8',
   '.png': 'image/png',
   '.svg': 'image/svg+xml',
+  '.otf': 'font/otf',
 };
 
 createServer(async (req, res) => {

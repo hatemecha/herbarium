@@ -46,15 +46,15 @@ export function crearIluminacion({ lado, fondo }) {
     if (indice >= 0) fuentes.splice(indice, 1);
   }
 
-  function actualizar(t, impulso, reducido, centro) {
+  function actualizar(t, impulso, reducido, centro, opacidad = 1) {
     const k = reducido ? 0 : 1;
     const respiracion = Math.sin(t * LUZ.pulso.velocidad);
     const nRad = LUZ.nucleo.radio * (1 + k * (LUZ.pulso.amplitud * respiracion + 0.12 * impulso));
-    const nInt = Math.min(1, LUZ.nucleo.intensidad * (1 + k * 0.25 * impulso));
+    const nInt = Math.min(1, LUZ.nucleo.intensidad * (1 + k * 0.25 * impulso)) * opacidad;
     const bRad = LUZ.brillo.radio * (1 + k * 0.05 * Math.sin(t * 0.53));
-    const bInt = LUZ.brillo.intensidad * (1 + k * 0.1 * Math.sin(t * 0.37 + 2));
+    const bInt = LUZ.brillo.intensidad * (1 + k * 0.1 * Math.sin(t * 0.37 + 2)) * opacidad;
     const aRad = LUZ.ambiente.radio * (1 + k * 0.03 * Math.sin(t * 0.21 + 1));
-    const aInt = LUZ.ambiente.intensidad;
+    const aInt = LUZ.ambiente.intensidad * opacidad;
     const organica = k * LUZ.organica;
 
     for (let y = 0; y < lado; y++) {
@@ -95,7 +95,7 @@ export function crearIluminacion({ lado, fondo }) {
     }
 
     ctx.putImageData(imagen, 0, 0);
-    return { nRad, nInt, bRad, aRad, k };
+    return { nRad, nInt, bRad, aRad, k, opacidad };
   }
 
   return { canvas, actualizar, agregarFuente, quitarFuente };

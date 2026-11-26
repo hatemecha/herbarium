@@ -43,8 +43,66 @@ export function leerPaleta(raiz = document.documentElement) {
 
 const mezcla = (a, b, t) => a.map((valor, i) => Math.round(valor + (b[i] - valor) * t));
 
+function aHsl([r, g, b]) {
+  const max = Math.max(r, g, b) / 255;
+  const min = Math.min(r, g, b) / 255;
+  const l = (max + min) / 2;
+  const d = max - min;
+  if (d === 0) return [0, 0, l];
+  const s = d / (1 - Math.abs(2 * l - 1));
+  const rn = r / 255;
+  const gn = g / 255;
+  const bn = b / 255;
+  let h;
+  if (max === rn) h = ((gn - bn) / d) % 6;
+  else if (max === gn) h = (bn - rn) / d + 2;
+  else h = (rn - gn) / d + 4;
+  return [(h * 60 + 360) % 360, s, l];
+}
+
+function deHsl(h, s, l) {
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = l - c / 2;
+  const [r, g, b] = h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x] : h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x];
+  return [r, g, b].map((v) => Math.round((v + m) * 255));
+}
+
+// Centro del mayor hueco de matiz entre dos colores activos. Un insecto ahí no se confunde con ninguno.
+function centroDelHuecoLibre(a, b) {
+  const [menor, mayor] = [a, b].sort((x, y) => x - y);
+  if (mayor - menor >= menor + 360 - mayor) return (menor + mayor) / 2;
+  return ((menor + mayor + 360) / 2) % 360;
+}
+
+// Los insectos no tienen hex propios. Su matiz base sale del hueco libre entre la marca y la chispa:
+// el caparazón va 50° hacia el violeta y el brillo irisado queda en el matiz base. Si la marca cambia,
+// la familia se recoloca sola y no cae sobre la chispa.
+function rolesInsecto(p) {
+  const base = centroDelHuecoLibre(aHsl(p.brand)[0], aHsl(p.spark)[0]);
+  const violeta = (base + 50) % 360;
+  const azul = base;
+  const color = (h, s, l) => deHsl(h, s / 100, l / 100);
+  return {
+    insectoSombra: color(violeta, 40, 9),
+    insecto: color(violeta, 38, 24),
+    insectoLuz: color(violeta, 44, 38),
+    insectoIris: color((base + 25) % 360, 46, 32),
+    insectoBrillo: color(azul, 70, 64),
+    insectoImpacto: mezcla(p.ink, color(azul, 70, 64), 0.2),
+    insectoReflejo: mezcla(p.brand, p.ink, 0.35),
+    ala: color(azul, 40, 24),
+    alaBorde: color(azul, 50, 44),
+    antena: color(violeta, 30, 58),
+    patas: color(violeta, 20, 46),
+    cabeza: color(violeta, 36, 30),
+    ojo: color(azul, 60, 86),
+  };
+}
+
 export function crearRoles(p) {
   return {
+    ...rolesInsecto(p),
     fondo: p.bg,
     terreno: p.hover,
     cuadricula: mezcla(p.hover, p.line, 0.55),
@@ -67,12 +125,6 @@ export function crearRoles(p) {
     bulbo: mezcla(p.bg, p.spark, 0.75),
     boca: mezcla(p.spark, p.ink, 0.5),
     bocaBrillo: mezcla(p.ink, p.spark, 0.3),
-    caparazon: mezcla(p.bg, p.ink, 0.34),
-    caparazonLuz: mezcla(p.bg, p.ink, 0.62),
-    caparazonSombra: mezcla(p.bg, p.ink, 0.2),
-    cabeza: mezcla(p.bg, p.ink, 0.14),
-    ojo: p.brand,
-    patas: mezcla(p.bg, p.muted, 0.8),
   };
 }
 

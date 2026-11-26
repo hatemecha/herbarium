@@ -27,7 +27,7 @@ Implementado:
 4. El jardín crece desde las plantas existentes. La central no se compra ni se duplica.
 5. A los 20 segundos aparece un escarabajo en el perímetro. Camina hacia la central, no atraviesa plantas y muerde a la que le bloquea el paso hasta destruirla.
 6. La cerbatana dispara sola al enemigo más cercano dentro de su alcance circular, en cualquier ángulo.
-7. Si la central muere, la simulación se detiene y aparece un aviso mínimo para reiniciar.
+7. Si la central muere, la partida se detiene: no sube energía, no se compra y no se combate. Las animaciones pendientes terminan (marchitez, desintegración) y, al apagarse la central, aparece el aviso «el jardín cayó» con el botón para reiniciar.
 
 No hay oleadas, recompensas, segundas especies, mejoras, tarot, sonido ni progresión entre partidas.
 
@@ -35,12 +35,13 @@ No hay oleadas, recompensas, segundas especies, mejoras, tarot, sonido ni progre
 
 | Situación | Estado |
 | --- | --- |
-| Derrota | La planta central queda con vida ≤ 0. `src/combate.js` lo expone como `derrota()` y `src/juego.js` muestra `src/derrota.js`. |
+| Derrota | La planta central queda con vida ≤ 0. `src/combate.js` lo expone como `derrota()`. Desde ese paso el combate no dispara, no muerde y no mueve, y los proyectiles en vuelo desaparecen. |
+| Final visual | Al terminar la marchitez de la central (1,2 s), `src/derrota.js` muestra el aviso con un fundido de 1,8 s. La luz de la central baja con su opacidad: halo y ambiente se apagan de forma continua. |
 | Victoria | No existe. Sobrevivir al único escarabajo no termina la partida. |
-| Pausa | Ocultar la pestaña cancela el `requestAnimationFrame` y, al volver, el acumulador arranca de cero. No hay botón de pausa. |
-| Reinicio | Derriba la partida y crea otra: energía a 0, solo la central, sin el escarabajo anterior. |
+| Pausa | Ocultar la pestaña cancela el `requestAnimationFrame` y, al volver, el acumulador arranca de cero. No hay botón de pausa. Verificado solo con `visibilitychange` forzado. |
+| Reinicio | Derriba la partida y crea otra: energía a 0, solo la central, sin el escarabajo anterior. Probado en dos rondas seguidas: los tiempos de aparición coinciden y la energía vuelve a 0. |
 
-Al morir la central, `simular` sale en el frame siguiente. La marchitez de la central y cualquier desintegración en curso dejan de avanzar: la escena queda congelada debajo del aviso. Está en el código; no está decidido si debe seguir animándose.
+La derrota no congela la escena: se apaga. Las plantas que siguen en pie no se marchitan; el escarabajo vivo queda en su último cuadro. Ver la pendiente en [ROADMAP.md](ROADMAP.md).
 
 ## Planta central
 
@@ -80,6 +81,9 @@ Implementado un solo enemigo, el escarabajo, y un solo disparo, el de la cerbata
 
 - Un escarabajo, una vez, en una casilla libre del perímetro. No reaparece solo.
 - Posición continua, en unidades de casilla. La casilla `i` es el intervalo `[i, i+1)`.
+- Vuelo a 3 píxeles sobre el suelo, con una oscilación decorativa de ±1 px. Vuela sobre el jardín, pero no atraviesa plantas: el bloqueo es el mismo de siempre.
+- Al fijar objetivo aterriza en 0,3 s (alas bajas, luego patas abiertas), se orienta hacia la planta y se alimenta: cada mordida baja la cabeza un instante.
+- Al perder su planta despega y continúa hacia la central. Estos estados son solo visuales; ver [ART_DIRECTION.md](ART_DIRECTION.md).
 - Camino directo hacia el centro de la central. Si la casilla inmediata en esa dirección tiene una planta viva, se detiene y la ataca. Al destruirla, la casilla se libera y sigue.
 - La cerbatana elige el enemigo vivo más cercano a distancia ≤ alcance, apunta con una predicción corta y dispara con cadencia propia.
 - El proyectil tiene posición, dirección y velocidad. El daño ocurre al cruzar el radio del enemigo, con barrido del segmento para no atravesarlo entre frames. Si agota su distancia máxima, desaparece.
@@ -100,7 +104,7 @@ No hay nombres, cartas, preguntas ni enemigos acordados más allá de lo que ya 
 
 ## Pendiente de diseño
 
-- Si el primer escarabajo debe morir ante una sola cerbatana bien colocada antes de tumbar la central. Los números lo sugieren en varios caminos; no se rejugó el duelo completo en esta consolidación. Ver [ROADMAP.md](ROADMAP.md).
+- Si el primer escarabajo debe ser tan fácil. Con una cerbatana colocada en cualquier punto cercano muere en 2 a 2,3 s, sin tumbar la central. Los resultados están en [BALANCE.md](BALANCE.md). Lo que el propietario decide es si la introducción debe ser más exigente o si esto ya enseña la mecánica.
 - Si la selección visual se queda.
-- Si la derrota debe congelar las animaciones de muerte.
+- Qué hace el escarabajo vivo cuando la central cae.
 - Licencia y visibilidad del repositorio. No están elegidas.

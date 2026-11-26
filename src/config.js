@@ -58,7 +58,21 @@ export const BALANCE = {
     retroceso: 0.12,
     desintegracion: 0.7,
     marchitez: 1.2,
+    aterrizaje: 0.3,
+    despegue: 0.25,
+    mordisco: 0.2,
   },
+};
+
+export const INSECTO = {
+  altura: 3,
+  balanceo: 0.9,
+  antenas: { periodo: 1.6, duracion: 0.25 },
+  sombra: { base: 0.12, porAltura: 0.06 },
+  contorno: 0.18,
+  destello: 0.9,
+  empuje: 2,
+  resplandor: { radio: 12, alfa: 0.12 },
 };
 
 export const MARCADORES = {

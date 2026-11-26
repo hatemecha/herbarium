@@ -190,3 +190,52 @@ test('la orientación del disparo elige una de las ocho direcciones', () => {
   assert.equal(indiceDireccion(1, 1) === 3, true, 'SE');
   assert.equal(indiceDireccion(-1, -1) === 7, true, 'NW');
 });
+
+test('tras la derrota no hay disparos, mordidas ni proyectiles nuevos, pero la desintegración termina', () => {
+  const { combate, jardin } = escena({ aparicion: Infinity });
+  jardin.sembrar('cerbatana', { x: 6, y: 5 });
+  const vivo = combate.aparecerEn(8.5, 5.5);
+  const muerto = combate.aparecerEn(9.5, 5.5);
+  muerto.muerto = true;
+  muerto.tiempoMuerte = 0;
+  muerto.umbrales = Array.from({ length: 256 }, () => 0.5);
+  combate.proyectiles.push({ x: 7, y: 5.5, ux: 1, uy: 0, velocidad: 6, dano: 4, recorrido: 0, distanciaMaxima: 4.5, activo: true });
+  jardin.central.vida = 0;
+  jardin.destruir(jardin.central);
+  const x = vivo.x;
+  avanzar(combate, BALANCE.visual.desintegracion + 0.5);
+  assert.equal(cuentaEventos(combate, 'disparo'), 0);
+  assert.equal(cuentaEventos(combate, 'mordida'), 0);
+  assert.equal(vivo.x, x, 'el vivo no se mueve');
+  assert.equal(combate.proyectiles.length, 0);
+  assert.equal(combate.enemigos.includes(muerto), false, 'la desintegración termina y se retira');
+});
+
+test('la mordida activa el gesto de alimentación y el temporizador visual se apaga', () => {
+  const { combate, jardin } = escena({ aparicion: Infinity });
+  jardin.sembrar('muro', { x: 3, y: 5 });
+  const e = combate.aparecerEn(2.5, 5.5);
+  avanzar(combate, 0.05);
+  assert.ok(e.mordisco > 0, 'la primera mordida activa el gesto');
+  avanzar(combate, BALANCE.visual.mordisco + 0.05);
+  assert.equal(e.mordisco, 0);
+});
+
+test('al perder su planta el escarabajo marca el despegue y elige un objetivo nuevo', () => {
+  const { combate, jardin } = escena({ aparicion: Infinity });
+  const muro = jardin.sembrar('muro', { x: 3, y: 5 });
+  muro.vida = 2;
+  const e = combate.aparecerEn(2.5, 5.5);
+  avanzar(combate, 0.1);
+  assert.equal(e.objetivo, null, 'la planta destruida ya no es objetivo');
+  assert.ok(e.despegue > 0, 'despega');
+  assert.ok(e.despegue <= BALANCE.visual.despegue);
+});
+
+test('el tiempo visual de la mordida no cambia la cadencia de daño', () => {
+  const { combate, jardin } = escena({ aparicion: Infinity });
+  const muro = jardin.sembrar('muro', { x: 3, y: 5 });
+  combate.aparecerEn(2.5, 5.5);
+  avanzar(combate, 3.5);
+  assert.equal(muro.vida, 12 - 2 * 4, 'cuatro mordidas en 3,5 s, igual que sin efectos');
+});

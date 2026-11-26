@@ -6,7 +6,7 @@ import { crearColocacion } from './colocacion.js';
 import { crearCombate } from './combate.js';
 import { crearDerrota } from './derrota.js';
 import { calcularEscala, celdaDeCliente, pantallaAMundo } from './escala.js';
-import { crearEstado, avanzar } from './estado.js';
+import { apagar, crearEstado, avanzar } from './estado.js';
 import { crearJardin } from './jardin.js';
 import { asegurarVariables, crearRoles, leerPaleta } from './paleta.js';
 import { crearParticulas } from './particulas.js';
@@ -82,7 +82,9 @@ function crearPartida(dom, roles, frames, reducido, alDerrota) {
     tipos: COMPRABLES,
     animadores,
     roles,
-    alElegir: (id) => colocacion.alternar(id),
+    alElegir: (id) => {
+      if (!combate.derrota()) colocacion.alternar(id);
+    },
   });
   const colocacion = crearColocacion({
     tablero,
@@ -104,14 +106,16 @@ function crearPartida(dom, roles, frames, reducido, alDerrota) {
 
   function procesarEventos() {
     const celda = tablero.celda;
+    const reduce = reducido.matches;
     for (const ev of combate.eventos()) {
       const x = ev.x * celda;
       const y = ev.y * celda;
+      if (ev.tipo === 'mordida' && ev.central) estado.impulso = Math.max(estado.impulso, 0.8);
+      if (reduce) continue;
       if (ev.tipo === 'impacto' || ev.tipo === 'muerte-enemigo' || ev.tipo === 'muerte-planta') {
-        particulas.rafaga(x, y, 3);
+        particulas.rafaga(x, y, ev.tipo === 'impacto' ? 5 : 3);
       } else if (ev.tipo === 'mordida') {
         particulas.rafaga(x, y, 2);
-        if (ev.central) estado.impulso = Math.max(estado.impulso, 0.8);
       } else if (ev.tipo === 'disparo') {
         particulas.rafaga(x + ev.ux * 4, y + ev.uy * 4, 1);
       }
@@ -119,24 +123,26 @@ function crearPartida(dom, roles, frames, reducido, alDerrota) {
   }
 
   function simular(dt) {
-    if (combate.derrota()) return;
     const reduce = reducido.matches;
-    if (avanzar(estado, dt)) {
+    const caida = combate.derrota();
+    if (caida) {
+      apagar(estado, dt);
+    } else if (avanzar(estado, dt)) {
       actualizarEnergia();
       latido();
       if (!reduce) particulas.rafaga(jardin.central.nucleo.x, jardin.central.nucleo.y, PARTICULAS.rafaga);
     }
     jardin.actualizar(dt, reduce);
-    combate.actualizar(dt, reduce);
+    combate.actualizar(dt);
     procesarEventos();
 
     const central = jardin.central;
-    particulas.actualizar(dt, central.nucleo.x, central.nucleo.y, !reduce);
+    particulas.actualizar(dt, central.nucleo.x, central.nucleo.y, !reduce && !caida);
     seleccion.actualizar(dt);
     colocacion.actualizar(dt);
     for (const animador of Object.values(animadores)) animador.actualizar(dt, reduce);
 
-    if (combate.derrota() && !derrotaAvisada) {
+    if (caida && !derrotaAvisada && central.opacidad <= 0) {
       derrotaAvisada = true;
       alDerrota();
     }

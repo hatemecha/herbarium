@@ -62,7 +62,6 @@ export const ENEMIGOS = {
       matriz: escarabajo.MATRIZ,
       codigos: escarabajo.CODIGOS,
       variantes: escarabajo.VARIANTES,
-      secuencia: escarabajo.SECUENCIA,
     },
   },
 };

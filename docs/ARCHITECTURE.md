@@ -17,7 +17,7 @@ src/tablero.js          casillas y ocupación
 src/jardin.js           alta, reglas de colocación, marchitez
 src/combate.js          enemigo, disparos, eventos, derrota
 src/catalogo.js         definición de plantas y enemigos
-src/entidades/          planta y escarabajo como datos + animación
+src/entidades/          planta y enemigo: datos, estados visuales y temporizadores de dibujo
 src/sprites/            matrices y construcción de fotogramas
 src/render.js           capas y dibujo
 src/iluminacion.js      oscuridad por transmisión
@@ -48,7 +48,16 @@ assets/fonts/           MonoMEK y su CC0
 4. Los eventos de ese paso generan partículas. Una mordida a la central también sube el impulso.
 5. Selección, colocación y animación del catálogo avanzan con el mismo `dt`.
 
-Si `document.hidden` es verdadero, se cancela el frame y no se simula. Al volver, el acumulador se pone a 0: no hay salto ni doble bucle. Esto está escrito así; no se revalidó ocultando una pestaña real en esta auditoría.
+Si `document.hidden` es verdadero, se cancela el frame y no se simula. Al volver, el acumulador se pone a 0: no hay salto ni doble bucle. Verificado con `visibilitychange` forzado; no con una pestaña oculta de verdad, que headless no permite.
+
+Con la central muerta (`derrota()`), el paso cambia de función:
+
+1. Energía e impulso no suben. El impulso cae con `apagar` (`src/estado.js`), y el tiempo visual sigue corriendo para que la luz se atenúe sin salto.
+2. El jardín sigue actualizando la marchitez: la opacidad de la central baja y, al llegar a 0, se retira.
+3. El combate solo termina las desintegraciones en curso, quita los proyectiles y no dispara, no muerde y no mueve nada.
+4. `juego.js` muestra el aviso cuando la opacidad de la central llega a 0. Una vez.
+
+`colocable` (`src/jardin.js`) devuelve falso con la central muerta, y el catálogo no entra en modo colocación. Así no hay compra después de la derrota aunque se toque la tarjeta.
 
 El dibujo corre una vez por frame, después de los pasos, y no empuja la simulación.
 
@@ -57,12 +66,16 @@ El dibujo corre una vez por frame, después de los pasos, y no empuja la simulac
 Cuatro lienzos lógicos de 176 y el canvas visible:
 
 1. Fondo: terreno y grilla de 1 px, pintados una vez.
-2. Escena: plantas (con opacidad y retroceso) y enemigos.
+2. Escena: plantas (con opacidad y retroceso) y, antes que el insecto, la sombra de cada escarabajo vivo en el suelo. Luego el insecto con el cuadro que pide su estado.
 3. Capa luminosa: los mismos sprites atenuados o a plena luz propia, destellos, proyectil de 2 px, partículas, hormigas y fantasma de colocación.
 4. Oscuridad: `ImageData` con alfa Bayer, encima de la escena.
 5. Salida: escena, oscuridad y capa luminosa, nearest-neighbor, a `pixeles` físicos. Luego, con suavizado, los gradientes.
 
-`registrarPlanta` / `retirarPlanta` conectan la luz estática. La central no usa ese mapa: su luz es la dinámica de `iluminacion.actualizar`.
+`registrarPlanta` / `retirarPlanta` conectan la luz estática. La central no usa ese mapa: su luz es la dinámica de `iluminacion.actualizar`, que recibe la opacidad de la central para apagarse con su marchitez.
+
+Un escarabajo se dibuja en la capa luminosa con alfa `AUTOLUZ_ENEMIGO` (0,8). Esa capa va encima de la oscuridad, así que el insecto se lee en lo oscuro sin pasar por el halo.
+
+`fotogramaEnemigo` y `elevacion` (`src/entidades/enemigo.js`) son funciones puras de estado y tiempo visual. Ninguna de ellas escribe en `x`, `y` ni en los contadores de combate.
 
 ## Coordenadas
 
@@ -86,7 +99,9 @@ Los fotogramas se rasterizan una vez en `montarHerbario`, con la paleta de ese m
 `npm test` ejecuta `node --test` sobre `tests/*.test.mjs`. No levantan DOM ni canvas.
 
 - `tests/jardin.test.mjs` — centro, adyacencia de ocho, ocupación, energía, expansión.
-- `tests/combate.test.mjs` — aparición a los 20 s, un solo escarabajo, velocidad, bloqueo, mordisco, reanudación, retirada, alcance, cadencia, colisión con paso grande, muerte, derrota, ocho direcciones.
+- `tests/combate.test.mjs` — aparición a los 20 s, un solo escarabajo, velocidad, bloqueo, mordisco, reanudación, retirada, alcance, cadencia, colisión con paso grande, muerte, derrota, ocho direcciones. Tras la derrota: sin disparos, mordidas ni proyectiles, y la desintegración termina. Gesto de mordida y despegue.
+- `tests/insecto.test.mjs` — sprite (16×16, códigos con rol, vuelo solo con alas, cuerpo de 8 a 11 px), estados visuales y sus transiciones, altura visual sin tocar la posición lógica, paleta derivada y su distancia a la marca y a la chispa.
+- `tests/escenarios.test.mjs` — balance: sin defensa, una cerbatana en cuatro entradas, en el camino, en el lado opuesto, dos cerbatanas y colocación tardía. Usa `tests/escenario.mjs`, un helper sin DOM que corre la simulación con los módulos reales a paso fijo de 1/60 s.
 
 ## Ejecutar
 

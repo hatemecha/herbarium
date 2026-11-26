@@ -74,19 +74,25 @@ export function crearCombate({
 
   function morder(enemigo, objetivo) {
     enemigo.cooldown += tipoEnemigo.intervalo;
+    enemigo.mordisco = visual.mordisco;
     objetivo.vida -= tipoEnemigo.dano;
     objetivo.destello = visual.destello;
     evento({ tipo: 'mordida', ...posicionDe(objetivo), central: objetivo === jardin.central });
     if (objetivo.vida <= 0) destruirPlanta(objetivo);
   }
 
-  function moverYAtacar(enemigo, dt, reducido) {
+  function moverYAtacar(enemigo, dt) {
     enemigo.destello = Math.max(0, enemigo.destello - dt);
-    enemigo.animacion.actualizar(dt, reducido);
+    enemigo.mordisco = Math.max(0, enemigo.mordisco - dt);
+    enemigo.despegue = Math.max(0, enemigo.despegue - dt);
+    enemigo.reloj += dt;
     const central = jardin.central;
     if (!central) return;
 
-    if (enemigo.objetivo?.muerta) enemigo.objetivo = null;
+    if (enemigo.objetivo?.muerta) {
+      enemigo.objetivo = null;
+      enemigo.despegue = visual.despegue;
+    }
     enemigo.vx = 0;
     enemigo.vy = 0;
 
@@ -104,6 +110,9 @@ export function crearCombate({
       );
       if (bloqueo) {
         enemigo.objetivo = bloqueo;
+        enemigo.tiempoEnObjetivo = 0;
+        const hacia = centroDe(bloqueo).x - enemigo.x;
+        if (Math.abs(hacia) > 0.2) enemigo.mirada = Math.sign(hacia);
       } else {
         const paso = Math.min(tipoEnemigo.velocidad * dt, d);
         enemigo.x += ux * paso;
@@ -115,6 +124,7 @@ export function crearCombate({
     }
 
     if (enemigo.objetivo) {
+      enemigo.tiempoEnObjetivo += dt;
       enemigo.cooldown -= dt;
       if (enemigo.cooldown <= 0) morder(enemigo, enemigo.objetivo);
     }
@@ -184,6 +194,7 @@ export function crearCombate({
   function impactar(enemigo, proyectil) {
     enemigo.vida -= proyectil.dano;
     enemigo.destello = visual.destello;
+    enemigo.golpe = { x: proyectil.ux, y: proyectil.uy };
     evento({ tipo: 'impacto', x: enemigo.x, y: enemigo.y });
     if (enemigo.vida <= 0) {
       enemigo.muerto = true;
@@ -224,16 +235,24 @@ export function crearCombate({
   return {
     enemigos,
     proyectiles,
-    actualizar(dt, reducido = false) {
+    actualizar(dt) {
       eventos = [];
       tiempo += dt;
+      if (jardin.central?.muerta) {
+        for (const enemigo of enemigos) {
+          if (enemigo.muerto) enemigo.tiempoMuerte += dt;
+        }
+        for (const proyectil of proyectiles) proyectil.activo = false;
+        limpiar();
+        return;
+      }
       if (!aparecio && tiempo >= aparicion) {
         aparecio = true;
         aparecer();
       }
       for (const enemigo of enemigos) {
         if (enemigo.muerto) enemigo.tiempoMuerte += dt;
-        else moverYAtacar(enemigo, dt, reducido);
+        else moverYAtacar(enemigo, dt);
       }
       dispararCerbatanas(dt);
       for (const proyectil of proyectiles) {

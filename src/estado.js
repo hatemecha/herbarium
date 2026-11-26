@@ -8,6 +8,12 @@ export function crearEstado() {
   };
 }
 
+// Tras la derrota la energía no crece, pero la luz y el tiempo visual siguen para que la central se apague sin corte.
+export function apagar(estado, dt) {
+  estado.tiempo += dt;
+  estado.impulso = Math.max(0, estado.impulso - dt * LUZ.impulso.caida);
+}
+
 // Devuelve true cuando se completa una unidad de energía.
 export function avanzar(estado, dt) {
   estado.tiempo += dt;
