@@ -1,0 +1,14 @@
+{
+  "name": "herbarium",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Defensa de un jardín que crece en la oscuridad. Prototipo hasta el primer insecto y el combate básico.",
+  "scripts": {
+    "start": "node servidor.mjs",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": "^24.0.0"
+  }
+}
