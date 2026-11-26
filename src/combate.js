@@ -24,6 +24,8 @@ export function crearCombate({
   tablero,
   jardin,
   tipoEnemigo,
+  catalogoEnemigos = null,
+  director = null,
   visual = BALANCE.visual,
   aparicion = BALANCE.aparicionEscarabajo,
   aleatorio = Math.random,
@@ -45,10 +47,19 @@ export function crearCombate({
     eventos.push(datos);
   }
 
-  function crear(x, y) {
-    const enemigo = crearEnemigo({ x, y, tipo: tipoEnemigo, desfase: aleatorio() * 0.5 });
+  function crear(x, y, tipo = tipoEnemigo) {
+    const enemigo = crearEnemigo({ x, y, tipo, desfase: aleatorio() * 0.5 });
     enemigos.push(enemigo);
     return enemigo;
+  }
+
+  function matar(enemigo) {
+    if (enemigo.muerto) return;
+    enemigo.muerto = true;
+    enemigo.vida = Math.min(0, enemigo.vida);
+    enemigo.tiempoMuerte = 0;
+    enemigo.umbrales = Array.from({ length: 256 }, () => aleatorio());
+    evento({ tipo: 'muerte-enemigo', x: enemigo.x, y: enemigo.y });
   }
 
   function aparecer() {
@@ -73,11 +84,19 @@ export function crearCombate({
   }
 
   function morder(enemigo, objetivo) {
-    enemigo.cooldown += tipoEnemigo.intervalo;
+    const tipo = enemigo.tipo;
+    enemigo.cooldown += tipo.intervalo;
     enemigo.mordisco = visual.mordisco;
-    objetivo.vida -= tipoEnemigo.dano;
+    objetivo.vida -= tipo.dano;
     objetivo.destello = visual.destello;
-    evento({ tipo: 'mordida', ...posicionDe(objetivo), central: objetivo === jardin.central });
+    evento({ tipo: 'mordida', ...posicionDe(objetivo), central: objetivo === jardin.central, dano: tipo.dano });
+    const reflejo = objetivo.tipo.reflejo ?? 0;
+    if (reflejo > 0) {
+      enemigo.vida -= reflejo;
+      enemigo.destello = visual.destello;
+      evento({ tipo: 'reflejo', x: enemigo.x, y: enemigo.y, dano: reflejo });
+      if (enemigo.vida <= 0) matar(enemigo);
+    }
     if (objetivo.vida <= 0) destruirPlanta(objetivo);
   }
 
@@ -114,11 +133,11 @@ export function crearCombate({
         const hacia = centroDe(bloqueo).x - enemigo.x;
         if (Math.abs(hacia) > 0.2) enemigo.mirada = Math.sign(hacia);
       } else {
-        const paso = Math.min(tipoEnemigo.velocidad * dt, d);
+        const paso = Math.min(enemigo.tipo.velocidad * dt, d);
         enemigo.x += ux * paso;
         enemigo.y += uy * paso;
-        enemigo.vx = ux * tipoEnemigo.velocidad;
-        enemigo.vy = uy * tipoEnemigo.velocidad;
+        enemigo.vx = ux * enemigo.tipo.velocidad;
+        enemigo.vy = uy * enemigo.tipo.velocidad;
         if (Math.abs(ux) > 0.2) enemigo.mirada = Math.sign(ux);
       }
     }
@@ -192,16 +211,13 @@ export function crearCombate({
   }
 
   function impactar(enemigo, proyectil) {
-    enemigo.vida -= proyectil.dano;
+    const aplicado = Math.min(proyectil.dano, Math.max(0, enemigo.vida));
+    const sobra = proyectil.dano - aplicado;
+    enemigo.vida -= aplicado;
     enemigo.destello = visual.destello;
     enemigo.golpe = { x: proyectil.ux, y: proyectil.uy };
-    evento({ tipo: 'impacto', x: enemigo.x, y: enemigo.y });
-    if (enemigo.vida <= 0) {
-      enemigo.muerto = true;
-      enemigo.tiempoMuerte = 0;
-      enemigo.umbrales = Array.from({ length: 256 }, () => aleatorio());
-      evento({ tipo: 'muerte-enemigo', x: enemigo.x, y: enemigo.y });
-    }
+    evento({ tipo: 'impacto', x: enemigo.x, y: enemigo.y, aplicado, sobra });
+    if (enemigo.vida <= 0) matar(enemigo);
   }
 
   function avanzarProyectil(proyectil, dt) {
@@ -214,7 +230,7 @@ export function crearCombate({
 
     for (const enemigo of enemigos) {
       if (enemigo.muerto) continue;
-      if (distanciaSegmentoPunto(x0, y0, proyectil.x, proyectil.y, enemigo.x, enemigo.y) <= tipoEnemigo.radio) {
+      if (distanciaSegmentoPunto(x0, y0, proyectil.x, proyectil.y, enemigo.x, enemigo.y) <= enemigo.tipo.radio) {
         impactar(enemigo, proyectil);
         proyectil.activo = false;
         return;
@@ -246,7 +262,10 @@ export function crearCombate({
         limpiar();
         return;
       }
-      if (!aparecio && tiempo >= aparicion) {
+      if (director) {
+        const vivos = enemigos.reduce((cantidad, enemigo) => cantidad + (enemigo.muerto ? 0 : 1), 0);
+        for (const orden of director.avanzar(dt, vivos)) crear(orden.x, orden.y, catalogoEnemigos[orden.id]);
+      } else if (!aparecio && tiempo >= aparicion) {
         aparecio = true;
         aparecer();
       }
@@ -259,8 +278,9 @@ export function crearCombate({
         if (proyectil.activo) avanzarProyectil(proyectil, dt);
       }
       limpiar();
+      director?.registrar(eventos);
     },
-    aparecerEn: (x, y) => crear(x, y),
+    aparecerEn: (x, y, tipo) => crear(x, y, tipo),
     eventos: () => eventos.slice(),
     derrota: () => Boolean(jardin.central?.muerta),
     tiempo: () => tiempo,

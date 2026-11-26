@@ -1,4 +1,5 @@
 import { MARCADORES } from './config.js';
+import { punteroFino } from './entrada.js';
 import { celdaDeCliente } from './escala.js';
 
 const igual = (a, b) => a && b && a.x === b.x && a.y === b.y;
@@ -24,12 +25,12 @@ export function crearSeleccion({ tablero, canvas }) {
   }
 
   const alMover = (e) => {
-    if (e.pointerType === 'touch') return;
+    if (!punteroFino(e)) return;
     fijar(marcas.sobrevuelo, celdaDe(e));
   };
 
   const alSalir = (e) => {
-    if (e.pointerType !== 'touch') marcas.sobrevuelo.activa = false;
+    if (punteroFino(e)) marcas.sobrevuelo.activa = false;
   };
 
   const alPulsar = (e) => {

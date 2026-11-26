@@ -1,6 +1,5 @@
 import { BALANCE, COLOCACION, INSECTO, LUZ, MARCADORES, SPRITE } from './config.js';
 import { elevacion, fotogramaEnemigo } from './entidades/enemigo.js';
-import { FOTOGRAMA } from './sprites/escarabajo.js';
 import { crearIluminacion } from './iluminacion.js';
 import { dibujarHormigas, resplandorCelda, resplandorPunto } from './marcadores.js';
 import { rgb } from './paleta.js';
@@ -118,9 +117,11 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
     const altura = elevacion(enemigo, reducido);
     const x = Math.round(enemigo.x * celda);
     const y = Math.round(enemigo.y * celda) + SOMBRA_Y;
+    const medio = enemigo.tipo.sombra ?? 3;
+    const estrecho = Math.max(1, medio * 2 - 2);
     ctx.fillStyle = rgb(roles.fondo, INSECTO.sombra.base + INSECTO.sombra.porAltura * altura);
-    ctx.fillRect(x - 3, y, 6, 1);
-    ctx.fillRect(x - 2, y + 1, 4, 1);
+    ctx.fillRect(x - medio, y, medio * 2, 1);
+    ctx.fillRect(x - Math.floor(estrecho / 2), y + 1, estrecho, 1);
   }
 
   // Siluetas de un cuadro en un color: el contorno y el destello salen de aquí, no de otro sprite.
@@ -177,7 +178,7 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
     }
     const x = Math.round(enemigo.x * celda - LADO / 2);
     const y = Math.round(enemigo.y * celda - LADO / 2);
-    const frame = frames[enemigo.tipo.id][0][FOTOGRAMA.posado];
+    const frame = frames[enemigo.tipo.id][0][fotogramaEnemigo(enemigo, reducido)];
     const progreso = enemigo.tiempoMuerte / BALANCE.visual.desintegracion;
     ctxDisolucion.clearRect(0, 0, LADO, LADO);
     ctxDisolucion.drawImage(frame, 0, 0);

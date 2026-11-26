@@ -1,7 +1,10 @@
 import { BALANCE, LUZ } from './config.js';
 import * as madre from './sprites/planta.js';
 import * as cerbatana from './sprites/cerbatana.js';
+import * as espino from './sprites/espino.js';
 import * as escarabajo from './sprites/escarabajo.js';
+import * as pulgon from './sprites/pulgon.js';
+import * as oruga from './sprites/oruga.js';
 
 // Cada tipo describe su arte, su coste, su vida, su ataque y cómo ilumina.
 export const PLANTAS = {
@@ -26,7 +29,7 @@ export const PLANTAS = {
     id: 'cerbatana',
     nombre: 'Cerbatana',
     comprable: true,
-    coste: 10,
+    coste: BALANCE.cerbatana.coste,
     vida: BALANCE.cerbatana.vida,
     ataque: BALANCE.cerbatana,
     arte: {
@@ -45,6 +48,28 @@ export const PLANTAS = {
       intensidad: 0.2,
     },
   },
+  espino: {
+    id: 'espino',
+    nombre: 'Espino',
+    comprable: true,
+    coste: BALANCE.espino.coste,
+    vida: BALANCE.espino.vida,
+    reflejo: BALANCE.espino.reflejo,
+    arte: {
+      matriz: espino.MATRIZ,
+      codigos: espino.CODIGOS,
+      variantes: espino.VARIANTES,
+      secuencia: espino.SECUENCIA,
+      nucleo: espino.NUCLEO,
+    },
+    propia: 0.32,
+    resplandor: { radio: 6, alfa: 0.03, color: 'ambiental' },
+    luz: {
+      nucleo: { radio: 1.6, intensidad: 0.16 },
+      radio: 16,
+      intensidad: 0.1,
+    },
+  },
 };
 
 export const COMPRABLES = Object.values(PLANTAS).filter((tipo) => tipo.comprable);
@@ -58,10 +83,47 @@ export const ENEMIGOS = {
     dano: BALANCE.escarabajo.dano,
     intervalo: BALANCE.escarabajo.intervalo,
     radio: BALANCE.escarabajo.radio,
+    amenaza: BALANCE.escarabajo.amenaza,
+    locomocion: 'vuelo',
+    sombra: 3,
     arte: {
       matriz: escarabajo.MATRIZ,
       codigos: escarabajo.CODIGOS,
       variantes: escarabajo.VARIANTES,
+    },
+  },
+  pulgon: {
+    id: 'pulgon',
+    nombre: 'Pulgón alado',
+    vida: BALANCE.pulgon.vida,
+    velocidad: BALANCE.pulgon.velocidad,
+    dano: BALANCE.pulgon.dano,
+    intervalo: BALANCE.pulgon.intervalo,
+    radio: BALANCE.pulgon.radio,
+    amenaza: BALANCE.pulgon.amenaza,
+    locomocion: 'vuelo',
+    sombra: 2,
+    arte: {
+      matriz: pulgon.MATRIZ,
+      codigos: pulgon.CODIGOS,
+      variantes: pulgon.VARIANTES,
+    },
+  },
+  oruga: {
+    id: 'oruga',
+    nombre: 'Oruga',
+    vida: BALANCE.oruga.vida,
+    velocidad: BALANCE.oruga.velocidad,
+    dano: BALANCE.oruga.dano,
+    intervalo: BALANCE.oruga.intervalo,
+    radio: BALANCE.oruga.radio,
+    amenaza: BALANCE.oruga.amenaza,
+    locomocion: 'suelo',
+    sombra: 4,
+    arte: {
+      matriz: oruga.MATRIZ,
+      codigos: oruga.CODIGOS,
+      variantes: oruga.VARIANTES,
     },
   },
 };

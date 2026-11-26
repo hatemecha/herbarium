@@ -15,7 +15,12 @@ src/config.js           constantes, incluido el balance
 src/estado.js           energía, tiempo, impulso de luz
 src/tablero.js          casillas y ocupación
 src/jardin.js           alta, reglas de colocación, marchitez
-src/combate.js          enemigo, disparos, eventos, derrota
+src/combate.js          enemigos, disparos, reflejo, eventos, derrota
+src/oleadas.js          director, presupuesto, patrones y apariciones
+src/economia.js         coste según plantas vivas
+src/aleatorio.js        generador con semilla
+src/simular.js          partida sin interfaz
+src/estrategias.js      políticas automáticas de compra
 src/catalogo.js         definición de plantas y enemigos
 src/entidades/          planta y enemigo: datos, estados visuales y temporizadores de dibujo
 src/sprites/            matrices y construcción de fotogramas
@@ -44,7 +49,7 @@ assets/fonts/           MonoMEK y su CC0
 
 1. `avanzar` suma energía y, al cruzar un entero, dispara el impulso de luz.
 2. El jardín actualiza animación, destello y marchitez. Al llegar la opacidad a 0 retira la planta y avisa al render para quitar la luz.
-3. El combate avanza aparición, movimiento, disparos, proyectiles y muertes.
+3. El combate avanza el director de oleadas, el movimiento, los disparos, los proyectiles y las muertes. Sin director, conserva el encuentro único de un escarabajo: lo usan las pruebas de la etapa 05.
 4. Los eventos de ese paso generan partículas. Una mordida a la central también sube el impulso.
 5. Selección, colocación y animación del catálogo avanzan con el mismo `dt`.
 
@@ -101,7 +106,9 @@ Los fotogramas se rasterizan una vez en `montarHerbario`, con la paleta de ese m
 - `tests/jardin.test.mjs` — centro, adyacencia de ocho, ocupación, energía, expansión.
 - `tests/combate.test.mjs` — aparición a los 20 s, un solo escarabajo, velocidad, bloqueo, mordisco, reanudación, retirada, alcance, cadencia, colisión con paso grande, muerte, derrota, ocho direcciones. Tras la derrota: sin disparos, mordidas ni proyectiles, y la desintegración termina. Gesto de mordida y despegue.
 - `tests/insecto.test.mjs` — sprite (16×16, códigos con rol, vuelo solo con alas, cuerpo de 8 a 11 px), estados visuales y sus transiciones, altura visual sin tocar la posición lógica, paleta derivada y su distancia a la marca y a la chispa.
-- `tests/escenarios.test.mjs` — balance: sin defensa, una cerbatana en cuatro entradas, en el camino, en el lado opuesto, dos cerbatanas y colocación tardía. Usa `tests/escenario.mjs`, un helper sin DOM que corre la simulación con los módulos reales a paso fijo de 1/60 s.
+- `tests/escenarios.test.mjs` — el encuentro único de la etapa 05, no la partida de oleadas.
+- `tests/oleadas.test.mjs`, `tests/especies.test.mjs`, `tests/simular.test.mjs` — presupuesto, semilla, reflejo, cupo, perímetro lleno, especies y reproducibilidad.
+- `tests/corrida.mjs` — 100 semillas por estrategia. No entra en `npm test`. Sale el resumen en `docs/simulacion.json`.
 
 ## Ejecutar
 
@@ -110,7 +117,7 @@ npm start
 npm test
 ```
 
-`npm start` publica el directorio en <http://localhost:4173/> con `Cache-Control: no-cache` y rechaza rutas que salgan de la raíz. No envía cabeceras CORS. El mapa de tipos no incluye `.otf`; el archivo cae en `application/octet-stream`. En el Chromium usado para la captura, MonoMEK igual se aplicó.
+`npm start` publica el directorio en <http://localhost:4173/> con `Cache-Control: no-cache` y rechaza rutas que salgan de la raíz. No envía cabeceras CORS. El mapa de tipos incluye `.otf` para MonoMEK. `galeria.html` es una hoja de sprites y no está enlazada desde `index.html`.
 
 ## Cómo añadir contenido
 
@@ -125,7 +132,7 @@ Planta:
 Enemigo:
 
 1. Sprite en `src/sprites/` y entrada en `ENEMIGOS`.
-2. `crearCombate` hoy construye un único tipo y una única aparición. Una oleada o una segunda especie se agrega en ese módulo, no en el render.
+2. Entrada en `ENEMIGOS` con vida, velocidad, daño, intervalo, radio, amenaza y `locomocion` (`vuelo` o `suelo`). El combate ya lee el tipo de cada individuo. El dibujo pide `fotogramaEnemigo`.
 3. El dibujo asume `frames[id][0][variante]` y `mirada` ±1. Otra orientación pide el mismo esquema de direcciones que la cerbatana.
 
 Mecánica nueva: regla en el módulo que ya posee ese estado (`jardin`, `combate`, `estado`), presentación en `render` o en la UI existente, número en `src/config.js`.

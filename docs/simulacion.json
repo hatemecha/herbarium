@@ -1,0 +1,352 @@
+{
+  "semillas": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89,
+    90,
+    91,
+    92,
+    93,
+    94,
+    95,
+    96,
+    97,
+    98,
+    99,
+    100
+  ],
+  "horizonte": 1200,
+  "segundos": 27.397406261,
+  "informe": {
+    "principiante": {
+      "n": 100,
+      "censuradas": 0,
+      "tiempo": {
+        "p10": 102.33666666666214,
+        "p50": 199.3583333333841,
+        "p90": 479.74333333322585
+      },
+      "oleada": {
+        "p10": 3,
+        "p50": 5,
+        "p90": 10
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 14,
+        "espino": 0
+      },
+      "perdidas": 0,
+      "ocupacion": 0.11570247933884298,
+      "energiaFinal": 13.741666666670136,
+      "maxSimultaneos": 19.10000000000001,
+      "desperdicio": 0,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1580.0666666666923,
+          "dano": 288,
+          "duracionMedia": 15.800666666666922,
+          "danoMedio": 2.88
+        },
+        "concentrada": {
+          "n": 104,
+          "duracion": 3341.716666666608,
+          "dano": 190,
+          "duracionMedia": 32.13189102564046,
+          "danoMedio": 1.8269230769230769
+        },
+        "pinza": {
+          "n": 116,
+          "duracion": 3547.399999999947,
+          "dano": 371,
+          "duracionMedia": 30.581034482758163,
+          "danoMedio": 3.1982758620689653
+        },
+        "enjambre": {
+          "n": 75,
+          "duracion": 2764.9499999999393,
+          "dano": 164,
+          "duracionMedia": 36.86599999999919,
+          "danoMedio": 2.1866666666666665
+        },
+        "distraccion": {
+          "n": 56,
+          "duracion": 2195.349999999947,
+          "dano": 107,
+          "duracionMedia": 39.202678571427626,
+          "danoMedio": 1.9107142857142858
+        }
+      }
+    },
+    "intermedio": {
+      "n": 100,
+      "censuradas": 52,
+      "tiempo": {
+        "p10": 759.354999999638,
+        "p50": 1199.9999999992374,
+        "p90": 1199.9999999992374
+      },
+      "oleada": {
+        "p10": 13.9,
+        "p50": 20,
+        "p90": 20
+      },
+      "danoCentral": 26,
+      "compras": {
+        "cerbatana": 56,
+        "espino": 7
+      },
+      "perdidas": 28,
+      "ocupacion": 0.26859504132231404,
+      "energiaFinal": 10.450000000007318,
+      "maxSimultaneos": 33.10000000000001,
+      "desperdicio": 48,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1428.733333333359,
+          "dano": 25,
+          "duracionMedia": 14.28733333333359,
+          "danoMedio": 0.25
+        },
+        "concentrada": {
+          "n": 408,
+          "duracion": 18452.499999999472,
+          "dano": 264,
+          "duracionMedia": 45.22671568627322,
+          "danoMedio": 0.6470588235294118
+        },
+        "pinza": {
+          "n": 441,
+          "duracion": 19731.099999999435,
+          "dano": 167,
+          "duracionMedia": 44.74172335600779,
+          "danoMedio": 0.3786848072562358
+        },
+        "enjambre": {
+          "n": 405,
+          "duracion": 19074.5666666661,
+          "dano": 22,
+          "duracionMedia": 47.09769547324964,
+          "danoMedio": 0.05432098765432099
+        },
+        "distraccion": {
+          "n": 366,
+          "duracion": 18142.699999999422,
+          "dano": 167,
+          "duracionMedia": 49.57021857923339,
+          "danoMedio": 0.4562841530054645
+        }
+      }
+    },
+    "especializado": {
+      "n": 100,
+      "censuradas": 13,
+      "tiempo": {
+        "p10": 993.286666666092,
+        "p50": 1100.5333333326612,
+        "p90": 1199.9999999992374
+      },
+      "oleada": {
+        "p10": 17,
+        "p50": 18,
+        "p90": 20
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 46,
+        "espino": 33
+      },
+      "perdidas": 67,
+      "ocupacion": 0.11570247933884298,
+      "energiaFinal": 8.875000000010964,
+      "maxSimultaneos": 37,
+      "desperdicio": 268,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1454.4166666666922,
+          "dano": 73,
+          "duracionMedia": 14.544166666666921,
+          "danoMedio": 0.73
+        },
+        "concentrada": {
+          "n": 411,
+          "duracion": 18868.9833333328,
+          "dano": 97,
+          "duracionMedia": 45.90993511759805,
+          "danoMedio": 0.2360097323600973
+        },
+        "pinza": {
+          "n": 435,
+          "duracion": 19494.349999999453,
+          "dano": 11,
+          "duracionMedia": 44.814597701148166,
+          "danoMedio": 0.02528735632183908
+        },
+        "enjambre": {
+          "n": 413,
+          "duracion": 19552.749999999407,
+          "dano": 12,
+          "duracionMedia": 47.34322033898162,
+          "danoMedio": 0.029055690072639227
+        },
+        "distraccion": {
+          "n": 365,
+          "duracion": 18343.64999999943,
+          "dano": 84,
+          "duracionMedia": 50.256575342464195,
+          "danoMedio": 0.23013698630136986
+        }
+      }
+    },
+    "soloCerbatanas": {
+      "n": 100,
+      "censuradas": 60,
+      "tiempo": {
+        "p10": 1062.4399999993625,
+        "p50": 1199.9999999992374,
+        "p90": 1199.9999999992374
+      },
+      "oleada": {
+        "p10": 18,
+        "p50": 20,
+        "p90": 21
+      },
+      "danoCentral": 3.5,
+      "compras": {
+        "cerbatana": 58,
+        "espino": 0
+      },
+      "perdidas": 42,
+      "ocupacion": 0.14462809917355374,
+      "energiaFinal": 11.250000000002627,
+      "maxSimultaneos": 36.10000000000001,
+      "desperdicio": 0,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1454.4166666666922,
+          "dano": 73,
+          "duracionMedia": 14.544166666666921,
+          "danoMedio": 0.73
+        },
+        "concentrada": {
+          "n": 452,
+          "duracion": 20417.98333333276,
+          "dano": 102,
+          "duracionMedia": 45.1725294985238,
+          "danoMedio": 0.22566371681415928
+        },
+        "pinza": {
+          "n": 481,
+          "duracion": 21266.499999999403,
+          "dano": 24,
+          "duracionMedia": 44.213097713096474,
+          "danoMedio": 0.0498960498960499
+        },
+        "enjambre": {
+          "n": 446,
+          "duracion": 20523.183333332738,
+          "dano": 0,
+          "duracionMedia": 46.01610612854874,
+          "danoMedio": 0
+        },
+        "distraccion": {
+          "n": 404,
+          "duracion": 19670.21666666607,
+          "dano": 67,
+          "duracionMedia": 48.68865511551007,
+          "danoMedio": 0.16584158415841585
+        }
+      }
+    }
+  }
+}

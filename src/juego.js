@@ -1,15 +1,19 @@
 import { PARTICULAS, SIMULACION, TABLERO } from './config.js';
+import { crearAleatorio, semillaNueva } from './aleatorio.js';
 import { COMPRABLES, ENEMIGOS, PLANTAS } from './catalogo.js';
 import { crearAnimacion } from './animacion.js';
 import { crearCatalogoUI } from './catalogoUI.js';
 import { crearColocacion } from './colocacion.js';
 import { crearCombate } from './combate.js';
 import { crearDerrota } from './derrota.js';
+import { textoFicha } from './ficha.js';
 import { calcularEscala, celdaDeCliente, pantallaAMundo } from './escala.js';
 import { apagar, crearEstado, avanzar } from './estado.js';
 import { crearJardin } from './jardin.js';
 import { asegurarVariables, crearRoles, leerPaleta } from './paleta.js';
+import { crearDirector } from './oleadas.js';
 import { crearParticulas } from './particulas.js';
+import { crearReloj } from './reloj.js';
 import { crearRenderer } from './render.js';
 import { crearSeleccion } from './seleccion.js';
 import { crearTablero } from './tablero.js';
@@ -24,6 +28,11 @@ function construirDom(contenedor) {
         <span class="energia-etiqueta">energía</span>
         <span class="energia-valor">0</span>
       </div>
+      <div class="fase" aria-live="polite">
+        <span class="fase-oleada">oleada 1</span>
+        <span class="fase-detalle">prepara 20</span>
+      </div>
+      <p class="ficha" data-interfaz hidden></p>
     </header>
     <div class="herbario-escenario">
       <canvas class="tablero" role="img" aria-label="Jardín en penumbra con una planta central que genera energía"></canvas>
@@ -33,6 +42,9 @@ function construirDom(contenedor) {
     canvas: contenedor.querySelector('.tablero'),
     punto: contenedor.querySelector('.energia-punto'),
     valor: contenedor.querySelector('.energia-valor'),
+    oleada: contenedor.querySelector('.fase-oleada'),
+    detalle: contenedor.querySelector('.fase-detalle'),
+    ficha: contenedor.querySelector('.ficha'),
   };
 }
 
@@ -46,6 +58,14 @@ function construirFrames(roles) {
 
 function crearPartida(dom, roles, frames, reducido, alDerrota) {
   const tablero = crearTablero();
+  const semilla = semillaNueva();
+  const director = crearDirector({
+    tablero,
+    aleatorio: crearAleatorio(semilla),
+    semilla,
+    ocupante: (x, y) => tablero.ocupante(x, y),
+  });
+  const aleatorioVisual = crearAleatorio((semilla + 1) >>> 0);
   const estado = crearEstado();
   const particulas = crearParticulas();
   const render = crearRenderer({ tablero, salida: dom.canvas, roles, frames });
@@ -75,7 +95,14 @@ function crearPartida(dom, roles, frames, reducido, alDerrota) {
     alRetirar: (planta) => render.retirarPlanta(planta),
   });
   jardin.sembrar('central', tablero.centro);
-  const combate = crearCombate({ tablero, jardin, tipoEnemigo: ENEMIGOS.escarabajo });
+  const combate = crearCombate({
+    tablero,
+    jardin,
+    tipoEnemigo: ENEMIGOS.escarabajo,
+    catalogoEnemigos: ENEMIGOS,
+    director,
+    aleatorio: aleatorioVisual,
+  });
   const seleccion = crearSeleccion({ tablero, canvas: dom.canvas });
   const catalogo = crearCatalogoUI({
     contenedor: dom.escenario,
@@ -163,7 +190,22 @@ function crearPartida(dom, roles, frames, reducido, alDerrota) {
       marcas,
       vista,
     });
-    catalogo.actualizar({ energia: estado.energia, activa: colocacion.tipoActivo() });
+    const vistaOleada = director.vista();
+    const vivos = combate.enemigos.reduce((cantidad, enemigo) => cantidad + (enemigo.muerto ? 0 : 1), 0);
+    dom.oleada.textContent = `oleada ${vistaOleada.numero}`;
+    dom.detalle.textContent = vistaOleada.fase === 'preparacion'
+      ? `prepara ${vistaOleada.restante}`
+      : vistaOleada.porSalir > 0
+        ? `salen ${vistaOleada.porSalir}`
+        : `vivos ${vivos}`;
+    const celda = seleccion.seleccionada();
+    const planta = celda ? tablero.ocupante(celda.x, celda.y) : null;
+    const ficha = textoFicha(planta);
+    dom.ficha.hidden = !ficha;
+    dom.ficha.textContent = ficha;
+    const costes = {};
+    for (const tipo of COMPRABLES) costes[tipo.id] = jardin.coste(tipo.id);
+    catalogo.actualizar({ energia: estado.energia, activa: colocacion.tipoActivo(), costes });
   }
 
   actualizarEnergia();
@@ -192,7 +234,7 @@ export function montarHerbario(contenedor) {
 
   let raf = 0;
   let ultimo = 0;
-  let acumulado = 0;
+  const reloj = crearReloj();
   let partida = null;
 
   function iniciarPartida() {
@@ -208,19 +250,17 @@ export function montarHerbario(contenedor) {
 
   function bucle(ahora) {
     raf = requestAnimationFrame(bucle);
-    acumulado += Math.min(SIMULACION.tiempoMaximo, (ahora - ultimo) / 1000);
+    reloj.acumular((ahora - ultimo) / 1000);
     ultimo = ahora;
-    while (acumulado >= SIMULACION.paso) {
-      partida.simular(SIMULACION.paso);
-      acumulado -= SIMULACION.paso;
-    }
+    const pasos = reloj.pasos();
+    for (let i = 0; i < pasos; i++) partida.simular(SIMULACION.paso);
     partida.dibujar();
   }
 
   function iniciar() {
     if (raf || document.hidden) return;
     ultimo = performance.now();
-    acumulado = 0;
+    reloj.cortar();
     raf = requestAnimationFrame(bucle);
   }
 
@@ -260,7 +300,12 @@ export function montarHerbario(contenedor) {
 
   const observador = new ResizeObserver(() => partida && ajustar());
   observador.observe(dom.escenario);
-  const alVisibilidad = () => (document.hidden ? detener() : iniciar());
+  const alVisibilidad = () => {
+    if (document.hidden) {
+      detener();
+      reloj.cortar();
+    } else iniciar();
+  };
   const alCambiarVentana = () => partida && ajustar();
   window.addEventListener('resize', alCambiarVentana);
   document.addEventListener('visibilitychange', alVisibilidad);

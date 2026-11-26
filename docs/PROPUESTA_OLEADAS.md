@@ -1,8 +1,10 @@
 # Propuesta: oleadas
 
-Documento de diseño, no de implementación. Describe cómo introducir las oleadas en la etapa 06 y qué necesita decidir el propietario antes de tocar código. No hay números definitivos. Lo que sigue son fórmulas, cálculos de capacidad y opciones, con sus costes.
+Antecedente. La etapa 06 se implementó con otra especificación: director procedural, tres especies, espino y coste por plantas vivas. Este archivo no describe el juego que corre. Lo vigente está en [BALANCE.md](BALANCE.md), [GAME_DESIGN.md](GAME_DESIGN.md) y [ARCHITECTURE.md](ARCHITECTURE.md).
 
-Estado: no implementado. No existe en el código ninguna oleada, ningún contador de ronda ni ningún enemigo más allá del escarabajo. Ver [ROADMAP.md](ROADMAP.md).
+Documento de diseño, no de implementación. Describe cómo se pensaron las oleadas antes de escribirlas y qué había que decidir. No hay números definitivos. Lo que sigue son fórmulas, cálculos de capacidad y opciones, con sus costes.
+
+Estado: superado por el código de la etapa 06. Las preguntas abiertas de abajo quedaron respondidas en esa etapa, no en este texto.
 
 ## Punto de partida medido
 

@@ -1,9 +1,10 @@
-import { BALANCE } from './config.js';
+import { BALANCE, ECONOMIA } from './config.js';
+import { costeDe } from './economia.js';
 import { crearPlanta } from './entidades/planta.js';
 
 // Reglas de expansión: una casilla es colocable si está dentro del tablero, libre, tiene una planta
 // en alguna de sus ocho vecinas y la energía alcanza el coste. Todo se calcula desde las plantas existentes.
-export function crearJardin({ tablero, estado, catalogo, frames, alPlantar, alRetirar }) {
+export function crearJardin({ tablero, estado, catalogo, frames, alPlantar, alRetirar, economia = ECONOMIA }) {
   const plantas = [];
   let central = null;
 
@@ -16,13 +17,23 @@ export function crearJardin({ tablero, estado, catalogo, frames, alPlantar, alRe
     return false;
   }
 
+  function vivasDe(id) {
+    let cantidad = 0;
+    for (const planta of plantas) if (planta.id === id && !planta.muerta) cantidad += 1;
+    return cantidad;
+  }
+
+  function coste(id) {
+    return costeDe(catalogo[id], vivasDe(id), economia);
+  }
+
   function colocable(id, celda) {
     const tipo = catalogo[id];
     if (!tipo?.comprable || central?.muerta) return false;
     if (!tablero.contiene(celda.x, celda.y)) return false;
     if (tablero.ocupante(celda.x, celda.y)) return false;
     if (!tieneVecinaOcupada(celda)) return false;
-    return estado.energia >= tipo.coste;
+    return estado.energia >= coste(id);
   }
 
   function nacer(id, celda, desfase = 0) {
@@ -42,9 +53,10 @@ export function crearJardin({ tablero, estado, catalogo, frames, alPlantar, alRe
       return nacer(id, celda);
     },
     colocable,
+    coste,
     plantar(id, celda) {
       if (!colocable(id, celda)) return null;
-      estado.energia -= catalogo[id].coste;
+      estado.energia -= coste(id);
       return nacer(id, celda, Math.random() * 4);
     },
     candidatas(id) {

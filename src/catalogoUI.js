@@ -1,3 +1,4 @@
+import { punteroFino } from './entrada.js';
 import { rgb } from './paleta.js';
 
 const ANCHO = 96;
@@ -33,7 +34,7 @@ function dibujarCarta(ctx, carta, roles) {
   ctx.fillStyle = rgb(tinta);
   ctx.fillText(tipo.nombre, TEXTO_X, 9);
   ctx.fillStyle = rgb(seleccionada ? tinta : roles.marcaSuave);
-  ctx.fillText(String(tipo.coste), TEXTO_X, 25);
+  ctx.fillText(String(carta.coste), TEXTO_X, 25);
 
   ctx.globalAlpha = 1;
 }
@@ -65,10 +66,11 @@ export function crearCatalogoUI({ contenedor, tipos, animadores, roles, alElegir
       animador: animadores[tipo.id],
       estado: 'disponible',
       enfoque: false,
+      coste: tipo.coste,
     };
 
     boton.addEventListener('pointerenter', (e) => {
-      if (e.pointerType !== 'touch') carta.enfoque = true;
+      if (punteroFino(e)) carta.enfoque = true;
     });
     boton.addEventListener('pointerleave', () => {
       carta.enfoque = false;
@@ -102,16 +104,19 @@ export function crearCatalogoUI({ contenedor, tipos, animadores, roles, alElegir
   return {
     elemento: raiz,
     ajustar,
-    actualizar({ energia, activa }) {
+    actualizar({ energia, activa, costes }) {
       for (const carta of cartas) {
+        const coste = costes?.[carta.tipo.id] ?? carta.tipo.coste;
         const seleccionada = activa === carta.tipo.id;
-        const alcanzable = energia >= carta.tipo.coste;
+        const alcanzable = energia >= coste;
         const estado = seleccionada ? 'seleccionada' : alcanzable ? 'disponible' : 'insuficiente';
-        if (carta.estado !== estado) {
+        if (carta.estado !== estado || carta.coste !== coste) {
           carta.estado = estado;
+          carta.coste = coste;
           carta.boton.dataset.estado = estado;
           carta.boton.setAttribute('aria-pressed', String(seleccionada));
           carta.boton.setAttribute('aria-disabled', String(estado === 'insuficiente'));
+          carta.boton.setAttribute('aria-label', `${carta.tipo.nombre}, coste ${coste} de energía`);
         }
         dibujarCarta(carta.ctx, carta, roles);
       }

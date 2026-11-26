@@ -86,6 +86,38 @@ Conclusión de la etapa: el primer encuentro cumple lo pedido. Sin acción la ce
 
 Lo que la simulación no mide: la decisión del jugador (tiempo de pensar la colocación), la energía real acumulada, y la aparición aleatoria del perímetro. Las entradas probadas son las centrales de cada lado y dos esquinas, no las 40 casillas de borde.
 
+## Etapa 06, experimental
+
+Los números de abajo salen de `src/config.js` después de calibrar con semillas 1001–1020. La validación usó otras semillas, 1–100, y no se volvió a tocar la fórmula. No son un cierre.
+
+Presupuesto de la oleada `n`, con `k = n − 1`:
+
+- Si `n ≤ 12`: `12 + 8k + 3k²`.
+- Si `n > 12`: el valor de la oleada 12 más `30 × (n − 12)`.
+
+La oleada 1 no gasta ese presupuesto al azar: son dos escarabajos (amenaza 3) y tres pulgones (amenaza 2). La oruga (amenaza 8) entra desde la oleada 3. Preparación inicial 20 s, las siguientes 15 s. La ventana de salida es `min(48, 18 + 3k)` segundos. El máximo simultáneo es `min(48, 6 + 3k)`; lo que no cabe espera, no se borra.
+
+Coste: `base + 2 × floor(vivas / 4)`, con bases 10 y 8. `ECONOMIA.creciente = false` lo apaga.
+
+La adaptación, si está activa, solo estira o comprime las pausas entre grupos un 12 %. No cambia vidas ni el presupuesto.
+
+## Medición, semillas 1 a 100
+
+Horizonte 20 minutos, paso 1/60 s, módulos reales. Cuatro políticas automáticas. 100 semillas cada una. Los que llegan al horizonte no murieron: el percentil 50 queda en 20,0 cuando más de la mitad sobrevive. Minutos:
+
+| Política | Llegan a 20 min | p10 | p50 | p90 | Oleada p50 |
+| --- | --- | --- | --- | --- | --- |
+| Principiante | 0 | 1,7 | 3,3 | 8,0 | 5 |
+| Intermedio | 52 | 12,7 | 20,0 | 20,0 | 20 |
+| Especializado | 13 | 16,6 | 18,3 | 20,0 | 18 |
+| Solo cerbatanas | 60 | 17,7 | 20,0 | 20,0 | 20 |
+
+El principiante cae cerca de los 3–7 minutos pedidos. El especializado pasa los 15 en el percentil 10. El intermedio no se queda en 10–16: la mitad de esas partidas automáticas llega al horizonte, la otra cola baja hasta 12,7. No es una curva estrecha.
+
+La política de solo cerbatanas dura al menos tanto como la que compra espinos. Con reflejo 1, el espino no le gana la casilla a otra cerbatana en este simulador. Eso no dice que un jugador humano lo encuentre inútil en un carril fino.
+
+El detalle agregado está en `docs/simulacion.json`. Estas políticas no miden diversión.
+
 ## Qué no entra en el balance
 
-No hay valores propuestos de reemplazo. No hay oleadas, recompensa por baja, coste de otras plantas ni curva de dificultad. Cuando existan, se añaden a `src/config.js` y se reinterpretan aquí. La propuesta para oleadas, con sus fórmulas y su límite de tablero, está en [PROPUESTA_OLEADAS.md](PROPUESTA_OLEADAS.md).
+No hay recompensa por baja ni otra fuente de energía. La propuesta previa, ya superada, está en [PROPUESTA_OLEADAS.md](PROPUESTA_OLEADAS.md).

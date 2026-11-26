@@ -2,13 +2,13 @@
 
 Un jardín chico que crece en la oscuridad. Una planta en el centro genera energía y luz. Con esa energía se planta una cerbatana. Un escarabajo intenta llegar al centro. Si la planta central muere, el jardín cae.
 
-El proyecto es independiente. Más adelante va a vivir dentro de la web personal del autor. Ahora es un prototipo jugable: tablero, catálogo de una planta, un insecto y combate. No hay oleadas, progresión ni sonido.
+El proyecto es independiente. Más adelante va a vivir dentro de la web personal del autor. Ahora es una partida continua: tablero, dos plantas, tres insectos y oleadas procedurales. No hay tarot, sonido ni progresión entre partidas.
 
 ![Planta central, contador de energía y tarjeta de la cerbatana](docs/capturas/jardin.png)
 
 ## Estado
 
-Etapas 1 a 5 están en código. La etapa 5 consolida el escarabajo, el combate y la derrota; pendiente de aceptación del propietario. Oleadas y lo demás: [docs/ROADMAP.md](docs/ROADMAP.md). Propuesta de oleadas en [docs/PROPUESTA_OLEADAS.md](docs/PROPUESTA_OLEADAS.md).
+Etapas 1 a 6 están en código. La etapa 6 añade el director de oleadas, el pulgón, la oruga y el espino. Los números son experimentales. Detalle en [docs/ROADMAP.md](docs/ROADMAP.md) y [docs/BALANCE.md](docs/BALANCE.md).
 
 Los números de daño, vida y tiempos son provisionales.
 

@@ -44,6 +44,12 @@ export const BALANCE = {
     intervalo: 1,
     velocidadProyectil: 6,
     alcanceMaximo: 4.5,
+    coste: 10,
+  },
+  espino: {
+    vida: 36,
+    coste: 8,
+    reflejo: 1,
   },
   escarabajo: {
     vida: 12,
@@ -51,6 +57,23 @@ export const BALANCE = {
     dano: 2,
     intervalo: 1,
     radio: 0.4,
+    amenaza: 3,
+  },
+  pulgon: {
+    vida: 4,
+    velocidad: 1.05,
+    dano: 1,
+    intervalo: 0.65,
+    radio: 0.28,
+    amenaza: 2,
+  },
+  oruga: {
+    vida: 28,
+    velocidad: 0.28,
+    dano: 3,
+    intervalo: 1.25,
+    radio: 0.42,
+    amenaza: 8,
   },
   visual: {
     destello: 0.2,
@@ -73,6 +96,48 @@ export const INSECTO = {
   destello: 0.9,
   empuje: 2,
   resplandor: { radio: 12, alfa: 0.12 },
+};
+
+export const PULGON = {
+  altura: 2,
+  balanceo: 0.45,
+  aleteo: 0.04,
+};
+
+export const ORUGA = {
+  ciclo: 0.36,
+};
+
+// `creciente: false` deja todos los costes en su base, para comparar economías.
+export const ECONOMIA = {
+  creciente: true,
+  incremento: 2,
+  grupo: 4,
+};
+
+// Valores de experimentación. El tramo cuadrático llega hasta la oleada 12; después suma `continuacion` por oleada.
+export const OLEADAS = {
+  preparacionInicial: 20,
+  preparacion: 15,
+  base: 12,
+  lineal: 8,
+  cuadratica: 3,
+  cuadraticaHasta: 12,
+  continuacion: 30,
+  ventanaBase: 18,
+  ventanaPorK: 3,
+  ventanaMax: 48,
+  simultaneosBase: 6,
+  simultaneosPorK: 3,
+  simultaneosMax: 48,
+  orugaDesde: 3,
+  adaptacion: {
+    activa: true,
+    margen: 0.12,
+    danoUmbral: 6,
+    plantasUmbral: 2,
+    rapidez: 0.45,
+  },
 };
 
 export const MARCADORES = {

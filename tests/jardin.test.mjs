@@ -4,7 +4,7 @@ import { crearTablero } from '../src/tablero.js';
 import { crearJardin } from '../src/jardin.js';
 import { PLANTAS } from '../src/catalogo.js';
 
-const frames = { central: [], cerbatana: [] };
+const frames = { central: [], cerbatana: [], espino: [] };
 
 function nuevoJardin(energia = 100) {
   const tablero = crearTablero();
@@ -46,6 +46,25 @@ test('la energía descuenta solo al plantar y bloquea sin fondos suficientes', (
   const planta = jardin.plantar('cerbatana', { x: 6, y: 5 });
   assert.ok(planta);
   assert.equal(estado.energia, 2);
+});
+
+test('el coste sube con las vivas del mismo tipo y baja si mueren', () => {
+  const { jardin, estado } = nuevoJardin(100);
+  jardin.plantar('cerbatana', { x: 6, y: 5 });
+  jardin.plantar('cerbatana', { x: 4, y: 5 });
+  jardin.plantar('cerbatana', { x: 5, y: 4 });
+  jardin.plantar('cerbatana', { x: 5, y: 6 });
+  assert.equal(jardin.coste('cerbatana'), 12);
+  estado.energia = 11;
+  assert.equal(jardin.plantar('cerbatana', { x: 6, y: 6 }), null);
+  estado.energia = 12;
+  const quinta = jardin.plantar('cerbatana', { x: 6, y: 6 });
+  assert.ok(quinta);
+  assert.equal(estado.energia, 0);
+  jardin.destruir(quinta);
+  assert.equal(jardin.coste('cerbatana'), 12);
+  jardin.destruir(jardin.plantas.find((planta) => planta.id === 'cerbatana'));
+  assert.equal(jardin.coste('cerbatana'), 10);
 });
 
 test('la expansión es sucesiva y se calcula desde las plantas existentes', () => {

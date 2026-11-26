@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Defensa de un jardín que crece en la oscuridad. Prototipo con combate y consolidación artística del primer insecto.",
+  "description": "Defensa de un jardín que crece en la oscuridad. Partida continua con oleadas procedurales.",
   "scripts": {
     "start": "node servidor.mjs",
     "test": "node --test"

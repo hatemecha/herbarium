@@ -1,4 +1,5 @@
 import { COLOCACION } from './config.js';
+import { punteroFino } from './entrada.js';
 import { celdaDeCliente } from './escala.js';
 
 export function crearColocacion({ tablero, canvas, jardin, zona, alActivar }) {
@@ -20,7 +21,7 @@ export function crearColocacion({ tablero, canvas, jardin, zona, alActivar }) {
   }
 
   function alMover(e) {
-    if (e.pointerType === 'touch') return;
+    if (!punteroFino(e)) return;
     puntero = celdaDe(e);
   }
 

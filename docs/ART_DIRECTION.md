@@ -17,6 +17,7 @@ Capturas del combate real (partida reproducible con reloj falso y semilla fija, 
 | Alimentación sobre la central, sin defensa, a 40 s | [escarabajo-alimentacion.png](capturas/escarabajo-alimentacion.png) |
 | Derrota: la central marchita, aviso y reinicio | [derrota.png](capturas/derrota.png) |
 | Cuadros del escarabajo a 6× junto a la central y la cerbatana | [escarabajo-cuadros.png](capturas/escarabajo-cuadros.png) |
+| Galería de la etapa 06, escala 1 y 4 | [galeria.png](capturas/galeria.png), [galeria-insectos.png](capturas/galeria-insectos.png) |
 
 ## Escena
 
@@ -91,7 +92,12 @@ Dibujados a mano como matrices de 16 caracteres. `.` es transparente. `src/sprit
 | --- | --- | --- | --- |
 | Planta central | `src/sprites/planta.js` | 1 | Pétalos, núcleo, hojas, tallo, tierra. Idle irregular. |
 | Cerbatana | `src/sprites/cerbatana.js` | 8 | Bulbo y boca dibujados para N, NE, E, SE y S; el resto es espejo. No es una copia de otra torre. |
-| Escarabajo | `src/sprites/escarabajo.js` | 1 de perfil, espejo izquierda/derecha | Caparazón con contorno, cabeza, antenas, tres pares de patas, alas traslúcidas. Siete cuadros: vuelo en tres alturas de ala, despegue, aterrizaje, alimentación, antenas caídas y reposo. |
+| Escarabajo | `src/sprites/escarabajo.js` | 1 de perfil, espejo izquierda/derecha | Sin rediseño en la etapa 06. Su calidad sigue sin aprobación del propietario. |
+| Pulgón alado | `src/sprites/pulgon.js` | 1 de perfil, espejo | Cuerpo claramente más chico. Aleteo de dos tiempos, no el ciclo de tres alturas. |
+| Oruga | `src/sprites/oruga.js` | 1 de perfil, espejo | Cuerpo segmentado en el suelo. Se estira y se contrae. No vuela. |
+| Espino | `src/sprites/espino.js` | 1 | Mata baja con púas. Luz más tenue que la cerbatana, definida en el catálogo. |
+
+La comparación a escala 1 y 4 está en `galeria.html`. No se enlaza desde la partida.
 
 La variante de disparo de la cerbatana es el índice 3 (`VARIANTE_DISPARO` en `src/entidades/planta.js`): la usa el disparo, no el ciclo idle. El retroceso es un desplazamiento de como mucho 1 px, redondeado, en contra del tiro (`BALANCE.visual.retroceso` = 0,12 s).
 

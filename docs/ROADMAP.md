@@ -13,9 +13,9 @@ Ninguna etapa está aceptada formalmente por el propietario en esta consolidaci�
 | 3 | Catálogo, cerbatana y expansión por adyacencia | Implementada. Tarjeta en canvas, no un control web genérico. |
 | 4 | Primer escarabajo y combate básico | Implementada. Lógica y pruebas en verde. |
 | 5 | Consolidación artística y jugable del combate | Implementada en código y verificada en navegador (ver abajo). Pendiente de aceptación del propietario. |
-| 6 | Oleadas | No empezada. Propuesta en [PROPUESTA_OLEADAS.md](PROPUESTA_OLEADAS.md). |
-| 7 | Nuevas plantas y enemigos | No empezada. |
-| 8 | Economía y progresión de dificultad | No empezada. Hoy solo existe +1 energía/s y el coste 10. |
+| 6 | Oleadas, especies, espino y director | Implementada en código. Valores experimentales, medidos en [BALANCE.md](BALANCE.md). Pendiente de aceptación. |
+| 7 | Nuevas plantas y enemigos | Parcial: entraron el espino, el pulgón y la oruga dentro de la etapa 06. No hay más especies. |
+| 8 | Economía y progresión de dificultad | Parcial: coste creciente por plantas vivas y presupuesto de amenaza. Sin recompensas ni otras fuentes de energía. |
 | 9 | Preguntas de personalidad | No empezada. No hay preguntas escritas. |
 | 10 | Tarot y mejoras | No empezada. No hay cartas ni efectos. |
 | 11 | Balance de una partida completa | No empezada. Los números actuales son provisionales. |
@@ -35,13 +35,23 @@ Ninguna etapa está aceptada formalmente por el propietario en esta consolidaci�
 
 - **Sin dispositivo físico.** No hay prueba en un teléfono, ni en Safari iOS, ni en Android. Los toques sintéticos no sustituyen eso.
 - **Pausa al ocultar la pestaña.** Verificada la lógica: con `document.hidden` forzado y `visibilitychange`, la energía se congela y se reanuda sin saltos. No verificada con una pestaña oculta de verdad: en headless no se puede ocultar una pestaña.
-- **Selección inerte.** Marca la planta y se limpia al colocar. No abre estadísticas. El propietario todavía no eligió entre quitarla o reservarla.
+- **Selección.** Marca la planta y, desde la etapa 06, muestra vida y el dato principal. No abre mejoras.
 - **Escarabajo que sobrevive a la derrota.** Si la central cae con un escarabajo vivo, queda congelado en su último cuadro debajo del aviso. Es una decisión visual, no un error: el combate se detiene. Confirmar con el propietario si debe posarse, irse o desaparecer.
 - **Derrota y el primer encuentro.** El balance del primer escarabajo está medido, no ajustado. Una cerbatana bien colocada basta. Ver [BALANCE.md](BALANCE.md).
 - **Movimiento reducido.** Cubierto para pulso, idle, hormigas, emisión ambiente, ráfaga de energía, ráfagas de combate, retroceso de la cerbatana y aleteo del escarabajo. Los fundidos (muerte y marchitez) se mantienen porque son opacidad, no desplazamiento.
 - **Compatibilidad con la web personal.** `--mono` de `nicotinalex-web` no incluye MonoMEK; hay que decidir la pila al integrar. `touch-action: none` en el canvas; hay que revisar el scroll al embeberlo.
 - **Git.** No hay commit de esta etapa. Ver el estado en la respuesta de consolidación.
 
+## Etapa 06: lo hecho
+
+- Director de oleadas con semilla, cuatro patrones y presupuesto. La primera oleada es fija: dos escarabajos y tres pulgones.
+- Pulgón alado y oruga, sin duplicar el combate. El escarabajo no se rediseñó.
+- Espino: no dispara, devuelve 1 de daño por mordida.
+- Coste `base + 2 × floor(vivas / 4)`, desactivable con `ECONOMIA.creciente`.
+- Indicadores de oleada, preparación y enemigos, y ficha al seleccionar una planta.
+- Galería de desarrollo en `galeria.html`, fuera de la partida.
+- Simulador sin interfaz en `src/simular.js`. Resultados de 100 semillas en [BALANCE.md](BALANCE.md) y `docs/simulacion.json`.
+
 ## Fuera de alcance hasta nuevo pedido
 
-Oleadas, más enemigos, más plantas, recompensas, tarot, mejoras, progresión, sonido, monetización y la integración en `nicotinalex-web`.
+Tarot, preguntas de personalidad, sonido, guardado, progresión entre partidas, monetización y la integración en `nicotinalex-web`. El punto `alEntreOleadas` existe y no abre nada.
