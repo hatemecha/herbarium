@@ -1,6 +1,6 @@
 // Escarabajo de perfil, mirando a la derecha. El espejo horizontal lo gira hacia la izquierda.
 // Caparazón con contorno oscuro (d), luz (e) y brillo irisado (h); cabeza (k) con ojo (o); antenas (a); patas (l).
-// Membrana del ala traslúcida: alternancia de píxeles (w) con nervio más claro (W), sin alfa.
+// Membrana del ala traslúcida: masa continua (w) con filo de luz (W).
 // Reposo y patas en el cuadro base; el resto son variantes por parches sobre MATRIZ.
 
 const POSADO = [
@@ -9,15 +9,15 @@ const POSADO = [
   '................',
   '................',
   '................',
-  '..............aa',
-  '.............a..',
-  '....dhheEd..a.a.',
-  '..dheeEEgEdkka..',
-  '.dheeEEgEEkkko..',
-  '.dEEEggErdkkkk..',
-  '..ddggEdddddk...',
-  '...l.d..l..l....',
-  '..l...ll....ll..',
+  '................',
+  '.............aa.',
+  '....deeed...aa..',
+  '..deheEged.dkk..',
+  '..deEEggeEdkko..',
+  '..dEEEgEEEdkkk..',
+  '...ddddddddkd...',
+  '...ll..ll..ll...',
+  '..ll..ll..ll....',
   '................',
   '................',
 ];
@@ -27,14 +27,15 @@ function sobreponer(base, capa) {
 }
 
 const ALA_ALTO = [
+  '................',
+  '................',
   '...WWW..........',
   '..WwwwW.........',
-  '..WwwWwW........',
-  '...WWwwwW.......',
-  '....WwwWwW......',
-  '.....WWwwW......',
-  '.......WW.......',
-  '........W.......',
+  '..wwwwwW........',
+  '...wwwwwW.......',
+  '....wwwwwW......',
+  '......wwww......',
+  '.........w......',
 ];
 
 const ALA_MEDIO = [
@@ -43,9 +44,10 @@ const ALA_MEDIO = [
   '................',
   '................',
   '..WWWW..........',
-  '.WwwwwWW........',
-  '.WWWWwwwWW......',
-  '...wwWWwwW......',
+  '..wwwwWW........',
+  '...wwwwwWW......',
+  '.....wwwww......',
+  '.........w......',
 ];
 
 const ALA_BAJO = [
@@ -55,40 +57,67 @@ const ALA_BAJO = [
   '................',
   '................',
   '................',
-  '..WWWW..........',
-  '.WwwwWWW........',
-  'WwwWWwwwW.......',
-  '.WWWwwwW........',
-  '...WWWW.........',
+  '.WWWW...........',
+  'WwwwwWW.........',
+  'wwwwwwwwwW......',
+  '..wwwwwwww......',
 ];
 
 const ATERRIZAJE = [
-  ...POSADO.slice(0, 12),
-  '..l..l...l..l...',
-  '.l....l...l..ll.',
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+  '.............aa.',
+  '....deeed...aa..',
+  '..deheEged.dkk..',
+  '..deEEggeEdkko..',
+  '..dEEEgEEEdkkk..',
+  '...ddddddddkd...',
+  '..ll..ll...ll...',
+  '..l..ll.....ll..',
   '................',
   '................',
 ];
 
 const ALIMENTACION = [
-  ...POSADO.slice(0, 5),
   '................',
-  '..............aa',
-  '....dhheEd...a..',
-  '..dheeEEgEd.a.a.',
-  '.dheeEEgEEkdkka.',
-  '.dEEEggErdkkko..',
-  '..ddggEddddkkd..',
-  ...POSADO.slice(12),
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+  '....deeed....aa.',
+  '..deheEged..aa..',
+  '..deEEggeEd.kk..',
+  '..dEEEgEEEdkko..',
+  '...ddddddddkkd..',
+  '...ll..ll..ll...',
+  '..ll..ll..ll....',
+  '................',
+  '................',
 ];
 
 const ANTENAS_CAIDAS = [
-  ...POSADO.slice(0, 5),
   '................',
   '................',
-  '....dhheEd.aa.a.',
-  '..dheeEEgEdkkaa.',
-  ...POSADO.slice(9),
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+  '....deeed.....a.',
+  '..deheEged.aaka.',
+  '..deEEggeEdkko..',
+  '..dEEEgEEEdkkk..',
+  '...ddddddddkd...',
+  '...ll..ll..ll...',
+  '..ll..ll..ll....',
+  '................',
+  '................',
 ];
 
 const CUADROS = [
@@ -120,7 +149,6 @@ export const CODIGOS = {
   g: 'insectoIris',
   d: 'insectoSombra',
   h: 'insectoBrillo',
-  r: 'insectoReflejo',
   k: 'cabeza',
   o: 'ojo',
   a: 'antena',

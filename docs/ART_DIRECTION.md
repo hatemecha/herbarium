@@ -93,8 +93,8 @@ Dibujados a mano como matrices de 16 caracteres. `.` es transparente. `src/sprit
 | Planta central | `src/sprites/planta.js` | 1 | Pétalos, núcleo, hojas, tallo, tierra. Idle irregular. |
 | Cerbatana | `src/sprites/cerbatana.js` | 8 | Bulbo y boca dibujados para N, NE, E, SE y S; el resto es espejo. No es una copia de otra torre. |
 | Escarabajo | `src/sprites/escarabajo.js` | 1 de perfil, espejo izquierda/derecha | Sin rediseño en la etapa 06. Su calidad sigue sin aprobación del propietario. |
-| Pulgón alado | `src/sprites/pulgon.js` | 1 de perfil, espejo | Cuerpo claramente más chico. Aleteo de dos tiempos, no el ciclo de tres alturas. |
-| Oruga | `src/sprites/oruga.js` | 1 de perfil, espejo | Cuerpo segmentado en el suelo. Se estira y se contrae. No vuela. |
+| Pulgón alado | `src/sprites/pulgon.js` | 1 de perfil, espejo | Abdomen azul, patas finas y alas cortas ancladas al tórax en sus dos cuadros de vuelo. |
+| Oruga | `src/sprites/oruga.js` | 1 de perfil, espejo | Segmentos violáceos con luces escalonadas. Se estira y se contrae sobre el suelo. |
 | Espino | `src/sprites/espino.js` | 1 | Mata baja con púas. Luz más tenue que la cerbatana, definida en el catálogo. |
 
 La comparación a escala 1 y 4 está en `galeria.html`. No se enlaza desde la partida.
@@ -155,7 +155,7 @@ Derrota: la luz de la central se atenúa con su opacidad. Su halo y el ambiente 
 
 ## Interfaz
 
-Integrada y chica. Energía arriba: un punto de 4 px, la palabra y el entero, en `styles.css`. Tarjeta de 96×44 px lógicos, borde de 1 px, sprite animado, nombre y coste (`src/catalogoUI.js`). Seleccionada invierte tinta y fondo. Insuficiente baja la alfa a 0,4. El foco visible es un outline discontinuo. Nada de esquinas redondeadas, cromado, CRT ni iconos.
+La HUD alinea energía a la izquierda, oleada al centro y estado a la derecha sobre una misma línea MonoMEK. El punto de energía y el valor comparten el color del coste en las cartas. Cada carta vertical mide 60×68 px lógicos, tiene un contorno de un píxel y presenta el sprite animado a 2× arriba y el nombre y coste debajo. Una marca superior señala la selección. La energía insuficiente atenúa la carta y el foco visible usa un filete discontinuo.
 
 El aviso de derrota es una frase y un botón de texto subrayado: “el jardín cayó” / “reiniciar”. Sin menú ni panel. No tiene fondo: el jardín queda visible, con la central apagada. El texto aparece en la mitad superior del escenario con un fundido de 1,8 s, después de que la marchitez termine, así no tapa la planta que se está apagando.
 

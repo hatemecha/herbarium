@@ -91,6 +91,11 @@ function rolesInsecto(p) {
     insectoBrillo: color(azul, 70, 64),
     insectoImpacto: mezcla(p.ink, color(azul, 70, 64), 0.2),
     insectoReflejo: mezcla(p.brand, p.ink, 0.35),
+    pulgon: color(azul, 52, 33),
+    pulgonLuz: color(azul, 60, 55),
+    oruga: color((base + 70) % 360, 38, 32),
+    orugaLuz: color((base + 70) % 360, 50, 52),
+    orugaBrillo: color((base + 70) % 360, 59, 68),
     ala: color(azul, 40, 24),
     alaBorde: color(azul, 50, 44),
     antena: color(violeta, 30, 58),
@@ -103,6 +108,8 @@ function rolesInsecto(p) {
 export function crearRoles(p) {
   return {
     ...rolesInsecto(p),
+    tintaUI: p.ink,
+    energiaUI: p.spark,
     fondo: p.bg,
     terreno: p.hover,
     cuadricula: mezcla(p.hover, p.line, 0.55),

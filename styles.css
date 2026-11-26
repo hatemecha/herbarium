@@ -31,47 +31,43 @@ body {
 
 .herbario-barra {
   flex: 0 0 auto;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem 1.1rem;
-  min-height: 2.75rem;
-  padding: 0.35rem 0.75rem 0.15rem;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  align-items: baseline;
+  row-gap: 4px;
+  width: min(100%, 352px);
+  min-height: 44px;
+  margin-inline: auto;
+  padding: 14px 12px 6px;
+  font: 12px/1 var(--mono);
+  color: var(--muted);
 }
 
 .energia {
   display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font: 12px/1 var(--mono);
-  color: var(--muted);
-}
-
-.energia-punto {
-  width: 4px;
-  height: 4px;
-  background: var(--spark);
-  opacity: 0.6;
-}
-
-.energia-valor {
-  min-width: 3ch;
-  color: var(--ink);
-  font-weight: 650;
+  align-items: baseline;
+  gap: 4px;
 }
 
 .fase {
-  display: flex;
-  gap: 0.7rem;
-  font: 12px/1 var(--mono);
-  color: var(--muted);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: baseline;
 }
 
-.fase-oleada { color: var(--ink); }
+.energia-punto {
+  align-self: center;
+  flex: 0 0 4px;
+  height: 4px;
+  background: var(--spark);
+}
+
+.energia-valor { color: var(--spark); }
+.fase-oleada { text-align: center; color: var(--ink); }
+.fase-detalle { text-align: end; }
 
 .ficha {
-  flex: 1 0 100%;
+  grid-column: 1 / -1;
   margin: 0;
   text-align: center;
   font: 12px/1.35 var(--mono);
@@ -85,7 +81,7 @@ body {
   flex: 1 1 auto;
   min-width: 0;
   min-height: 0;
-  padding: 0.5rem;
+  padding: 8px 8px 148px;
 }
 
 .tablero {
@@ -171,30 +167,26 @@ body {
 
 .derrota-boton:focus-visible { outline: 2px dashed var(--ink); outline-offset: 4px; }
 
-@media (orientation: portrait) {
-  .herbario-escenario { padding-block-end: 6.75rem; }
-}
-
 @media (max-width: 27rem) {
   .catalogo { --escala-carta: 1; }
-  .herbario-escenario { padding-block-end: 5.6rem; }
+  .herbario-escenario { padding-block-end: 80px; }
 }
 
 @media (orientation: landscape) and (max-height: 32rem) {
-  .herbario-escenario { padding-inline: 8.5rem; }
+  .herbario-escenario { padding: 8px 84px; }
   .catalogo {
     --escala-carta: 1;
     inset-inline: auto 0.5rem;
     top: 50%;
     bottom: auto;
-    width: 7rem;
+    width: max-content;
     transform: translateY(-50%);
     flex-direction: column;
   }
 }
 
 @media (min-width: 72rem) and (min-aspect-ratio: 4/3) {
-  .herbario-escenario { padding-inline: 16rem; }
+  .herbario-escenario { padding: 8px 160px; }
   .catalogo {
     inset-inline: 1.5rem auto;
     top: 50%;

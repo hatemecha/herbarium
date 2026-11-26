@@ -1,41 +1,41 @@
 import { punteroFino } from './entrada.js';
 import { rgb } from './paleta.js';
 
-const ANCHO = 96;
-const ALTO = 44;
-const SPRITE_X = 6;
-const SPRITE_Y = 14;
-const TEXTO_X = 27;
-const FUENTE = '12px MonoMEK, ui-monospace, monospace';
+const ANCHO = 60;
+const ALTO = 68;
+const FUENTE = '10px MonoMEK, ui-monospace, monospace';
 
 function dibujarCarta(ctx, carta, roles) {
   const { tipo, animador, estado, enfoque } = carta;
   const seleccionada = estado === 'seleccionada';
-  const tinta = seleccionada ? roles.fondo : roles.marca;
-  const borde = seleccionada ? roles.marca : enfoque ? roles.marcaSuave : roles.cuadricula;
-  const fondo = seleccionada ? roles.marca : enfoque ? roles.terreno : roles.fondo;
 
   ctx.clearRect(0, 0, ANCHO, ALTO);
-  ctx.globalAlpha = estado === 'insuficiente' ? 0.4 : 1;
+  ctx.globalAlpha = estado === 'insuficiente' ? 0.65 : 1;
 
-  ctx.fillStyle = rgb(borde);
+  ctx.fillStyle = rgb(roles.terreno);
+  ctx.fillRect(1, 0, ANCHO - 2, ALTO);
+  ctx.fillRect(0, 1, ANCHO, ALTO - 2);
+  ctx.fillStyle = rgb(seleccionada ? roles.marca : enfoque ? roles.marcaSuave : roles.cuadricula);
   ctx.fillRect(1, 0, ANCHO - 2, 1);
   ctx.fillRect(1, ALTO - 1, ANCHO - 2, 1);
   ctx.fillRect(0, 1, 1, ALTO - 2);
   ctx.fillRect(ANCHO - 1, 1, 1, ALTO - 2);
+  if (seleccionada) ctx.fillRect(23, 0, 14, 2);
 
-  ctx.fillStyle = rgb(fondo);
-  ctx.fillRect(1, 1, ANCHO - 2, ALTO - 2);
-
-  ctx.drawImage(animador.fotograma(), SPRITE_X, SPRITE_Y);
+  ctx.drawImage(animador.fotograma(), 14, 5, 32, 32);
 
   ctx.font = FUENTE;
   ctx.textBaseline = 'top';
-  ctx.fillStyle = rgb(tinta);
-  ctx.fillText(tipo.nombre, TEXTO_X, 9);
-  ctx.fillStyle = rgb(seleccionada ? tinta : roles.marcaSuave);
-  ctx.fillText(String(carta.coste), TEXTO_X, 25);
+  ctx.textAlign = 'center';
+  ctx.fillStyle = rgb(roles.tintaUI);
+  ctx.fillText(tipo.nombre, 30, 41);
 
+  const coste = String(carta.coste);
+  const x = Math.floor((ANCHO - ctx.measureText(coste).width - 6) / 2);
+  ctx.fillStyle = rgb(roles.energiaUI);
+  ctx.fillRect(x, 57, 3, 3);
+  ctx.textAlign = 'left';
+  ctx.fillText(coste, x + 6, 54);
   ctx.globalAlpha = 1;
 }
 

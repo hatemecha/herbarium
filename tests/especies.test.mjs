@@ -31,6 +31,47 @@ test('las tres especies conservan las estadísticas iniciales', () => {
   assert.equal(ENEMIGOS.oruga.amenaza, 8);
 });
 
+test('todos los cuadros de insectos permanecen en la grilla y usan códigos de su sprite', () => {
+  for (const { arte } of Object.values(ENEMIGOS)) {
+    assert.equal(arte.matriz.length, 16);
+    for (const fila of arte.matriz) {
+      assert.equal(fila.length, 16);
+      for (const codigo of fila) assert.ok(codigo === '.' || arte.codigos[codigo]);
+    }
+    for (const variante of arte.variantes) {
+      for (const [x, y, codigo] of variante) {
+        assert.ok(x >= 0 && x < 16 && y >= 0 && y < 16);
+        assert.ok(codigo === '.' || arte.codigos[codigo]);
+      }
+    }
+  }
+});
+
+test('las alas forman una pieza conectada al cuerpo en cada cuadro de vuelo', () => {
+  for (const { id, arte } of [ENEMIGOS.escarabajo, ENEMIGOS.pulgon]) {
+    for (const variante of arte.variantes) {
+      const filas = arte.matriz.map((fila) => [...fila]);
+      for (const [x, y, codigo] of variante) filas[y][x] = codigo;
+      const alas = new Map();
+      filas.forEach((fila, y) => fila.forEach((codigo, x) => {
+        if (codigo === 'w' || codigo === 'W') alas.set(`${x},${y}`, [x, y]);
+      }));
+      if (alas.size === 0) continue;
+
+      const grupo = [alas.values().next().value];
+      alas.delete(grupo[0].join(','));
+      let unida = false;
+      for (const [x, y] of grupo) {
+        for (const [a, b] of [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]]) {
+          if (alas.delete(`${a},${b}`)) grupo.push([a, b]);
+          if ('dEehgk'.includes(filas[b]?.[a] ?? '.')) unida = true;
+        }
+      }
+      assert.ok(unida && alas.size === 0, `ala separada del cuerpo de ${id}`);
+    }
+  }
+});
+
 test('el pulgón es bastante más chico que el escarabajo y la oruga cambia de largo', () => {
   assert.ok(opacos(PULGON) < opacos(ESCARABAJO) * 0.55);
   assert.ok(ancho(PULGON, 'deEk') <= 6);
