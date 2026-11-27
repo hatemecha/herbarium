@@ -97,7 +97,8 @@ export function crearCombate({
     const aplicado = Math.min(objetivo.vida, tipo.dano + extra);
     objetivo.vida -= aplicado;
     objetivo.destello = visual.destello;
-    evento({ tipo: 'mordida', ...posicionDe(objetivo), central: objetivo === jardin.central, planta: objetivo.id, dano: aplicado });
+    evento({ tipo: 'mordida', ...posicionDe(objetivo), central: objetivo === jardin.central,
+      planta: objetivo.id, dano: aplicado, lado: enemigo.ladoEntrada });
     const reflejo = objetivo.tipo.reflejo ?? 0;
     if (reflejo > 0) {
       enemigo.vida -= reflejo;
@@ -326,6 +327,7 @@ export function crearCombate({
     proyectiles,
     actualizar(dt) {
       eventos = [];
+      if (director?.enRecompensa()) return;
       tiempo += dt;
       if (jardin.central?.muerta) {
         for (const enemigo of enemigos) {
@@ -337,7 +339,10 @@ export function crearCombate({
       }
       if (director) {
         const vivos = enemigos.reduce((cantidad, enemigo) => cantidad + (enemigo.muerto ? 0 : 1), 0);
-        for (const orden of director.avanzar(dt, vivos)) crear(orden.x, orden.y, catalogoEnemigos[orden.id]);
+        for (const orden of director.avanzar(dt, vivos)) {
+          crear(orden.x, orden.y, catalogoEnemigos[orden.id]).ladoEntrada = orden.lado;
+        }
+        if (director.enRecompensa()) return;
       } else if (!aparecio && tiempo >= aparicion) {
         aparecio = true;
         aparecer();
@@ -356,6 +361,14 @@ export function crearCombate({
       director?.registrar(eventos);
     },
     aparecerEn: (x, y, tipo) => crear(x, y, tipo),
+    desvincular(planta) {
+      for (const enemigo of enemigos) {
+        if (enemigo.senuelo === planta) enemigo.senuelo = null;
+        if (enemigo.objetivo !== planta) continue;
+        enemigo.objetivo = null;
+        enemigo.despegue = visual.despegue;
+      }
+    },
     eventos: () => eventos.slice(),
     tiempoRalentizado: () => tiempoRalentizado,
     derrota: () => Boolean(jardin.central?.muerta),

@@ -13,7 +13,7 @@ const configuraciones = {
   energiaRapida: { energia: 1.12 },
   costeFijo: { economia: { ...ECONOMIA, creciente: false } },
   masAmenaza: { oleadas: { lineal: 5, cuadratica: 1 } },
-  gruposApretados: { oleadas: { grupoMax: 5, compensaViaje: 1, ventanaPorK: 3 } },
+  gruposApretados: { oleadas: { grupoMax: 5, frenteSimultaneo: 0.1, ventanaPorK: 10 } },
 };
 
 const resultados = {};

@@ -16,7 +16,9 @@ src/estado.js           energía, tiempo, impulso de luz
 src/tablero.js          casillas y ocupación
 src/jardin.js           alta, reglas de colocación, marchitez
 src/combate.js          enemigos, disparos, reflejo, eventos, derrota
-src/oleadas.js          director, presupuesto, patrones y apariciones
+src/oleadas.js          director, presupuesto, presión variable y fases
+src/recompensas.js      sorteo con semilla independiente y protección contra rachas
+src/interfazOleadas.js  presentación raster del resultado
 src/economia.js         coste según plantas vivas
 src/aleatorio.js        generador con semilla
 src/simular.js          partida sin interfaz

@@ -18,6 +18,7 @@ export function simularPartida({ semilla, estrategia, horizonte = 20 * 60, cada 
     oleadas: { ...OLEADAS, ...ajustes.oleadas },
     aleatorio: crearAleatorio(semilla >>> 0),
     semilla,
+    recompensas: ajustes.recompensas,
     ocupante: (x, y) => tablero.ocupante(x, y),
   });
   const jardin = crearJardin({
@@ -29,6 +30,11 @@ export function simularPartida({ semilla, estrategia, horizonte = 20 * 60, cada 
       hongo: { ...PLANTAS.hongo, area: { ...PLANTAS.hongo.area, ...ajustes.area } },
     },
     economia: ajustes.economia,
+    pala: ajustes.pala,
+    permitido: () => !director.enRecompensa(),
+    alRetirar(planta, voluntaria) {
+      if (voluntaria) combate.desvincular(planta);
+    },
     frames: Object.fromEntries(Object.keys(PLANTAS).map((id) => [id, []])),
   });
   jardin.sembrar('central', tablero.centro);
@@ -51,38 +57,59 @@ export function simularPartida({ semilla, estrategia, horizonte = 20 * 60, cada 
   let primeraAmenaza = null;
   let ultimaCompra = 0;
   let intervaloCompraMaximo = 0;
+  let transcurrido = 0;
+  let retiradas = 0;
+  let energiaRecuperada = 0;
+  let energiaPremios = 0;
+  const premios = { energia: 0, vacia: 0, tarot: 0 };
 
   for (let i = 0; i < pasos; i++) {
     if (combate.derrota()) break;
-    const antes = estado.energia;
-    avanzar(estado, dt, ajustes.energia);
-    registro.generada(estado.energia - antes);
-    espera += dt;
-    if (espera >= cada) {
-      espera = 0;
-      const accion = estrategia({
-        t: combate.tiempo() + dt,
-        estado,
-        jardin,
-        tablero,
-        aleatorio: jugador,
-        enemigos: combate.enemigos,
-      });
-      if (accion) {
-        const energia = estado.energia;
-        const planta = jardin.plantar(accion.id, { x: accion.x, y: accion.y });
-        if (planta) {
-          const t = combate.tiempo() + dt;
-          primeraCompra ??= t;
-          intervaloCompraMaximo = Math.max(intervaloCompraMaximo, t - ultimaCompra);
-          ultimaCompra = t;
-          registro.gastada(energia - estado.energia, accion.id);
+    transcurrido = (i + 1) * dt;
+    if (director.enRecompensa()) {
+      const premio = director.presentar(dt, estado);
+      if (premio) {
+        premios[premio.tipo]++;
+        energiaPremios += premio.energia;
+        if (premio.tipo === 'tarot') director.finalizarTarot();
+      }
+    } else {
+      const antes = estado.energia;
+      avanzar(estado, dt, director.generaEnergia() ? ajustes.energia : 0);
+      registro.generada(estado.energia - antes);
+      espera += dt;
+      if (espera >= cada) {
+        espera = 0;
+        const accion = estrategia({
+          t: combate.tiempo() + dt,
+          estado,
+          jardin,
+          tablero,
+          aleatorio: jugador,
+          enemigos: combate.enemigos,
+        });
+        if (accion?.retirar) {
+          const retirada = jardin.retirar(accion.retirar);
+          if (retirada) {
+            retiradas++;
+            energiaRecuperada += retirada.energia;
+          }
+        } else if (accion) {
+          const energia = estado.energia;
+          const planta = jardin.plantar(accion.id, { x: accion.x, y: accion.y });
+          if (planta) {
+            const t = combate.tiempo() + dt;
+            primeraCompra ??= t;
+            intervaloCompraMaximo = Math.max(intervaloCompraMaximo, t - ultimaCompra);
+            ultimaCompra = t;
+            registro.gastada(energia - estado.energia, accion.id);
+          }
         }
       }
+      jardin.actualizar(dt, true);
+      combate.actualizar(dt);
+      registro.eventos(combate.eventos());
     }
-    jardin.actualizar(dt, true);
-    combate.actualizar(dt);
-    registro.eventos(combate.eventos());
     let vivos = 0;
     for (const enemigo of combate.enemigos) if (!enemigo.muerto) vivos += 1;
     registro.simultaneos(vivos);
@@ -96,6 +123,7 @@ export function simularPartida({ semilla, estrategia, horizonte = 20 * 60, cada 
         bajas: registro.datos.plantasPerdidas,
         enemigos: vivos,
         oleada: director.vista().numero,
+        completas: director.vista().numero - (director.enRecompensa() ? 0 : 1),
         dps: dpsTeorico(jardin),
       });
     }
@@ -109,7 +137,8 @@ export function simularPartida({ semilla, estrategia, horizonte = 20 * 60, cada 
     semilla,
     derrota: combate.derrota(),
     sobrevivio: !combate.derrota(),
-    tiempo: combate.tiempo(),
+    tiempo: transcurrido,
+    tiempoActivo: combate.tiempo(),
     oleada: director.vista().numero,
     oleadasCompletas: historial.length,
     vidaCentral: Math.max(0, jardin.central?.vida ?? 0),
@@ -126,6 +155,10 @@ export function simularPartida({ semilla, estrategia, horizonte = 20 * 60, cada 
     intervaloCompraMaximo: Math.max(intervaloCompraMaximo, combate.tiempo() - ultimaCompra),
     tiempoCritico,
     tiempoRalentizado: combate.tiempoRalentizado(),
+    retiradas,
+    energiaRecuperada,
+    energiaPremios,
+    premios,
     ...registro.datos,
   };
 }

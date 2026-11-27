@@ -379,7 +379,7 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
       if (planta.fuente) iluminacion.quitarFuente(planta.fuente);
       planta.fuente = null;
     },
-    dibujar({ t, impulso, reducido, central, plantas, enemigos, proyectiles, particulas, marcas, vista, alcance, gesto, pulsoCentro = 0, hoverCelda = null, tactil = false }) {
+    dibujar({ t, impulso, reducido, central, plantas, enemigos, proyectiles, particulas, marcas, vista, retiro, alcance, gesto, pulsoCentro = 0, hoverCelda = null, tactil = false }) {
       dibujarAmbiente(t, reducido, central, plantas);
       for (const planta of plantas) {
         if (planta.fuente) planta.fuente.factor = planta.opacidad * central.opacidad;
@@ -475,6 +475,12 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
           reducido ? 0 : Math.floor((1 - pulsoCentro) * 3));
       }
       if (vista) dibujarColocacion(vista, t, reducido);
+      if (retiro) {
+        for (const planta of plantas) {
+          if (!planta.muerta && planta !== central) esquinas(planta.celda, roles.marcaSuave, 0.38);
+        }
+        if (retiro.celda) esquinas(retiro.celda, retiro.valido ? roles.energiaUI : roles.petalo, 0.85);
+      }
       for (const marca of marcas) {
         const estilo = estiloMarca(marca.tipo, roles);
         dibujarHormigas(ctxLuminosa, marca.celda, {

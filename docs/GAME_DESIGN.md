@@ -25,11 +25,11 @@ Implementado:
 2. Con esa energía se compran las cuatro plantas del catálogo. El coste sube con las plantas vivas de ese mismo tipo.
 3. Solo se planta en una casilla libre, dentro del tablero, vecina en alguna de las ocho direcciones a una planta ya viva, y si la energía alcanza. Vale en la preparación y en el combate.
 4. El jardín crece desde las plantas existentes. La central no se compra ni se duplica.
-5. Tras 20 s de preparación entra la primera oleada: dos escarabajos y tres pulgones, no todos a la vez. Después hay oleadas procedurales con semilla.
+5. Tras 20 s de preparación entra la primera invasión procedural. Cualquier lado puede recibir enemigos durante el combate y las concentraciones cambian mientras avanza.
 6. La cerbatana dispara sola al enemigo más cercano dentro de su alcance circular. El espino atrae insectos y devuelve 2 de daño a quien lo muerde.
 7. Si la central muere, la partida se detiene: no sube energía, no se compra y no se combate. Las animaciones pendientes terminan y, al apagarse la central, aparece el aviso «el jardín cayó».
 
-No hay recompensas por baja, tarot, sonido ni progresión entre partidas. Entre oleadas hay un gancho vacío (`alEntreOleadas`) para eso.
+Cuando termina el combate y no quedan enemigos vivos, aparece la recompensa. Durante su presentación se detienen el combate, la energía y las compras. Después empiezan los 17 s de preparación. Los resultados de producción son energía o sin bonificación.
 
 ## Condiciones
 
@@ -52,7 +52,7 @@ Implementado. No es comprable. Ocupa la casilla `(5, 5)` de un tablero 11×11. V
 
 Implementado y experimental. La energía empieza en 0 y sube 1 por segundo en preparación y en combate. El indicador muestra el entero. El coste de cada compra es `costeBase + 2t + 6t(t − 1)`, con `t = floor(vivasDelMismoTipo / 4)`. Lo desactiva `ECONOMIA.creciente` en `src/config.js`. La tarjeta, la validación y el descuento leen esa misma función.
 
-No hay otras fuentes de energía, regeneración ni recompensa por matar. El detalle está en [BALANCE.md](BALANCE.md).
+La energía pasiva se suspende durante los premios y tras la ventana nominal de apariciones más 24 s de combate. La pala devuelve la mitad redondeada hacia abajo del coste pagado, sin depender del precio de catálogo ni de la vida restante. La recompensa de energía se aplica una vez por invasión. No hay regeneración ni recompensa por matar. El detalle está en [ETAPA_084.md](ETAPA_084.md).
 
 ## Plantas, catálogo y expansión
 
@@ -67,6 +67,8 @@ La colocación (`src/colocacion.js`, `src/jardin.js`):
 - La rueda, el pellizco y las teclas `+` y `−` amplían el tablero. Una vez ampliado se puede desplazar arrastrándolo. `0` devuelve la vista completa.
 - Una casilla inválida no gasta nada.
 - En modo colocación se marcan las casillas válidas y, con puntero fino, se previsualiza el sprite.
+- La pala se desbloquea en la oleada 3. Activa la retirada voluntaria y muestra el reembolso. Un clic confirma en escritorio y dos toques sobre la misma planta confirman en táctil. Escape cancela. La central queda excluida y las plantas vecinas siguen en su lugar, aunque se corte la conexión.
+- Tocar una carta sin energía suficiente tiñe toda la tarjeta de rojo (mismo gesto que el destello verde al alcanzar el precio).
 
 El espino es la planta defensiva. Bloquea porque ocupa una casilla, igual que las demás, y además devuelve daño. No sustituye a la cerbatana: no tiene proyectil.
 
@@ -82,13 +84,13 @@ El hover (borde de hormigas) solo sigue a mouse y lápiz. El toque no genera hov
 
 En 08.3, el Escarabajo amortigua un punto por proyectil mientras está en vuelo. El Pulgón cruza sobre defensas comunes y se posa en el Espino o en la central. La Oruga amortigua tiros frontales e intensifica la tercera mordida y las siguientes contra la misma planta. Un Espino capta insectos libres dentro de su radio. Si se solapan radios, el insecto elige el Espino más cercano y sostiene el desvío hasta encontrar un bloqueo o perder el señuelo. La Campanilla reduce el avance durante el desvío y deja intacta la cadencia de las mordidas.
 
-Durante los últimos cuatro segundos de preparación, una marca en la grilla indica la primera entrada. Los patrones de oleada favorecen composiciones diferentes y se generan a partir de la semilla.
+Durante los últimos cuatro segundos de preparación aparece «Se acerca una oleada». «Oleada N» coincide con la entrada a combate y «Oleada superada» con su cierre.
 
 ### Reglas compartidas
 
 Tres enemigos comparten `src/combate.js`. El escarabajo conserva vida 12, velocidad 0,5, daño 2 e intervalo 1. El pulgón alado: vida 4, velocidad 1,05, daño 1, intervalo 0,65. La oruga: vida 28, velocidad 0,28, daño 3, intervalo 1,25. Camina, se toma un momento al fijar una planta y sostiene la presión con mordidas sucesivas. Los pulgones comparten puntos de salida por grupo y varían ligeramente su marcha. Esas cifras son el punto de partida medido en [BALANCE.md](BALANCE.md), no un cierre.
 
-- Las oleadas las arma `src/oleadas.js` con una semilla. La primera es fija. Desde la tercera puede salir la oruga.
+- Las invasiones las arma `src/oleadas.js` con una semilla y distribuciones variables de tiempo, sector y tamaño de grupo. Desde la tercera puede salir la oruga.
 - Si el perímetro está ocupado, el insecto aparece justo afuera y decide con sus reglas habituales de avance y bloqueo.
 - Posición continua, en unidades de casilla. La casilla `i` es el intervalo `[i, i+1)`.
 - El escarabajo vuela a 3 px y el pulgón a 2 px. La oruga queda en el suelo. Solo el pulgón sobrevuela bloqueos comunes.
@@ -106,8 +108,8 @@ No hay cartas ni preguntas. No inventarlas.
 
 - **Oleadas.** Implementadas como director procedural. El presupuesto y el ritmo son experimentales.
 - **Más plantas y enemigos.** Hay cuatro plantas comprables y tres insectos. No hay una cuarta especie.
-- **Economía.** El goteo de 1/s sigue. El coste crece con las vivas. No hay cosecha ni recompensa.
-- **Preguntas de personalidad.** Durante la partida, no como un RPG narrativo. El gancho entre oleadas está vacío.
+- **Economía.** Preparación y combate mantienen el goteo dentro de sus límites. El coste crece con las vivas.
+- **Preguntas de personalidad.** El resultado de tarot está deshabilitado en producción. La fase puede esperar una integración externa antes de devolver el control.
 - **Tarot.** La respuesta entrega una carta. El símbolo, la respuesta y la modificación de una o varias plantas tienen que relacionarse de verdad. No hay lista de arcanos ni de efectos.
 - **Sonido, pulido visual e integración** en la web personal. Ver [ROADMAP.md](ROADMAP.md).
 

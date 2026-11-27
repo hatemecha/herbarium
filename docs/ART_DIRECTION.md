@@ -58,7 +58,7 @@ La comparación parte de `f731765`. La tipografía funciona como parte de la com
 | Derrota | El cierre opaco centra el mensaje y el botón raster. La marchitez ocurre en el tablero antes de que aparezca el cierre. |
 | Partículas, luz y efectos | Las partículas y el campo de luz ya se resuelven en píxeles lógicos. Se alinearon las motas externas que conectan con el HUD. Los impactos, señales de alcance, tiempos y paletas de efectos conservaron sus reglas. |
 
-Para revisar una salida, tomar un PNG físico en el juego real, registrar `data-escala-pixel`, medir el origen del canvas y ejecutar `.agents/skills/herbarium-visual-review/scripts/comprobar_bloques.py` con ese origen, la resolución lógica y la escala. Probar ampliaciones de 2× o mayores, además del caso nativo. El resultado de bloques y la legibilidad a tamaño real son verificaciones distintas.
+Para revisar una salida, tomar un PNG físico en el juego real, registrar `data-escala-pixel` y comprobar a ojo la grilla y la legibilidad a tamaño nativo y a 2× o más.
 
 ## Paleta
 
@@ -186,7 +186,7 @@ Derrota: la luz de la central se atenúa con su opacidad. Su halo y el ambiente 
 
 ## Interfaz
 
-La energía está centrada, con un hexagrama de 7 × 7 (`src/sprites/estrella.js`) alineado a la cifra. La misma estrella marca el coste de cada carta. Pausa queda al extremo derecho. Las cuatro cartas forman un grupo bajo el jardín o a un lado en horizontal bajo. La vida de cada planta se muestra en una barra bajo el sprite. El escenario muestra los avisos breves y el lector de pantalla recibe los mensajes semánticos. Las cartas de 72 × 80 muestran espécimen, nombre y coste. Foco, selección, desbloqueo, compra e insuficiencia tienen señales diferenciadas con el botón quieto.
+La energía está centrada, con un hexagrama de 7 × 7 (`src/sprites/estrella.js`) alineado a la cifra. La misma estrella marca el coste de cada carta. Pausa queda al extremo derecho. Las cuatro cartas forman un grupo bajo el jardín o a un lado en horizontal bajo. La pala comparte la grilla y el marco 72 × 80 de las cartas (sprite diagonal 16 × 16 al doble, madera y metal de la paleta). Sin coste. Se desbloquea en la oleada 3 con el mismo destello verde que una carta alcanzable. Tocar una carta sin energía tintea toda la tarjeta de rojo, igual que el destello verde al desbloquear. La vida de cada planta se muestra en una barra bajo el sprite. El escenario muestra los avisos breves y el lector de pantalla recibe los mensajes semánticos. Las cartas de 72 × 80 muestran espécimen, nombre y coste. Foco, selección, desbloqueo, compra e insuficiencia tienen señales diferenciadas con el botón quieto.
 
 Tras la marchitez, una capa oscura entra en seis pasos durante 1,2 s. El texto y Reiniciar comparten ese fondo. La bandeja de compra queda cerrada. El herbario sigue disponible desde Pausa.
 
@@ -290,7 +290,7 @@ Tres puntos del perímetro anuncian la primera entrada. Dos puntos delante del i
 
 La luz del terreno conserva su grilla escalonada. La flor y las plantas de apoyo proyectan rebotes cortos en sus propios tonos. Los insectos llevan los acentos en sus siluetas y ya no tienen halos suaves. El aviso de tres puntos del perímetro se retiró.
 
-Al generar energía, dos motas tenues suben desde la flor a la estrella. El polen tiene un máximo global de doce motas. Ambos efectos se omiten con movimiento reducido y salen de escena al caer la flor. El cierre atenúa el tablero, muestra la silueta marchita de la central y da foco a Reiniciar en MonoMEK.
+Al generar energía, cinco motas tenues suben desde la flor a la estrella. El polen tiene un máximo global de doce motas. Ambos efectos se omiten con movimiento reducido y salen de escena al caer la flor. El cierre atenúa el tablero, muestra la silueta marchita de la central y da foco a Reiniciar en MonoMEK.
 
 Las motas de interacción aparecen al seleccionar, previsualizar una casilla o aterrizar un insecto. El mouse solo las activa al pasar a otra posición válida mientras se coloca una planta. Las cartas sin energía muestran un candado y se pueden consultar. Al alcanzar el precio vigente, la carta titila en verde y conserva el precio iluminado. Con movimiento reducido, el aviso es un breve realce fijo.
 

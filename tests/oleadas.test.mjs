@@ -1,11 +1,11 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { BALANCE, OLEADAS } from '../src/config.js';
+import { BALANCE } from '../src/config.js';
 import { crearAleatorio } from '../src/aleatorio.js';
 import { ENEMIGOS, PLANTAS } from '../src/catalogo.js';
 import { crearCombate } from '../src/combate.js';
 import { crearJardin } from '../src/jardin.js';
-import { elegirPatron, generarOleada, maxSimultaneos, presupuestoDe, ventanaDe, crearDirector } from '../src/oleadas.js';
+import { generarOleada, maxSimultaneos, presupuestoDe, ventanaDe, crearDirector } from '../src/oleadas.js';
 import { crearTablero } from '../src/tablero.js';
 
 const tablero = crearTablero();
@@ -23,11 +23,11 @@ function plan(semilla, numero, ocupado = () => false) {
 }
 
 test('el presupuesto cuadrático corta después de la oleada 12', () => {
-  assert.equal(presupuestoDe(1), 12);
-  assert.equal(presupuestoDe(2), 17);
-  assert.equal(presupuestoDe(12), 141);
-  assert.equal(presupuestoDe(13), 159);
-  assert.equal(ventanaDe(1), 18);
+  assert.equal(presupuestoDe(1), 34);
+  assert.equal(presupuestoDe(2), 66);
+  assert.equal(presupuestoDe(12), 936);
+  assert.equal(presupuestoDe(13), 1026);
+  assert.equal(ventanaDe(1), 45);
   assert.equal(maxSimultaneos(1), 6);
   assert.equal(maxSimultaneos(20), 48);
 });
@@ -40,69 +40,46 @@ test('la misma semilla repite la oleada y otra semilla puede cambiarla', () => {
   assert.notDeepEqual(a.cola.map((e) => e.en), c.cola.map((e) => e.en));
 });
 
-test('la primera oleada son dos escarabajos y tres pulgones, escalonados y en dos zonas', () => {
-  const oleada = plan(4, 1);
-  assert.equal(oleada.conteo.escarabajo, 2);
-  assert.equal(oleada.conteo.pulgon, 3);
-  assert.equal(oleada.conteo.oruga, 0);
-  assert.equal(oleada.cola.length, 5);
-  const tiempos = oleada.cola.map((e) => e.en);
-  assert.ok(Math.max(...tiempos) - Math.min(...tiempos) > 2, 'no salen todos juntos');
-  const lados = new Set(oleada.cola.map((e) => {
-    if (e.y < 1) return 'norte';
-    if (e.y > 10) return 'sur';
-    if (e.x < 1) return 'oeste';
-    return 'este';
-  }));
-  assert.ok(lados.size >= 2);
-});
-
-test('la oruga no entra antes de la tercera oleada y el gasto no pasa el presupuesto', () => {
-  for (let semilla = 1; semilla <= 12; semilla++) {
-    const segunda = plan(semilla, 2);
-    assert.equal(segunda.conteo.oruga, 0);
-    assert.ok(segunda.patron === 'concentrada' || segunda.patron === 'pinza');
-    const tercera = plan(semilla, 3);
-    const suma = tercera.cola.reduce((total, enemigo) => total + amenaza[enemigo.id], 0);
-    assert.ok(suma <= tercera.presupuesto);
-    assert.ok(tercera.cola.length >= 2);
+test('la primera invasión puede aparecer por los cuatro lados y conserva su presupuesto', () => {
+  const lados = new Set();
+  for (let semilla = 1; semilla <= 20; semilla++) {
+    const planificado = plan(semilla, 1);
+    assert.equal(planificado.conteo.oruga, 0);
+    assert.ok(planificado.ventana >= 42);
+    assert.equal(planificado.cola.reduce((suma, orden) => suma + amenaza[orden.id], 0), planificado.presupuesto);
+    assert.ok(planificado.cola.at(-1).en - planificado.cola[0].en > 40);
+    for (const orden of planificado.cola) lados.add(orden.celda.lado);
   }
+  assert.equal(lados.size, 4);
 });
 
-test('un patrón reciente pesa menos que uno nuevo', () => {
-  const conCastigo = elegirPatron(4, ['concentrada', 'pinza'], () => 0.2);
-  const sinCastigo = elegirPatron(4, [], () => 0.2);
-  assert.equal(conCastigo, 'enjambre');
-  assert.equal(sinCastigo, 'concentrada');
-});
-
-test('el perímetro lleno sigue produciendo apariciones, fuera del tablero y sin bucle', () => {
-  const oleada = plan(5, 1, () => true);
-  assert.equal(oleada.cola.length, 5);
-  for (const enemigo of oleada.cola) {
-    const fuera = enemigo.x < 0 || enemigo.y < 0 || enemigo.x >= 11 || enemigo.y >= 11;
-    assert.equal(fuera, true);
-  }
-});
-
-test('el cupo simultáneo aplaza y la oleada cierra cuando no queda nadie', () => {
-  const director = crearDirector({ tablero, aleatorio: crearAleatorio(2), ocupante: () => false });
-  const dt = 1 / 60;
-  while (director.vista().fase === 'preparacion') director.avanzar(dt, 0);
-  while (director.vista().porSalir > 0) director.avanzar(5, 0);
-  director.avanzar(dt, 0);
-  assert.equal(director.vista().numero, 2);
-  while (director.vista().fase === 'preparacion') director.avanzar(dt, 0);
-  const cupo = maxSimultaneos(2);
-  assert.equal(director.avanzar(60, cupo).length, 0);
+test('el cupo aplaza entradas y un superviviente conserva el combate sin dar energía indefinida', () => {
+  const director = crearDirector({ tablero, aleatorio: crearAleatorio(2) });
+  director.avanzar(20, 0);
+  const cupo = maxSimultaneos(1);
+  assert.deepEqual(director.avanzar(60, cupo), []);
   assert.equal(director.avanzar(1, cupo - 1).length, 1);
   while (director.vista().porSalir > 0) director.avanzar(5, 0);
   assert.equal(director.vista().fase, 'combate');
-  director.avanzar(dt, 0);
+  director.avanzar(300, 1);
+  assert.equal(director.vista().fase, 'combate');
+  assert.equal(director.generaEnergia(), false);
+  director.avanzar(1 / 60, 0);
+  const vista = director.vista();
+  assert.equal(vista.fase, 'recompensa');
+  assert.equal(vista.numero, 1);
+  assert.equal(director.generaEnergia(), false);
+  assert.deepEqual(director.avanzar(30, 0), []);
+  assert.deepEqual(director.vista(), vista);
+  const estado = { energia: 0 };
+  assert.equal(director.presentar(1, estado), null);
+  const premio = director.presentar(0, estado, { continuar: true });
+  assert.deepEqual(premio, vista.resultado);
+  assert.equal(estado.energia, premio.energia);
+  assert.equal(director.presentar(0, estado, { continuar: true }), null);
+  assert.equal(director.vista().numero, 2);
   assert.equal(director.vista().fase, 'preparacion');
-  assert.equal(director.vista().numero, 3);
 });
-
 test('tras la derrota el director no sigue soltando enemigos', () => {
   const estado = { energia: 0 };
   const jardin = crearJardin({ tablero, estado, catalogo: PLANTAS, frames: {} });
@@ -143,18 +120,4 @@ test('un espino devuelve daño por mordida y no encadena', () => {
   assert.equal(enemigo.vida, vida - BALANCE.espino.reflejo);
   assert.equal(enemigo.colorImpacto, 'ambiental');
   assert.equal(tablero.ocupante(5, 4).vida, BALANCE.espino.vida - BALANCE.escarabajo.dano);
-});
-
-test('el enjambre comparte dos entradas y concentra las llegadas con el mismo presupuesto', () => {
-  const datos = { numero: 9, tablero, ocupado: () => false, patronForzado: 'enjambre' };
-  const compacta = generarOleada({ ...datos, rng: crearAleatorio(42) });
-  const amplia = generarOleada({ ...datos, rng: crearAleatorio(42), oleadas: { ...OLEADAS, compresionEnjambre: 1 } });
-  const anclas = new Set(compacta.cola.map(({ celda }) => celda.lado));
-  const llegada = ({ en, id, celda }) =>
-    en + Math.hypot(celda.x - tablero.centro.x, celda.y - tablero.centro.y) / BALANCE[id].velocidad;
-  const amplitud = ({ cola }) => Math.max(...cola.map(llegada)) - Math.min(...cola.map(llegada));
-  assert.equal(anclas.size, 2);
-  assert.equal(compacta.presupuesto, amplia.presupuesto);
-  assert.deepEqual(compacta.conteo, amplia.conteo);
-  assert.ok(amplitud(compacta) < amplitud(amplia));
 });

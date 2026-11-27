@@ -190,16 +190,33 @@ body {
 .catalogo {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(4, auto);
+  grid-template-columns: repeat(5, auto);
   justify-content: center;
   gap: 14px;
   padding-block: 14px calc(var(--alto-ayuda, 24px) + 8px);
   z-index: 2;
 }
 .catalogo-descripcion {
-  position: absolute; inset-inline: 0; bottom: 0; margin: 0; height: var(--alto-ayuda, 24px);
+  position: absolute; inset-inline: 0; bottom: 0; margin: 0; height: var(--alto-ayuda, 44px);
   color: var(--ink);
 }
+.carta.pala { touch-action: manipulation; }
+.recompensa button {
+  display: grid; place-items: center; min-width: 44px; min-height: 44px;
+  padding: 0; border: 0; background: none; color: var(--ink); cursor: pointer;
+}
+.recompensa button:focus-visible { outline: 2px dashed var(--ink); }
+.recompensa {
+  position: absolute; inset: calc(var(--alto-aviso, 24px) + 8px) 0 0; z-index: 3; display: flex;
+  flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  background: var(--bg);
+}
+.recompensa[hidden] { display: none; }
+.recompensa p { width: 100%; margin: 0; color: var(--ink); }
+.recompensa p .pixel-posicion { margin-inline: auto; }
+.recompensa button { padding-inline: 8px; color: var(--spark); }
+.escenario-evento[data-evento="oleada"] { color: var(--ink); animation: aviso-oleada 2.2s steps(2, end) both; }
+@keyframes aviso-oleada { 0% { opacity: 0.45; } 15%, 80% { opacity: 1; } 100% { opacity: 0.55; } }
 .carta { position: relative; display: grid; place-items: center; min-width: 44px; min-height: 44px; padding: 0; border: 0; background: none; line-height: 0; cursor: pointer; }
 .carta { touch-action: none; user-select: none; -webkit-user-select: none; }
 .carta-lienzo { display: block; image-rendering: pixelated; }
@@ -222,7 +239,10 @@ body {
 @keyframes derrota-aparece { from { opacity: 0; } to { opacity: 1; } }
 @media (max-width: 52rem) {
   .herbario { --gutter: 12px; --escala-carta: 1.55; }
-  .catalogo { grid-template-columns: repeat(2, auto); gap: 10px; }
+  .catalogo { grid-template-columns: repeat(3, auto); gap: 10px; }
+}
+@media (max-width: 28rem) {
+  .catalogo { grid-template-columns: repeat(2, auto); }
 }
 @media (max-width: 360px) {
   .herbario { --escala-carta: 1.28; }
@@ -232,7 +252,7 @@ body {
   .herbario { --escala-carta: 1.4; padding-block: 8px; }
   .energia { --energia-em: 32px; }
   .herbario-campo { flex-direction: row; }
-  .catalogo { flex: none; grid-template-columns: repeat(2, auto); align-content: center; gap: 8px; min-width: 216px; padding-top: 0; }
+  .catalogo { flex: none; grid-template-columns: repeat(3, auto); align-content: center; gap: 8px; min-width: 216px; padding-top: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .herbario *, .herbario *::before, .herbario *::after { animation: none !important; transition: none !important; }

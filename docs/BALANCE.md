@@ -1,5 +1,7 @@
 # Balance
 
+Para los valores y resultados vigentes del director, la pala y los premios, ver [Etapa 08.4](ETAPA_084.md). Las mediciones de revisiones anteriores se conservan abajo para comparación histórica.
+
 Fuente de verdad: `src/config.js`, leído por `src/catalogo.js` y `src/combate.js`. Si un número de aquí no coincide con ese archivo, gana el archivo. Esta nota no se importa desde el juego.
 
 La configuración beta y su validación están en [Etapa 08.3](ETAPA_083.md). Las cifras de esta nota corresponden a etapas anteriores y se conservan como referencia.

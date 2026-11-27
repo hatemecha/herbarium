@@ -14,6 +14,8 @@ Elegí o tocá una carta para leer su función, incluso si todavía te falta ene
 
 También podés arrastrar la carta y soltarla en una casilla válida. Acercá el jardín con la rueda o con dos dedos. Cuando esté ampliado, arrastrá el tablero para moverte. Con el tablero enfocado, usá `+` y `−` para el zoom y `0` para volver a la vista completa.
 
+La pala permite retirar plantas por la mitad del coste que pagaste. En táctil, el primer toque muestra el reembolso y el segundo confirma. Al superar una invasión, el jardín se detiene brevemente para revelar el resultado antes de la preparación siguiente.
+
 El [informe de la etapa 08.3](docs/ETAPA_083.md) reúne estadísticas, escenarios y evidencia de la calibración. Los valores jugables viven en `src/config.js`.
 
 ## Tecnología
@@ -24,6 +26,10 @@ HTML, CSS y módulos ES. Canvas 2D. Sin dependencias y sin bundler. Node 24 solo
 
 - Node.js 24
 - Un navegador con módulos ES y Canvas 2D
+
+## Jugar
+
+Demo en GitHub Pages: <https://hatemecha.github.io/herbarium/>
 
 ## Uso
 

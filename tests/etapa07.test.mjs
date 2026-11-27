@@ -53,10 +53,14 @@ test('las apariciones comprueban el perímetro en el momento de nacer', () => {
   const director = crearDirector({ tablero, aleatorio: crearAleatorio(42), ocupante: () => ocupado });
   director.avanzar(60, 0);
   ocupado = true;
-  for (const orden of director.avanzar(60, 0)) {
-    assert.ok(orden.x < 0 || orden.y < 0 || orden.x >= tablero.columnas || orden.y >= tablero.filas);
+  let emitidos = 0;
+  while (director.vista().porSalir > 0) {
+    for (const orden of director.avanzar(60, 0)) {
+      emitidos++;
+      assert.ok(orden.x < 0 || orden.y < 0 || orden.x >= tablero.columnas || orden.y >= tablero.filas);
+    }
   }
-  assert.equal(director.vista().porSalir, 0);
+  assert.ok(emitidos > 0);
 });
 
 test('las oleadas largas consumen su presupuesto sin el tope anterior de unidades', () => {
@@ -67,20 +71,15 @@ test('las oleadas largas consumen su presupuesto sin el tope anterior de unidade
   assert.ok(plan.cola.length > 480);
 });
 
-test('la pinza compensa las velocidades para aproximar las llegadas de ambos lados', () => {
+test('el director expone varios frentes al principio y al final de la misma invasión', () => {
   const tablero = crearTablero();
   const plan = generarOleada({
-    numero: 5, tablero, rng: crearAleatorio(2), ocupado: () => false, patronForzado: 'pinza',
+    numero: 5, tablero, rng: crearAleatorio(2),
   });
-  const llegadas = new Map();
-  for (const orden of plan.cola) {
-    const { x, y, lado } = orden.celda;
-    const llegada = orden.en + Math.hypot(x - tablero.centro.x, y - tablero.centro.y) / BALANCE[orden.id].velocidad;
-    llegadas.set(lado, Math.min(llegadas.get(lado) ?? Infinity, llegada));
+  const mitad = plan.ventana / 2;
+  for (const bloque of [plan.cola.filter(orden => orden.en < mitad), plan.cola.filter(orden => orden.en >= mitad)]) {
+    assert.equal(new Set(bloque.map(({ celda }) => celda.lado)).size, 4);
   }
-  assert.equal(llegadas.size, 2);
-  const [a, b] = llegadas.values();
-  assert.ok(Math.abs(a - b) < 4);
 });
 
 test('la oruga se prepara antes de empezar a desgastar su bloqueo', () => {
@@ -134,18 +133,15 @@ test('la oruga aumenta el daño solo después de afianzarse en la misma planta',
   assert.equal(planta.vida, planta.vidaMax - dano * 3 - danoSostenido);
 });
 
-test('el aviso señala la primera entrada y solo aparece al final de la preparación', () => {
+test('el aviso de aproximación solo aparece al final de la preparación', () => {
   const tablero = crearTablero();
   const director = crearDirector({ tablero, aleatorio: crearAleatorio(9) });
-  assert.equal(director.aviso(), null);
+  assert.equal(director.aviso(), false);
   director.avanzar(18, 0);
-  const entrada = director.aviso();
-  assert.ok(entrada);
+  assert.equal(director.aviso(), true);
   director.avanzar(2, 0);
-  assert.equal(director.aviso(), null);
-  const [primero] = director.avanzar(2, 0);
-  assert.equal(Math.floor(primero.x), entrada.x);
-  assert.equal(Math.floor(primero.y), entrada.y);
+  assert.equal(director.aviso(), false);
+  assert.equal(director.vista().fase, 'combate');
 });
 
 test('la oruga amortigua un tiro frontal, pero recibe daño completo desde un costado', () => {

@@ -10,9 +10,9 @@ const variantes = {
   soloEscalon: { economia: { ...ECONOMIA, escalada: 0 } },
   sinCorazaFrontal: { oruga: { corazaFrontal: 0 } },
   hongoCorto: { area: { alcance: 1.75, intervalo: 1.8 } },
-  enjambreMasBreve: { oleadas: { compresionEnjambre: 0.15, compensaViaje: 1 } },
+  presionUniforme: { oleadas: { concentracion: 0 } },
   costePlano: { economia: { ...ECONOMIA, creciente: false } },
-  ritmoAdaptativo: { oleadas: { adaptacion: { ...OLEADAS.adaptacion, activa: true } } },
+  gruposMasCortos: { oleadas: { ...OLEADAS, grupoMax: 2 } },
 };
 
 for (const [variante, ajustes] of Object.entries(variantes)) {

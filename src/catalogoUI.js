@@ -4,18 +4,21 @@ import { alinearSalida, altoLectura, crearRotulo, INTERLINEADO_LECTURA, medirTex
 import { punteroFino } from './entrada.js';
 import { rgb } from './paleta.js';
 import { LADO_ESTRELLA, pintarEstrellaYTexto } from './sprites/estrella.js';
+import { LADO_PALA, PALA } from './sprites/pala.js';
 
 const ANCHO = 72;
 const ALTO = 80;
+
 function dibujarCarta(ctx, carta, roles, t, reducido, consultada) {
   const { tipo, animador, estado, enfoque, alcanzable } = carta;
   const seleccionada = estado === 'seleccionada';
   const pulso = alcanzable ? Math.max(0, (carta.pulsoHasta - t) / FEEDBACK.oleada) : 0;
   const destello = pulso > 0 && (reducido || pulso > 0.7 || (pulso > 0.2 && pulso < 0.5));
-  const borde = destello ? roles.energiaUI
-    : seleccionada ? roles.marca : carta.boton.matches(':focus-visible') ? roles.tintaUI
-      : enfoque || consultada ? roles.marcaSuave : roles.cuadricula;
-  const falta = estado === 'insuficiente' ? Math.max(0, (carta.faltaHasta - t) / FEEDBACK.gesto) : 0;
+  const falta = Math.max(0, (carta.faltaHasta - t) / FEEDBACK.gesto);
+  const borde = falta > 0 ? roles.petalo
+    : destello ? roles.energiaUI
+      : seleccionada ? roles.marca : carta.boton.matches(':focus-visible') ? roles.tintaUI
+        : enfoque || consultada ? roles.marcaSuave : roles.cuadricula;
 
   ctx.clearRect(0, 0, ANCHO, ALTO);
   ctx.globalAlpha = 1;
@@ -57,8 +60,11 @@ function dibujarCarta(ctx, carta, roles, t, reducido, consultada) {
     ctx.fillRect(64, 8, 1, 2);
   }
   if (falta > 0) {
-    ctx.fillStyle = rgb(roles.petalo, reducido ? 1 : falta);
-    ctx.fillRect(8, ALTO - 5, ANCHO - 16, 1);
+    ctx.save();
+    ctx.globalCompositeOperation = 'source-atop';
+    ctx.fillStyle = rgb(roles.petalo, reducido ? 0.16 : falta > 0.7 ? 0.22 : 0.14);
+    ctx.fillRect(0, 0, ANCHO, ALTO);
+    ctx.restore();
   }
   if (destello) {
     ctx.save();
@@ -70,7 +76,19 @@ function dibujarCarta(ctx, carta, roles, t, reducido, consultada) {
   ctx.globalAlpha = 1;
 }
 
-export function crearCatalogoUI({ contenedor, tipos, animadores, roles, alElegir, alConsultar }) {
+function tintaPala(roles, activa) {
+  return {
+    w: roles.maderaSombra,
+    h: roles.madera,
+    H: roles.maderaLuz,
+    o: activa ? roles.energiaUI : roles.insectoSombra,
+    '#': roles.campana,
+    '+': roles.campanaLuz,
+    '=': roles.campanaSombra,
+  };
+}
+
+export function crearCatalogoUI({ contenedor, tipos, animadores, roles, alElegir, alConsultar, alPala }) {
   const raiz = document.createElement('div');
   const descripcion = document.createElement('p');
   descripcion.className = 'catalogo-descripcion';
@@ -134,11 +152,84 @@ export function crearCatalogoUI({ contenedor, tipos, animadores, roles, alElegir
     return carta;
   });
 
-  raiz.append(descripcion);
+  const pala = document.createElement('button');
+  pala.type = 'button';
+  pala.className = 'carta pala';
+  pala.dataset.interfaz = '';
+  pala.setAttribute('aria-label', 'Pala, retirar planta');
+  pala.setAttribute('aria-pressed', 'false');
+  pala.addEventListener('click', () => {
+    if (pala.disabled) return;
+    alPala();
+  });
+  const dibujoPala = superficie(ANCHO, ALTO);
+  const ctxPala = dibujoPala.getContext('2d');
+  ctxPala.imageSmoothingEnabled = false;
+  const lienzoPala = document.createElement('canvas');
+  lienzoPala.className = 'carta-lienzo';
+  lienzoPala.setAttribute('aria-hidden', 'true');
+  pala.append(lienzoPala);
+  raiz.append(pala, descripcion);
   contenedor.append(raiz);
   const rotulo = crearRotulo(descripcion, '', {
     ancho: () => descripcion.clientWidth, centro: true, interlineado: INTERLINEADO_LECTURA,
   });
+  let palaDisponible = false;
+  let palaPulsoHasta = 0;
+
+  function pintarPala(activa, t, reducido) {
+    const disponible = palaDisponible;
+    const borde = !disponible ? roles.cuadricula
+      : activa ? roles.energiaUI
+        : pala.matches(':focus-visible') ? roles.tintaUI : roles.cuadricula;
+    ctxPala.clearRect(0, 0, ANCHO, ALTO);
+    pintarMarco(ctxPala, ANCHO, ALTO, rgb(roles.terreno), rgb(borde));
+    ctxPala.fillStyle = rgb(roles.fondo, 0.5);
+    ctxPala.fillRect(3, 3, ANCHO - 6, ALTO - 6);
+    if (pala.matches(':focus-visible') && disponible) {
+      ctxPala.fillStyle = rgb(roles.tintaUI);
+      ctxPala.fillRect(4, 4, 6, 1);
+      ctxPala.fillRect(4, 4, 1, 6);
+    }
+    ctxPala.globalAlpha = disponible ? 1 : 0.55;
+    const origenX = 20;
+    const origenY = 8;
+    const tinta = tintaPala(roles, activa);
+    for (const [y, fila] of PALA.entries()) {
+      for (const [x, pixel] of [...fila].entries()) {
+        const color = tinta[pixel];
+        if (!color) continue;
+        ctxPala.fillStyle = rgb(color);
+        ctxPala.fillRect(origenX + x * 2, origenY + y * 2, 2, 2);
+      }
+    }
+    ctxPala.globalAlpha = 1;
+    if (!disponible) {
+      ctxPala.fillStyle = rgb(roles.marcaSuave);
+      ctxPala.fillRect(60, 10, 5, 4);
+      ctxPala.fillRect(61, 7, 3, 1);
+      ctxPala.fillRect(60, 8, 1, 2);
+      ctxPala.fillRect(64, 8, 1, 2);
+    }
+    const etiqueta = 'Pala';
+    pintarTexto(
+      ctxPala,
+      etiqueta,
+      Math.floor((ANCHO - medirTexto(etiqueta)) / 2),
+      52,
+      rgb(roles.tintaUI),
+    );
+    const pulso = disponible ? Math.max(0, (palaPulsoHasta - t) / FEEDBACK.oleada) : 0;
+    const destello = pulso > 0 && (reducido || pulso > 0.7 || (pulso > 0.2 && pulso < 0.5));
+    if (destello) {
+      ctxPala.save();
+      ctxPala.globalCompositeOperation = 'source-atop';
+      ctxPala.fillStyle = rgb(roles.energiaUI, reducido ? 0.10 : pulso > 0.7 ? 0.19 : 0.12);
+      ctxPala.fillRect(0, 0, ANCHO, ALTO);
+      ctxPala.restore();
+    }
+    presentar(dibujoPala, lienzoPala);
+  }
 
   function ajustar() {
     const escala = parseFloat(getComputedStyle(raiz).getPropertyValue('--escala-carta')) || 2;
@@ -147,9 +238,14 @@ export function crearCatalogoUI({ contenedor, tipos, animadores, roles, alElegir
     for (const carta of cartas) {
       prepararSalida(carta.lienzo, ANCHO, ALTO, multiplo, dpr);
     }
-    const alto = altoLectura(tipos.map((tipo) => tipo.descripcion), descripcion.clientWidth, dpr);
+    prepararSalida(lienzoPala, ANCHO, ALTO, multiplo, dpr);
+    const alto = altoLectura([...tipos.map((tipo) => tipo.descripcion),
+      'Elegí una planta para retirar.', 'Recuperás 999 de energía.',
+      'La pala se desbloquea en la oleada 3.'], descripcion.clientWidth, dpr);
     raiz.style.setProperty('--alto-ayuda', `${alto}px`);
     for (const carta of cartas) alinearSalida(carta.lienzo, dpr);
+    alinearSalida(lienzoPala, dpr);
+    pintarPala(pala.getAttribute('aria-pressed') === 'true', 0, false);
     rotulo.actualizar();
   }
 
@@ -158,8 +254,27 @@ export function crearCatalogoUI({ contenedor, tipos, animadores, roles, alElegir
   return {
     elemento: raiz,
     ajustar,
-    actualizar({ energia, activa, costes, t, reducido, panel, bloqueado = false }) {
-      const consejo = bloqueado ? '' : funcionDe(panel)?.consejo ?? '';
+    actualizar({
+      energia, activa, costes, t, reducido, panel, herramienta,
+      bloqueado = false, palaLista = true,
+    }) {
+      const disponible = !bloqueado && palaLista;
+      if (disponible && !palaDisponible) palaPulsoHasta = t + FEEDBACK.oleada;
+      if (!disponible) palaPulsoHasta = 0;
+      palaDisponible = disponible;
+      const usandoPala = disponible && herramienta != null;
+      pala.disabled = !disponible;
+      pala.dataset.estado = !palaLista ? 'cerrada' : usandoPala ? 'seleccionada' : 'disponible';
+      pala.setAttribute('aria-pressed', String(usandoPala));
+      pala.setAttribute(
+        'aria-label',
+        !palaLista ? 'Pala, se desbloquea en la oleada 3'
+          : bloqueado ? 'Pala, no disponible'
+            : usandoPala ? 'Pala, retirar planta, activa' : 'Pala, retirar planta',
+      );
+      pintarPala(usandoPala, t, reducido);
+      const consejo = bloqueado ? ''
+        : herramienta ?? (!palaLista && panel == null ? '' : funcionDe(panel)?.consejo) ?? '';
       if (descripcion.textContent !== consejo) rotulo.actualizar(consejo);
       for (const carta of cartas) {
         carta.ultimoT = t;
@@ -178,7 +293,7 @@ export function crearCatalogoUI({ contenedor, tipos, animadores, roles, alElegir
           carta.boton.dataset.estado = estado;
           carta.boton.disabled = bloqueado;
           carta.boton.setAttribute('aria-pressed', String(seleccionada));
-          const disponibilidad = bloqueado ? 'jardín caído' : alcanzable ? 'disponible' : faltan === 1 ? 'falta 1 de energía, consultar' : `faltan ${faltan} de energía, consultar`;
+          const disponibilidad = bloqueado ? 'compra cerrada' : alcanzable ? 'disponible' : faltan === 1 ? 'falta 1 de energía, consultar' : `faltan ${faltan} de energía, consultar`;
           const funcion = carta.tipo.funcion ? `${carta.tipo.funcion}, ` : '';
           carta.boton.setAttribute('aria-label', `${carta.tipo.nombre}, ${funcion}coste ${coste} de energía, ${disponibilidad}`);
         }

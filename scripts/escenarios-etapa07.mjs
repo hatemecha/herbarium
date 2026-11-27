@@ -4,7 +4,7 @@ import { ENEMIGOS, PLANTAS } from '../src/catalogo.js';
 import { crearCombate } from '../src/combate.js';
 import { crearJardin } from '../src/jardin.js';
 import { crearRegistro, percentil } from '../src/metricas.js';
-import { generarOleada } from '../src/oleadas.js';
+import { generarOleada, puntoDeEntrada } from '../src/oleadas.js';
 import { crearTablero } from '../src/tablero.js';
 
 function escenario(sembradas, ordenes, espino = {}, semilla = 17, vidaCentral = BALANCE.central.vida) {
@@ -63,18 +63,28 @@ const jardinFijo = [
   ['cerbatana', 5, 4], ['cerbatana', 6, 5], ['cerbatana', 5, 6],
   ['campanilla', 4, 4], ['hongo', 5, 3], ['espino', 5, 2],
 ];
-const patrones = ['concentrada', 'pinza', 'enjambre', 'distraccion'];
+const variantes = {
+  uniforme: { concentracion: 0 },
+  variable: {},
+  concentrada: { concentracion: 0.65 },
+  dispersa: { frenteSimultaneo: 0.45 },
+};
+const patrones = Object.keys(variantes);
+function resolverEntradas(plan, semilla, ocupado = false) {
+  const azar = crearAleatorio(semilla);
+  return plan.cola.map(orden => ({ ...orden, ...puntoDeEntrada(orden.celda, ocupado, tablero, azar) }));
+}
 const valores = Object.fromEntries(patrones.map((patron) => [patron, []]));
 for (let semilla = 101; semilla <= 124; semilla++) {
   let referencia;
   for (const patron of patrones) {
     const plan = generarOleada({
-      numero: 9, tablero, rng: crearAleatorio(semilla), ocupado: () => false, patronForzado: patron,
-      oleadas: { ...OLEADAS, sesgoDePatron: 0 },
+      numero: 9, tablero, rng: crearAleatorio(semilla),
+      oleadas: { ...OLEADAS, ...variantes[patron] },
     });
     referencia ??= JSON.stringify(plan.conteo);
     if (JSON.stringify(plan.conteo) !== referencia) throw new Error('Cambió la composición entre patrones');
-    valores[patron].push(escenario(jardinFijo, plan.cola, {}, semilla));
+    valores[patron].push(escenario(jardinFijo, resolverEntradas(plan, semilla), {}, semilla));
   }
 }
 const comparacion = Object.fromEntries(patrones.map((patron) => {
@@ -117,7 +127,7 @@ for (let y = 0; y < tablero.filas; y++) {
   }
 }
 const planTardio = generarOleada({
-  numero: 28, rng: crearAleatorio(27), tablero, ocupado: () => true, patronForzado: 'enjambre',
+  numero: 28, rng: crearAleatorio(27), tablero,
 });
-const saturado = escenario(lleno, planTardio.cola, {}, 27, 8);
+const saturado = escenario(lleno, resolverEntradas(planTardio, 27, true), {}, 27, 8);
 console.log(JSON.stringify({ demora, saturado: { plantasIniciales: lleno.length, presupuesto: planTardio.presupuesto, ...saturado }, combinaciones, oleada: 9, semillas: [101, 124], espinoFinal: BALANCE.espino, proteccion, comparacion, area }, null, 2));

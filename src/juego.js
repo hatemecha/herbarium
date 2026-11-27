@@ -1,4 +1,4 @@
-import { BALANCE, FEEDBACK, PARTICULAS, SIMULACION, TABLERO } from './config.js';
+import { BALANCE, FEEDBACK, PALA, PARTICULAS, SIMULACION, TABLERO } from './config.js';
 import { crearAleatorio, semillaNueva } from './aleatorio.js';
 import { crearCamara } from './camara.js';
 import { COMPRABLES, ENEMIGOS, PLANTAS } from './catalogo.js';
@@ -11,6 +11,7 @@ import { crearDescubrimientos } from './descubrimientos.js';
 import { crearPausa } from './pausa.js';
 import { alinearPixel, celdaDeCliente, pantallaAMundo } from './escala.js';
 import { crearGestos } from './gestos.js';
+import { crearRecompensaUI } from './interfazOleadas.js';
 import { alinearSalida, altoLectura, cargarFuentePixel, colocarSalida, crearRotulo, INTERLINEADO_LECTURA, medirTexto, prepararSalida, presentar, superficie } from './interfazPixel.js';
 import { apagar, crearEstado, avanzar } from './estado.js';
 import { crearJardin } from './jardin.js';
@@ -29,6 +30,7 @@ const AVISOS_COLOCACION = {
   ocupada: 'Casilla ocupada.',
   aislada: 'Junto a una planta viva.',
 };
+const PAUSA_ENERGIA = 'La central descansa.';
 
 function pintarEnergia(canvas, botonPausa, roles, valor) {
   const texto = String(valor);
@@ -63,7 +65,7 @@ function construirDom(contenedor) {
         <div class="escenario-evento" aria-hidden="true"></div>
       </div>
     </div>
-    <div class="motas-energia" aria-hidden="true"><i></i><i></i></div>`;
+    <div class="motas-energia" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>`;
   return {
     pausa: contenedor.querySelector('.pausa-boton'),
     motas: contenedor.querySelector('.motas-energia'),
@@ -85,17 +87,25 @@ function construirFrames(roles) {
   return frames;
 }
 
-function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, camara, alMoverVista, habilitado) {
+function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, camara, alMoverVista, habilitado,
+  { recompensas, alTarot } = {}) {
   const tablero = crearTablero();
   const semilla = semillaNueva();
   const director = crearDirector({
     tablero,
     aleatorio: crearAleatorio(semilla),
     semilla,
+    recompensas,
     ocupante: (x, y) => tablero.ocupante(x, y),
   });
   const aleatorioVisual = crearAleatorio((semilla + 1) >>> 0);
   const estado = crearEstado();
+  const eventosUI = new AbortController();
+  let usandoPala = false;
+  let retiroVista = null;
+  let retiroPendiente = null;
+  let avisoVisual = false;
+  let generabaEnergia = true;
   let gesto = null;
   let consulta = null;
   let inspeccion = null;
@@ -125,6 +135,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
 
   function avisar(mensaje) {
     texto(dom.anuncio, mensaje);
+    if (dom.evento.dataset.evento === 'oleada' && eventoHasta > estado.tiempo) return;
     texto(dom.evento, mensaje);
     delete dom.evento.dataset.evento;
     eventoHasta = estado.tiempo + 2.2;
@@ -161,6 +172,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
     estado,
     catalogo: PLANTAS,
     frames,
+    permitido: () => habilitado() && !director.enRecompensa(),
     alPlantar(planta) {
       render.registrarPlanta(planta);
       actualizarEnergia();
@@ -171,7 +183,10 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
         if (!reducido.matches) particulas.rafaga(planta.nucleo.x, planta.nucleo.y, 9, { familia: 'brote', color: roles.hojaBrillo });
       }
     },
-    alRetirar: (planta) => render.retirarPlanta(planta),
+    alRetirar(planta, voluntaria) {
+      render.retirarPlanta(planta);
+      if (voluntaria) combate.desvincular(planta);
+    },
   });
   jardin.sembrar('central', tablero.centro);
   if (!reducido.matches) particulas.rafaga(jardin.central.nucleo.x, jardin.central.nucleo.y, 10, { familia: 'brote', color: roles.nucleo });
@@ -203,6 +218,17 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
     animadores,
     roles,
     alConsultar: (id) => { consulta = id; },
+    alPala() {
+      if (!operable() || director.vista().numero < PALA.desdeOleada) return;
+      if (usandoPala) cancelarPala();
+      else {
+        gestos.cancelar();
+        colocacion.cancelar();
+        seleccion.limpiar();
+        usandoPala = true;
+        texto(dom.anuncio, 'Elegí una planta para retirar.');
+      }
+    },
     alElegir: (id) => { if (elegible(id)) colocacion.alternar(id); },
   });
   const colocacion = crearColocacion({
@@ -217,8 +243,55 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
   let ultimoBrote = -Infinity;
   let trayecto;
 
+  const operable = () => habilitado() && !combate.derrota() && !director.enRecompensa();
+
+  function cancelarPala() {
+    usandoPala = false;
+    retiroVista = null;
+    retiroPendiente = null;
+  }
+
+  function consultarRetiro(celda) {
+    const energia = celda ? jardin.reembolso(celda) : null;
+    retiroVista = { celda, energia };
+    return energia;
+  }
+
+  function usarPala(e, celda) {
+    const energia = consultarRetiro(celda);
+    if (energia === null) {
+      retiroPendiente = null;
+      return;
+    }
+    const ocupante = tablero.ocupante(celda.x, celda.y);
+    if (e.pointerType === 'touch' && retiroPendiente !== ocupante) {
+      retiroPendiente = ocupante;
+      texto(dom.anuncio, `Recuperás ${energia} de energía. Tocá otra vez para retirar.`);
+      return;
+    }
+    const retirada = jardin.retirar(celda);
+    if (!retirada) return;
+    seleccion.limpiar();
+    cancelarPala();
+    actualizarEnergia();
+    marcar('retirada', celda);
+    avisar(retirada.energia ? `+${retirada.energia} de energía` : 'Planta retirada');
+    if (!reducido.matches) {
+      const { x, y } = retirada.planta.nucleo;
+      particulas.rafaga(x, y, 9, { familia: 'brote', color: roles.hojaBrillo });
+    }
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') cancelarPala();
+  }, { signal: eventosUI.signal });
+  dom.canvas.addEventListener('pointerleave', () => {
+    if (!retiroPendiente) retiroVista = null;
+  }, { signal: eventosUI.signal });
+
   function elegible(id, conservarSeleccion = false) {
-    if (combate.derrota()) return false;
+    if (!operable()) return false;
+    cancelarPala();
     const faltan = Math.ceil(jardin.coste(id) - estado.energia);
     if (faltan > 0) {
       if (!conservarSeleccion) {
@@ -238,7 +311,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
     canvas: dom.canvas,
     catalogo: catalogo.elemento,
     camara,
-    habilitado: () => habilitado() && !combate.derrota(),
+    habilitado: operable,
     alMoverVista() {
       trayecto = null;
       colocacion.salir();
@@ -247,10 +320,19 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
       dibujar();
     },
     alTocar(e) {
-      if (!celdaDe(e)) return;
+      const celda = celdaDe(e);
+      if (!celda) return;
+      if (usandoPala) {
+        usarPala(e, celda);
+        return;
+      }
       if (!colocacion.pulsar(e)) seleccion.pulsar(e);
     },
     alSobrevolar(e) {
+      if (usandoPala) {
+        if (e.pointerType !== 'touch') consultarRetiro(celdaDe(e));
+        return;
+      }
       colocacion.mover(e);
       seleccion.mover(e);
     },
@@ -264,9 +346,34 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
     alCancelarSemilla: colocacion.cancelar,
   });
 
+  const recompensaUI = crearRecompensaUI({
+    escenario: dom.escenario, roles, reducido,
+    alRevelar(t) {
+      if (!habilitado()) return;
+      director.revelarDesde(t);
+      dibujar();
+    },
+    alContinuar() {
+      if (!habilitado()) return;
+      presentarPremio(0, true);
+      dibujar();
+    },
+  });
+
+  function presentarPremio(dt, continuar = false) {
+    const premio = director.presentar(dt, estado, { rapido: reducido.matches, continuar });
+    if (premio?.tipo === 'tarot') {
+      alTarot?.(premio, () => director.finalizarTarot());
+    }
+    if (premio && !director.enRecompensa() && recompensaUI.teniaFoco()) dom.canvas.focus({ preventScroll: true });
+  }
+
   function dibujarMotas() {
     const edad = estado.tiempo - ultimoBrote;
-    const visibles = !reducido.matches && !combate.derrota() && edad < 0.96;
+    const motas = Array.from(dom.motas.children);
+    const desfase = 0.12;
+    const viaje = 0.8;
+    const visibles = !reducido.matches && !combate.derrota() && edad < desfase * (motas.length - 1) + viaje;
     dom.motas.hidden = !visibles;
     if (!visibles) return;
     if (!trayecto) {
@@ -285,12 +392,13 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
     const dpr = window.devicePixelRatio || 1;
     const capa = dom.motas.getBoundingClientRect();
     const lado = Math.max(1, Math.round(dpr)) / dpr;
-    for (const [i, mota] of Array.from(dom.motas.children).entries()) {
-      const t = Math.max(0, Math.min(1, (edad - i * 0.16) / 0.8));
+    for (const [i, mota] of motas.entries()) {
+      const t = Math.max(0, Math.min(1, (edad - i * desfase) / viaje));
       const arco = Math.sin(Math.PI * t);
-      mota.style.opacity = String(arco * (i ? 0.19 : 0.32));
+      const deriva = ((i % 3) - 1) * 6;
+      mota.style.opacity = String(arco * (0.28 - i * 0.03));
       mota.style.width = mota.style.height = `${lado}px`;
-      mota.style.left = `${alinearPixel(capa.left + x + (finX - x) * t + arco * (i ? -7 : 5), dpr) - capa.left}px`;
+      mota.style.left = `${alinearPixel(capa.left + x + (finX - x) * t + arco * deriva, dpr) - capa.left}px`;
       mota.style.top = `${alinearPixel(capa.top + y + (finY - y) * t, dpr) - capa.top}px`;
     }
   }
@@ -356,11 +464,18 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
   }
 
   function simular(dt) {
+    if (director.enRecompensa()) {
+      presentarPremio(dt);
+      return;
+    }
     const reduce = reducido.matches;
     const caida = combate.derrota();
+    const genera = director.generaEnergia();
+    if (!caida && generabaEnergia && !genera) avisar(PAUSA_ENERGIA);
+    generabaEnergia = genera;
     if (caida) {
       apagar(estado, dt);
-    } else if (avanzar(estado, dt)) {
+    } else if (avanzar(estado, dt, genera ? undefined : 0)) {
       actualizarEnergia();
       if (dom.energia.dataset.pulso !== 'compra') pulso(dom.energia, 'latido', FEEDBACK.gesto);
       ultimoBrote = estado.tiempo;
@@ -381,6 +496,11 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
     jardin.actualizar(dt, reduce);
     combate.actualizar(dt);
     procesarEventos();
+    if (director.enRecompensa()) {
+      gestos.cancelar();
+      colocacion.cancelar();
+      cancelarPala();
+    }
 
     const central = jardin.central;
     particulas.actualizar(dt, !central.muerta, reduce, emisorDePolen);
@@ -398,6 +518,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
   function dibujar() {
     actualizarEnergia();
     dibujarMotas();
+    if (usandoPala && retiroVista?.celda) consultarRetiro(retiroVista.celda);
     const vista = colocacion.vista();
     const puntero = !tactil.matches && vista?.valido ? vista.puntero : null;
     const casilla = puntero ? puntero.y * tablero.columnas + puntero.x : null;
@@ -415,18 +536,20 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
     const alcance = muestra && (radio || tipo?.reflejo) && { ...muestra, radio, tipo: tipo.id };
     const vistaOleada = director.vista();
     const fase = `${vistaOleada.numero}:${vistaOleada.fase}`;
-    if (faseVisual !== fase) {
-      const inicio = vistaOleada.fase === 'combate';
-      if (faseVisual) {
+    const aviso = !combate.derrota() && director.aviso();
+    if (aviso && !avisoVisual) anunciarOleada('Se acerca una oleada');
+    avisoVisual = aviso;
+    if (faseVisual !== fase && !combate.derrota()) {
+      if (vistaOleada.fase === 'combate' || vistaOleada.fase === 'recompensa') {
         pulsoCentro = FEEDBACK.oleada;
-        texto(dom.anuncio, inicio ? `Comienza la oleada ${vistaOleada.numero}` : `Oleada superada. Prepara la ${vistaOleada.numero}`);
-        if (!inicio && !reducido.matches) particulas.rafaga(jardin.central.nucleo.x, jardin.central.nucleo.y, 12, { familia: 'brote', color: roles.energiaUI });
-      }
+        anunciarOleada(vistaOleada.fase === 'combate' ? `Oleada ${vistaOleada.numero}` : 'Oleada superada');
+      } else if (faseVisual.endsWith(':recompensa')) texto(dom.evento, '');
       faseVisual = fase;
     }
     const costes = Object.fromEntries(COMPRABLES.map(({ id }) => [id, jardin.coste(id)]));
     const activa = colocacion.tipoActivo();
     const caido = combate.derrota();
+    if (caido && dom.evento.textContent) texto(dom.evento, '');
     const panelId = caido ? null : activa ?? consulta ?? inspeccion;
 
     render.dibujar({
@@ -443,6 +566,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
       particulas,
       marcas,
       vista,
+      retiro: usandoPala && { celda: retiroVista?.celda, valido: retiroVista?.energia != null },
       hoverCelda: seleccion.sobrevuelo(),
       tactil: tactil.matches,
     });
@@ -453,6 +577,8 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
     }
     criticoAnterior = criticaCentral;
 
+    const palaLista = director.vista().numero >= PALA.desdeOleada;
+    if (usandoPala && !palaLista) cancelarPala();
     catalogo.actualizar({
       energia: estado.energia,
       activa,
@@ -460,8 +586,18 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
       t: estado.tiempo,
       reducido: reducido.matches,
       panel: panelId,
-      bloqueado: caido,
+      herramienta: usandoPala ? (retiroVista?.energia == null ? 'Elegí una planta para retirar.'
+        : `Recuperás ${retiroVista.energia} de energía.`) : null,
+      bloqueado: caido || director.enRecompensa(),
+      palaLista,
     });
+    recompensaUI.actualizar(vistaOleada, (mensaje) => texto(dom.anuncio, mensaje));
+  }
+
+  function anunciarOleada(mensaje) {
+    delete dom.evento.dataset.evento;
+    avisar(mensaje);
+    dom.evento.dataset.evento = 'oleada';
   }
 
   actualizarEnergia();
@@ -472,12 +608,15 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
     ajustarCatalogo() {
       trayecto = null;
       catalogo.ajustar();
+      recompensaUI.ajustar();
     },
     derrota: () => combate.derrota(),
-    cancelarGestos: gestos.cancelar,
+    cancelarGestos() { gestos.cancelar(); cancelarPala(); },
     seleccion,
     destruir() {
       gestos.destruir();
+      eventosUI.abort();
+      recompensaUI.destruir();
       for (const elemento of pulsos.keys()) delete elemento.dataset.pulso;
       texto(dom.anuncio, '');
       dom.motas.hidden = true;
@@ -488,7 +627,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
   };
 }
 
-export function montarHerbario(contenedor) {
+export function montarHerbario(contenedor, opciones = {}) {
   asegurarVariables();
   const roles = crearRoles(leerPaleta());
   const dom = construirDom(contenedor);
@@ -531,7 +670,7 @@ export function montarHerbario(contenedor) {
 
   function iniciarPartida() {
     partida = crearPartida(dom, roles, frames, reducido, () => derrota.mostrar(), descubrimientos,
-      camara, proyectarTablero, () => !document.hidden && !pausa.abierta());
+      camara, proyectarTablero, () => !document.hidden && !pausa.abierta(), opciones);
   }
 
   function reiniciar() {
@@ -568,7 +707,7 @@ export function montarHerbario(contenedor) {
     dom.escenario.style.minWidth = `${TABLERO.columnas * TABLERO.celda / dpr}px`;
     rotuloPausa.actualizar();
     partida.ajustarCatalogo();
-    const altoAviso = altoLectura(Object.values(AVISOS_COLOCACION), dom.evento.clientWidth, dpr);
+    const altoAviso = altoLectura([...Object.values(AVISOS_COLOCACION), PAUSA_ENERGIA], dom.evento.clientWidth, dpr);
     dom.escenario.style.setProperty('--alto-aviso', `${altoAviso}px`);
     const cs = getComputedStyle(dom.escenario);
     const izquierda = parseFloat(cs.paddingLeft);

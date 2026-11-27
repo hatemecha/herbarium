@@ -128,31 +128,42 @@ export const ECONOMIA = {
 // Valores de experimentación. El tramo cuadrático llega hasta la oleada 12; después suma `continuacion` por oleada.
 export const OLEADAS = {
   preparacionInicial: 20,
-  preparacion: 15,
+  preparacion: 17,
   aviso: 4,
-  base: 12,
-  lineal: 4,
-  cuadratica: 0.7,
+  base: 34,
+  lineal: 27,
+  cuadratica: 5,
   cuadraticaHasta: 12,
-  continuacion: 18,
+  continuacion: 90,
   grupoMax: 4,
-  sesgoDePatron: 0.5,
-  compresionEnjambre: 0.3,
-  compensaViaje: 0.8,
-  ventanaBase: 18,
-  ventanaPorK: 4,
-  ventanaMax: 48,
+  grupoMaxInicial: 2,
+  ventanaBase: 45,
+  ventanaPorK: 14,
+  ventanaMax: 109,
+  cambioFrente: 14,
+  concentracion: 0.43,
+  ausenciaReferencia: 31,
+  frenteSimultaneo: 0.23,
+  margenEnergia: 24,
+  maxAmenazaOruga: 0.45,
+  pesosEspecies: { pulgon: 1.15, escarabajo: 1, oruga: 0.6 },
   simultaneosBase: 6,
   simultaneosPorK: 3,
   simultaneosMax: 48,
   orugaDesde: 3,
-  adaptacion: {
-    activa: false,
-    margen: 0.12,
-    danoUmbral: 6,
-    plantasUmbral: 2,
-    rapidez: 0.45,
-  },
+};
+
+export const PALA = { reembolso: 0.5, rearme: 2.5, desdeOleada: 3 };
+
+export const RECOMPENSAS = {
+  pesos: { energia: 50, tarot: 30, vacia: 20 },
+  tarot: false,
+  limiteTarot: 4,
+  baseEnergia: 10,
+  incrementoEnergia: 4,
+  topeEnergia: 40,
+  duracion: 2.5,
+  reducida: 0.45,
 };
 
 export const FEEDBACK = {
