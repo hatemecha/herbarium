@@ -68,6 +68,9 @@ function dibujarCarta(ctx, carta, roles, t, reducido, consultada) {
 
 export function crearCatalogoUI({ contenedor, tipos, animadores, roles, alElegir, alConsultar }) {
   const raiz = document.createElement('div');
+  const descripcion = document.createElement('p');
+  descripcion.className = 'catalogo-descripcion';
+  descripcion.setAttribute('aria-hidden', 'true');
   raiz.className = 'catalogo';
   raiz.dataset.interfaz = '';
   raiz.setAttribute('role', 'group');
@@ -124,6 +127,7 @@ export function crearCatalogoUI({ contenedor, tipos, animadores, roles, alElegir
     return carta;
   });
 
+  raiz.append(descripcion);
   contenedor.append(raiz);
 
   function ajustar() {
@@ -150,6 +154,8 @@ export function crearCatalogoUI({ contenedor, tipos, animadores, roles, alElegir
       if (carta) carta.compraHasta = t + FEEDBACK.oleada;
     },
     actualizar({ energia, activa, costes, t, reducido, panel, bloqueado = false }) {
+      const consejo = panel && !bloqueado ? funcionDe(panel).consejo : '';
+      if (descripcion.textContent !== consejo) descripcion.textContent = consejo;
       for (const carta of cartas) {
         carta.ultimoT = t;
         const coste = costes?.[carta.tipo.id] ?? carta.tipo.coste;

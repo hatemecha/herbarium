@@ -57,6 +57,7 @@ export const PLANTAS = {
     coste: BALANCE.espino.coste,
     vida: BALANCE.espino.vida,
     reflejo: BALANCE.espino.reflejo,
+    atraccion: BALANCE.espino.atraccion,
     arte: {
       matriz: espino.MATRIZ,
       codigos: espino.CODIGOS,
@@ -110,6 +111,7 @@ export const ENEMIGOS = {
     intervalo: BALANCE.escarabajo.intervalo,
     radio: BALANCE.escarabajo.radio,
     amenaza: BALANCE.escarabajo.amenaza,
+    corazaEnVuelo: BALANCE.escarabajo.corazaEnVuelo,
     locomocion: 'vuelo',
     sombra: 3,
     arte: {
@@ -127,6 +129,7 @@ export const ENEMIGOS = {
     intervalo: BALANCE.pulgon.intervalo,
     radio: BALANCE.pulgon.radio,
     amenaza: BALANCE.pulgon.amenaza,
+    sobrevuela: BALANCE.pulgon.sobrevuela,
     locomocion: 'vuelo',
     sombra: 2,
     arte: {
@@ -145,6 +148,10 @@ export const ENEMIGOS = {
     intervalo: BALANCE.oruga.intervalo,
     radio: BALANCE.oruga.radio,
     amenaza: BALANCE.oruga.amenaza,
+    trasMordidas: BALANCE.oruga.trasMordidas,
+    danoSostenido: BALANCE.oruga.danoSostenido,
+    corazaFrontal: BALANCE.oruga.corazaFrontal,
+    frenteMinimo: BALANCE.oruga.frenteMinimo,
     locomocion: 'suelo',
     sombra: 4,
     arte: {

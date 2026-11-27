@@ -32,11 +32,11 @@ export function principal({ t, estado, jardin, aleatorio }) {
   return { id, x: celda.x, y: celda.y };
 }
 
-function politica(ids, reactiva = false) {
+function politica(ids, reactiva = false, compacta = false) {
   return ({ jardin, tablero, estado, enemigos = [] }) => {
     const vivas = jardin.plantas.filter((planta) => !planta.muerta);
     const ofensivas = vivas.filter((planta) => planta.tipo.ataque || planta.tipo.area);
-    const preferidas = ids.filter((id) => id === 'cerbatana' || ofensivas.length > 0);
+    const preferidas = ids.filter((id) => id === ids[0] || ofensivas.length > 0);
     const borde = perimetro(tablero);
     const defensas = vivas.filter((planta) => planta.tipo.reflejo).length;
     const tiradoras = ofensivas.filter((planta) => planta.tipo.ataque).length;
@@ -46,8 +46,8 @@ function politica(ids, reactiva = false) {
       const tipo = PLANTAS[id];
       const coste = jardin.coste(id);
       if (estado.energia < coste) continue;
-      if (tipo.reflejo && (tiradoras < 4 || defensas >= Math.floor(tiradoras / 4))) continue;
-      const radio = tipo.area?.alcance ?? tipo.ralentiza?.alcance ?? tipo.ataque?.alcance ?? 1.5;
+      if (tipo.reflejo && ids.length > 1 && (tiradoras < 4 || defensas >= Math.floor(tiradoras / 4))) continue;
+      const radio = tipo.area?.alcance ?? tipo.ralentiza?.alcance ?? tipo.ataque?.alcance ?? tipo.atraccion ?? 1.5;
       const cantidad = vivas.filter((planta) => planta.id === id).length;
       for (const celda of jardin.candidatas(id)) {
         const separacion = Math.min(4, ...vivas.filter((planta) => planta.id === id)
@@ -57,19 +57,23 @@ function politica(ids, reactiva = false) {
         let valor;
         if (tipo.reflejo) {
           const eje = Math.min(Math.abs(celda.x - tablero.centro.x), Math.abs(celda.y - tablero.centro.y));
-          valor = escudo(celda, jardin) ? 3.5 + Math.min(apoyo, 3) - eje : -6;
+          valor = ids.length === 1 ? 6 - dist(celda) + separacion : escudo(celda, jardin) ? 3.5 + Math.min(apoyo, 3) - eje : -6;
         }
         else if (tipo.ralentiza) valor = apoyo >= 2 ? 5 + Math.min(apoyo, 4) + separacion * 0.5 : -6;
         else if (tipo.area) valor = 5 + frente * 0.4 + separacion * 0.65 + Math.min(apoyo, 3);
         else valor = 6 + frente * 0.25 + separacion * 0.6 - dist(celda) * 0.2;
         if (reactiva) {
+          if (tipo.reflejo) {
+            valor += ofensivas.some((planta) => planta.tipo.area &&
+              Math.hypot(planta.celda.x - celda.x, planta.celda.y - celda.y) <= planta.tipo.area.alcance) ? 2 : 0;
+          }
           for (const enemigo of enemigos) {
             if (!enemigo.muerto && Math.hypot(enemigo.x - celda.x - 0.5, enemigo.y - celda.y - 0.5) <= radio) {
               valor += tipo.area && enemigo.tipo.id === 'pulgon' ? 2.5 : 0.8;
             }
           }
         }
-        const puntos = valor - cantidad * 0.8 - coste * 0.035;
+        const puntos = (compacta ? valor * 0.25 - dist(celda) * 2 : valor) - cantidad * 0.8 - coste * 0.035;
         if (puntos > maximo) {
           maximo = puntos;
           mejorAccion = { id, x: celda.x, y: celda.y };
@@ -96,7 +100,19 @@ export const especializado = (ctx) => {
   return accion;
 };
 
+const ahorrar = (ctx) => ctx.enemigos.some((e) => !e.muerto) || ctx.estado.energia >= ctx.jardin.coste('hongo') + 8
+  ? reactivo(ctx)
+  : null;
+
 export const ESTRATEGIAS = {
+  ahorrar,
+  compacta: politica(todas, true, true),
+  compactaMonocultivo: politica(['cerbatana'], true, true),
+  soloEspinos: politica(['espino']),
+  concentracion: ({ jardin }) => {
+    const celda = jardin.candidatas('cerbatana').sort((a, b) => dist(a) - dist(b))[0];
+    return celda ? { id: 'cerbatana', ...celda } : null;
+  },
   principiante: principal,
   intermedio,
   especializado,

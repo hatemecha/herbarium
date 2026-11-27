@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { crearTablero } from '../src/tablero.js';
 import { crearJardin } from '../src/jardin.js';
 import { PLANTAS } from '../src/catalogo.js';
+import { costeDe } from '../src/economia.js';
 
 const frames = { central: [], cerbatana: [], espino: [] };
 
@@ -79,4 +80,11 @@ test('la expansión es sucesiva y se calcula desde las plantas existentes', () =
   jardin.plantar('cerbatana', { x: 7, y: 5 });
   assert.equal(jardin.colocable('cerbatana', { x: 8, y: 5 }), true);
   assert.ok(tablero.ocupante(7, 5));
+});
+
+test('el precio de una especie acelera al llenar varios tramos', () => {
+  const tipo = PLANTAS.cerbatana;
+  assert.equal(costeDe(tipo, 4), 12);
+  assert.equal(costeDe(tipo, 8), 26);
+  assert.equal(costeDe(tipo, 12), 52);
 });

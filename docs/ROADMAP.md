@@ -1,6 +1,6 @@
 # Hoja de ruta
 
-Orientativa. No autoriza a implementar la etapa siguiente. El estado de abajo sale de leer el código y de correr `npm test` y el navegador en la etapa 05, no de dar por cerrada una etapa porque un agente anterior la diera por hecha.
+Orientativa. No autoriza a implementar la etapa siguiente. El estado de abajo reúne las verificaciones registradas en cada etapa.
 
 Ninguna etapa está aceptada formalmente por el propietario en esta consolidación.
 
@@ -17,11 +17,14 @@ Ninguna etapa está aceptada formalmente por el propietario en esta consolidaci�
 | 7 | Profundidad estratégica, diversidad y balance | Campanilla, Hongo, Espino revisado, director y políticas de evaluación implementados. Configuración experimental para evaluación del propietario. |
 | 8 | Game feel, HUD y claridad de estados | Implementados pulsos de interfaz y tablero, lectura de ralentización, alcance diferenciado y destellos por fuente. Ver la revisión visual en [ART_DIRECTION.md](ART_DIRECTION.md). |
 | 8.2 | Dirección artística, composición y game feel | Implementada: Pliego refinado, cartas, partículas y señales; evaluación comparativa y regresiones en [ART_DIRECTION.md](ART_DIRECTION.md). Aceptación subjetiva del propietario pendiente. |
+| 8.3 | Consolidación estratégica y beta jugable | Implementada en el juego principal y medida con 100 semillas por política. Ver [ETAPA_083.md](ETAPA_083.md). |
 | 9 | Preguntas de personalidad | No empezada. No hay preguntas escritas. |
 | 10 | Tarot y mejoras | No empezada. No hay cartas ni efectos. |
 | 11 | Balance de una partida completa | No empezada. Los números actuales son provisionales. |
 | 12 | Sonido y detalle artístico | No empezada. No hay audio. |
 | 13 | Integración en la web personal | No empezada. Notas en [ARCHITECTURE.md](ARCHITECTURE.md). |
+
+Queda pendiente una partida completa de la beta con jugadores en escritorio y teléfono.
 
 ## Etapa 05: lo hecho y lo verificado
 

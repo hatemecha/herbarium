@@ -36,6 +36,7 @@ export function crearCombate({
   let tiempo = 0;
   let aparecio = false;
   let campanillas = [];
+  let espinos = [];
   let tiempoRalentizado = 0;
 
   const plantaViva = (x, y) => {
@@ -89,7 +90,9 @@ export function crearCombate({
     const tipo = enemigo.tipo;
     enemigo.cooldown += tipo.intervalo;
     enemigo.mordisco = visual.mordisco;
-    const aplicado = Math.min(objetivo.vida, tipo.dano);
+    const extra = enemigo.mordidas >= tipo.trasMordidas ? tipo.danoSostenido : 0;
+    enemigo.mordidas += 1;
+    const aplicado = Math.min(objetivo.vida, tipo.dano + extra);
     objetivo.vida -= aplicado;
     objetivo.destello = visual.destello;
     evento({ tipo: 'mordida', ...posicionDe(objetivo), central: objetivo === jardin.central, planta: objetivo.id, dano: aplicado });
@@ -119,6 +122,7 @@ export function crearCombate({
 
     if (enemigo.objetivo?.muerta) {
       enemigo.objetivo = null;
+      enemigo.senuelo = null;
       enemigo.despegue = visual.despegue;
     }
     const antesRalentizado = enemigo.ralentizado;
@@ -127,20 +131,33 @@ export function crearCombate({
     enemigo.vy = 0;
 
     if (!enemigo.objetivo) {
-      const destino = centroDe(central);
+      if (!enemigo.senuelo || enemigo.senuelo.muerta) {
+        enemigo.senuelo = null;
+        let masCerca = Infinity;
+        for (const espino of espinos) {
+          if (espino.muerta) continue;
+          const d = distancia(enemigo.x, enemigo.y, espino.celda.x + 0.5, espino.celda.y + 0.5);
+          if (d <= espino.tipo.atraccion && d < masCerca) {
+            enemigo.senuelo = espino;
+            masCerca = d;
+          }
+        }
+        if (enemigo.senuelo) evento({ tipo: 'atraccion', x: enemigo.x, y: enemigo.y });
+      }
+      const destino = centroDe(enemigo.senuelo ?? central);
       const dx = destino.x - enemigo.x;
       const dy = destino.y - enemigo.y;
       const d = Math.hypot(dx, dy);
-      if (d < 1e-6) return;
-      const ux = dx / d;
-      const uy = dy / d;
+      const ux = dx / (d || 1);
+      const uy = dy / (d || 1);
       const bloqueo = plantaViva(
         Math.floor(enemigo.x + ux * ALCANCE_DE_BLOQUEO),
         Math.floor(enemigo.y + uy * ALCANCE_DE_BLOQUEO),
       );
-      if (bloqueo) {
+      if (bloqueo && (!enemigo.tipo.sobrevuela || bloqueo === central || bloqueo.tipo.reflejo)) {
         enemigo.objetivo = bloqueo;
         enemigo.tiempoEnObjetivo = 0;
+        enemigo.mordidas = 0;
         if (enemigo.tipo.preparacionAtaque) enemigo.cooldown = enemigo.tipo.preparacionAtaque;
         const hacia = centroDe(bloqueo).x - enemigo.x;
         if (Math.abs(hacia) > 0.2) enemigo.mirada = Math.sign(hacia);
@@ -248,13 +265,25 @@ export function crearCombate({
   }
 
   function impactar(enemigo, proyectil) {
-    const aplicado = Math.min(proyectil.dano, Math.max(0, enemigo.vida));
+    let bloqueado = 0;
+    if (proyectil.planta === 'cerbatana') {
+      if (!enemigo.objetivo) bloqueado = enemigo.tipo.corazaEnVuelo ?? 0;
+      if (enemigo.tipo.corazaFrontal) {
+        const destino = centroDe(enemigo.objetivo ?? enemigo.senuelo ?? jardin.central);
+        const dx = destino.x - enemigo.x;
+        const dy = destino.y - enemigo.y;
+        if (-(dx * proyectil.ux + dy * proyectil.uy) > Math.hypot(dx, dy) * enemigo.tipo.frenteMinimo) {
+          bloqueado = enemigo.tipo.corazaFrontal;
+        }
+      }
+    }
+    const aplicado = Math.min(Math.max(0, proyectil.dano - bloqueado), Math.max(0, enemigo.vida));
     const sobra = proyectil.dano - aplicado;
     enemigo.vida -= aplicado;
     enemigo.destello = visual.destello;
     enemigo.golpe = { x: proyectil.ux, y: proyectil.uy };
-    enemigo.colorImpacto = proyectil.planta === 'hongo' ? 'hongoLuz' : null;
-    evento({ tipo: 'impacto', x: enemigo.x, y: enemigo.y, aplicado, sobra, ux: proyectil.ux, uy: proyectil.uy, planta: proyectil.planta });
+    enemigo.colorImpacto = bloqueado ? 'ambiental' : proyectil.planta === 'hongo' ? 'hongoLuz' : null;
+    evento({ tipo: 'impacto', x: enemigo.x, y: enemigo.y, aplicado, sobra, bloqueado, ux: proyectil.ux, uy: proyectil.uy, planta: proyectil.planta });
     if (enemigo.vida <= 0) matar(enemigo);
   }
 
@@ -311,6 +340,7 @@ export function crearCombate({
         aparecer();
       }
       campanillas = jardin.plantas.filter((planta) => planta.tipo.ralentiza && !planta.muerta);
+      espinos = jardin.plantas.filter((planta) => planta.tipo.atraccion && !planta.muerta);
       for (const enemigo of enemigos) {
         if (enemigo.muerto) enemigo.tiempoMuerte += dt;
         else moverYAtacar(enemigo, dt);

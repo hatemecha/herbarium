@@ -37,8 +37,29 @@ function resumir(partidas) {
     item.duracionMedia = item.duracion / item.n;
     item.danoMedio = item.dano / item.n;
   }
+  const evolucion = {};
+  for (const partida of partidas) {
+    for (const corte of partida.evolucion) (evolucion[corte.t] ??= []).push(corte);
+  }
+  const mediana = (clave) => percentil(partidas.map((partida) => partida[clave]), 0.5);
+  const ratio = (num, den) => percentil(partidas.filter((p) => p[den] > 0).map((p) => p[num] / p[den]), 0.5);
   return {
     n: partidas.length,
+    derrotas: partidas.length - censuradas,
+    evolucion: Object.fromEntries(Object.entries(evolucion).map(([t, cortes]) => [t, {
+      n: cortes.length,
+      ...Object.fromEntries(['energia', 'vida', 'plantas', 'bajas', 'enemigos', 'oleada', 'dps']
+        .map((clave) => [clave, percentil(cortes.map((corte) => corte[clave]), 0.5)])),
+    }])),
+    combate: {
+      atracciones: mediana('atracciones'),
+      coraza: mediana('danoBloqueado'),
+      disparosPerdidos: mediana('disparosPerdidos'),
+      proporcionImpactos: ratio('impactosCerbatana', 'disparos'),
+      blancosPorPulso: ratio('impactosHongo', 'pulsosHongo'),
+      danoPorEnergia: ratio('danoAplicado', 'energiaGastada'),
+      dpsEfectivo: ratio('danoAplicado', 'tiempo'),
+    },
     censuradas,
     tiempo: {
       p10: percentil(tiempos, 0.1),

@@ -25,7 +25,8 @@ test('pintarEstrella redondea el origen y usa píxeles enteros', () => {
   pintarEstrella(ctx, 2.49, -3.51, '#c2ff3d');
 
   assert.equal(ctx.fillStyle, '#c2ff3d');
-  assert.equal(rectangulos.length, 17);
+  const pixeles = ESTRELLA.join('').split('#').length - 1;
+  assert.equal(rectangulos.length, pixeles);
   for (const [x, y, ancho, alto] of rectangulos) {
     assert.ok(Number.isInteger(x));
     assert.ok(Number.isInteger(y));

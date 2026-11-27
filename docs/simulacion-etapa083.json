@@ -1,0 +1,2604 @@
+{
+  "semillas": [
+    61501,
+    61502,
+    61503,
+    61504,
+    61505,
+    61506,
+    61507,
+    61508,
+    61509,
+    61510,
+    61511,
+    61512,
+    61513,
+    61514,
+    61515,
+    61516,
+    61517,
+    61518,
+    61519,
+    61520,
+    61521,
+    61522,
+    61523,
+    61524,
+    61525,
+    61526,
+    61527,
+    61528,
+    61529,
+    61530,
+    61531,
+    61532,
+    61533,
+    61534,
+    61535,
+    61536,
+    61537,
+    61538,
+    61539,
+    61540,
+    61541,
+    61542,
+    61543,
+    61544,
+    61545,
+    61546,
+    61547,
+    61548,
+    61549,
+    61550,
+    61551,
+    61552,
+    61553,
+    61554,
+    61555,
+    61556,
+    61557,
+    61558,
+    61559,
+    61560,
+    61561,
+    61562,
+    61563,
+    61564,
+    61565,
+    61566,
+    61567,
+    61568,
+    61569,
+    61570,
+    61571,
+    61572,
+    61573,
+    61574,
+    61575,
+    61576,
+    61577,
+    61578,
+    61579,
+    61580,
+    61581,
+    61582,
+    61583,
+    61584,
+    61585,
+    61586,
+    61587,
+    61588,
+    61589,
+    61590,
+    61591,
+    61592,
+    61593,
+    61594,
+    61595,
+    61596,
+    61597,
+    61598,
+    61599,
+    61600
+  ],
+  "horizonte": 1800,
+  "segundos": 142.74365661800002,
+  "informe": {
+    "ahorrar": {
+      "n": 100,
+      "derrotas": 100,
+      "evolucion": {
+        "60": {
+          "n": 100,
+          "energia": 4.000000000000494,
+          "vida": 30,
+          "plantas": 5,
+          "bajas": 0,
+          "enemigos": 1,
+          "oleada": 2,
+          "dps": 18.424242424242422
+        },
+        "120": {
+          "n": 94,
+          "energia": 6.000000000001314,
+          "vida": 30,
+          "plantas": 9,
+          "bajas": 0,
+          "enemigos": 0,
+          "oleada": 4,
+          "dps": 18.424242424242422
+        },
+        "180": {
+          "n": 91,
+          "energia": 10.000000000001787,
+          "vida": 30,
+          "plantas": 13,
+          "bajas": 1,
+          "enemigos": 2,
+          "oleada": 5,
+          "dps": 27.272727272727273
+        },
+        "300": {
+          "n": 85,
+          "energia": 10.00000000000326,
+          "vida": 30,
+          "plantas": 20,
+          "bajas": 3,
+          "enemigos": 1,
+          "oleada": 7,
+          "dps": 41.696969696969695
+        },
+        "420": {
+          "n": 79,
+          "energia": 12.000000000004878,
+          "vida": 30,
+          "plantas": 25,
+          "bajas": 6,
+          "enemigos": 1,
+          "oleada": 10,
+          "dps": 48.96969696969696
+        },
+        "600": {
+          "n": 69,
+          "energia": 12.000000000005041,
+          "vida": 30,
+          "plantas": 27,
+          "bajas": 14,
+          "enemigos": 2,
+          "oleada": 12,
+          "dps": 54.54545454545454
+        },
+        "720": {
+          "n": 59,
+          "energia": 12.0000000000025,
+          "vida": 30,
+          "plantas": 26,
+          "bajas": 21,
+          "enemigos": 3,
+          "oleada": 14,
+          "dps": 52.96969696969697
+        },
+        "840": {
+          "n": 44,
+          "energia": 9.00000000000602,
+          "vida": 30,
+          "plantas": 25.5,
+          "bajas": 30,
+          "enemigos": 5,
+          "oleada": 16,
+          "dps": 51.393939393939384
+        },
+        "900": {
+          "n": 41,
+          "energia": 10.000000000005377,
+          "vida": 30,
+          "plantas": 24,
+          "bajas": 34,
+          "enemigos": 5,
+          "oleada": 17,
+          "dps": 48.96969696969697
+        },
+        "1200": {
+          "n": 4,
+          "energia": 9.000000000006983,
+          "vida": 26.5,
+          "plantas": 19,
+          "bajas": 66.5,
+          "enemigos": 9,
+          "oleada": 21.5,
+          "dps": 43.333333333333336
+        }
+      },
+      "combate": {
+        "atracciones": 72,
+        "coraza": 827,
+        "disparosPerdidos": 54.5,
+        "proporcionImpactos": 0.9414792099002625,
+        "blancosPorPulso": 1.5458754208754208,
+        "danoPorEnergia": 5.198020006613756,
+        "dpsEfectivo": 5.11552290633789
+      },
+      "censuradas": 0,
+      "tiempo": {
+        "p10": 267.32333333340733,
+        "p50": 779.8249999996194,
+        "p90": 1131.6966666659662
+      },
+      "oleada": {
+        "p10": 6.800000000000001,
+        "p50": 15,
+        "p90": 20
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 17,
+        "espino": 3,
+        "campanilla": 16,
+        "hongo": 13
+      },
+      "danoPorPlanta": {
+        "cerbatana": 2559,
+        "espino": 63,
+        "hongo": 1319.5
+      },
+      "tiempoRalentizado": 855.8916666662169,
+      "danoAbsorbidoEspino": 70,
+      "perdidasPorPlanta": {
+        "cerbatana": 9,
+        "espino": 1,
+        "campanilla": 9,
+        "hongo": 7
+      },
+      "primeraCompra": 21.18333333333341,
+      "primeraAmenaza": 20.866666666666763,
+      "intervaloCompraMaximo": 27.38333333330843,
+      "tiempoCritico": 1.4999999999999996,
+      "energiaGenerada": 779.8249999995897,
+      "energiaGastada": 772,
+      "perdidas": 30,
+      "ocupacion": 0.17768595041322316,
+      "energiaFinal": 7.675000000004152,
+      "maxSimultaneos": 40,
+      "desperdicio": 1237,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1399.7333333333577,
+          "dano": 30,
+          "duracionMedia": 13.997333333333577,
+          "danoMedio": 0.3
+        },
+        "pinza": {
+          "n": 310,
+          "duracion": 13299.433333332981,
+          "dano": 234,
+          "duracionMedia": 42.90139784946123,
+          "danoMedio": 0.7548387096774194
+        },
+        "enjambre": {
+          "n": 293,
+          "duracion": 7347.583333333283,
+          "dano": 194,
+          "duracionMedia": 25.077076222980487,
+          "danoMedio": 0.6621160409556314
+        },
+        "distraccion": {
+          "n": 278,
+          "duracion": 12844.816666666293,
+          "dano": 59,
+          "duracionMedia": 46.20437649879961,
+          "danoMedio": 0.21223021582733814
+        },
+        "concentrada": {
+          "n": 339,
+          "duracion": 14545.316666666276,
+          "dano": 267,
+          "duracionMedia": 42.90653883972353,
+          "danoMedio": 0.7876106194690266
+        }
+      }
+    },
+    "compacta": {
+      "n": 100,
+      "derrotas": 82,
+      "evolucion": {
+        "60": {
+          "n": 100,
+          "energia": 10.000000000000531,
+          "vida": 30,
+          "plantas": 5,
+          "bajas": 0,
+          "enemigos": 1,
+          "oleada": 2,
+          "dps": 16
+        },
+        "120": {
+          "n": 100,
+          "energia": 6.000000000001547,
+          "vida": 30,
+          "plantas": 10,
+          "bajas": 0,
+          "enemigos": 0,
+          "oleada": 4,
+          "dps": 18.424242424242426
+        },
+        "180": {
+          "n": 100,
+          "energia": 34.00000000000164,
+          "vida": 30,
+          "plantas": 12,
+          "bajas": 0,
+          "enemigos": 2,
+          "oleada": 5,
+          "dps": 23.272727272727277
+        },
+        "300": {
+          "n": 100,
+          "energia": 125.99999999999497,
+          "vida": 30,
+          "plantas": 13,
+          "bajas": 0,
+          "enemigos": 1,
+          "oleada": 7,
+          "dps": 25.696969696969703
+        },
+        "420": {
+          "n": 100,
+          "energia": 240.0000000000835,
+          "vida": 30,
+          "plantas": 13,
+          "bajas": 1,
+          "enemigos": 2,
+          "oleada": 9,
+          "dps": 25.696969696969703
+        },
+        "600": {
+          "n": 100,
+          "energia": 359.99999999996777,
+          "vida": 30,
+          "plantas": 14,
+          "bajas": 4,
+          "enemigos": 4,
+          "oleada": 12,
+          "dps": 28.121212121212128
+        },
+        "720": {
+          "n": 100,
+          "energia": 409.9999999998966,
+          "vida": 30,
+          "plantas": 14,
+          "bajas": 9,
+          "enemigos": 5,
+          "oleada": 14,
+          "dps": 28.121212121212128
+        },
+        "840": {
+          "n": 100,
+          "energia": 454.9999999997316,
+          "vida": 30,
+          "plantas": 14,
+          "bajas": 14,
+          "enemigos": 5.5,
+          "oleada": 16,
+          "dps": 28.121212121212128
+        },
+        "900": {
+          "n": 100,
+          "energia": 447.99999999967457,
+          "vida": 30,
+          "plantas": 14,
+          "bajas": 18,
+          "enemigos": 5,
+          "oleada": 17,
+          "dps": 28.121212121212128
+        },
+        "1200": {
+          "n": 98,
+          "energia": 348.99999999945516,
+          "vida": 30,
+          "plantas": 15,
+          "bajas": 44,
+          "enemigos": 9,
+          "oleada": 21,
+          "dps": 29.696969696969703
+        },
+        "1800": {
+          "n": 18,
+          "energia": 9.999999999131294,
+          "vida": 30,
+          "plantas": 15,
+          "bajas": 108,
+          "enemigos": 13.5,
+          "oleada": 30,
+          "dps": 29.696969696969703
+        }
+      },
+      "combate": {
+        "atracciones": 332,
+        "coraza": 3130.5,
+        "disparosPerdidos": 92,
+        "proporcionImpactos": 0.9615813689857327,
+        "blancosPorPulso": 2.5438232356955877,
+        "danoPorEnergia": 9.73331974484887,
+        "dpsEfectivo": 9.698013438095614
+      },
+      "censuradas": 18,
+      "tiempo": {
+        "p10": 1378.0266666657421,
+        "p50": 1615.3916666655264,
+        "p90": 1799.9999999986917
+      },
+      "oleada": {
+        "p10": 23,
+        "p50": 27,
+        "p90": 30
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 16,
+        "espino": 5,
+        "campanilla": 47,
+        "hongo": 43
+      },
+      "danoPorPlanta": {
+        "cerbatana": 5831,
+        "espino": 165.5,
+        "hongo": 9415.5
+      },
+      "tiempoRalentizado": 3370.0750000153002,
+      "danoAbsorbidoEspino": 178,
+      "perdidasPorPlanta": {
+        "cerbatana": 12,
+        "espino": 4,
+        "campanilla": 44,
+        "hongo": 38.5
+      },
+      "primeraCompra": 10.333333333333426,
+      "primeraAmenaza": 20.866666666666763,
+      "intervaloCompraMaximo": 192.4583333331583,
+      "tiempoCritico": 0.991666666666668,
+      "energiaGenerada": 1615.3916666653622,
+      "energiaGastada": 1609,
+      "perdidas": 101,
+      "ocupacion": 0.08264462809917356,
+      "energiaFinal": 5.999999999364952,
+      "maxSimultaneos": 48,
+      "desperdicio": 4201,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1431.5333333333588,
+          "dano": 1,
+          "duracionMedia": 14.315333333333587,
+          "danoMedio": 0.01
+        },
+        "pinza": {
+          "n": 616,
+          "duracion": 31640.71666666568,
+          "dano": 77,
+          "duracionMedia": 51.364799783548186,
+          "danoMedio": 0.125
+        },
+        "enjambre": {
+          "n": 626,
+          "duracion": 16552.93333333319,
+          "dano": 8,
+          "duracionMedia": 26.44238551650669,
+          "danoMedio": 0.012779552715654952
+        },
+        "distraccion": {
+          "n": 585,
+          "duracion": 31686.949999998942,
+          "dano": 133,
+          "duracionMedia": 54.165726495724684,
+          "danoMedio": 0.22735042735042735
+        },
+        "concentrada": {
+          "n": 643,
+          "duracion": 33434.13333333226,
+          "dano": 122,
+          "duracionMedia": 51.99709694141876,
+          "danoMedio": 0.18973561430793157
+        }
+      }
+    },
+    "compactaMonocultivo": {
+      "n": 100,
+      "derrotas": 100,
+      "evolucion": {
+        "60": {
+          "n": 100,
+          "energia": 20.00000000000052,
+          "vida": 30,
+          "plantas": 4,
+          "bajas": 0,
+          "enemigos": 1,
+          "oleada": 2,
+          "dps": 16
+        },
+        "120": {
+          "n": 100,
+          "energia": 79.99999999999712,
+          "vida": 30,
+          "plantas": 4,
+          "bajas": 0,
+          "enemigos": 0,
+          "oleada": 4,
+          "dps": 16
+        },
+        "180": {
+          "n": 100,
+          "energia": 140.00000000000392,
+          "vida": 30,
+          "plantas": 4,
+          "bajas": 0,
+          "enemigos": 2,
+          "oleada": 5,
+          "dps": 16
+        },
+        "300": {
+          "n": 100,
+          "energia": 248.0000000000892,
+          "vida": 30,
+          "plantas": 5,
+          "bajas": 1,
+          "enemigos": 1,
+          "oleada": 7,
+          "dps": 20
+        },
+        "420": {
+          "n": 100,
+          "energia": 344.00000000001444,
+          "vida": 29,
+          "plantas": 5,
+          "bajas": 2,
+          "enemigos": 3,
+          "oleada": 9,
+          "dps": 20
+        },
+        "600": {
+          "n": 83,
+          "energia": 417.99999999984874,
+          "vida": 26,
+          "plantas": 5,
+          "bajas": 11,
+          "enemigos": 5,
+          "oleada": 12,
+          "dps": 20
+        },
+        "720": {
+          "n": 53,
+          "energia": 415.99999999972516,
+          "vida": 22,
+          "plantas": 5,
+          "bajas": 21,
+          "enemigos": 5,
+          "oleada": 14,
+          "dps": 20
+        },
+        "840": {
+          "n": 25,
+          "energia": 275.9999999996493,
+          "vida": 14,
+          "plantas": 5,
+          "bajas": 42,
+          "enemigos": 4,
+          "oleada": 16,
+          "dps": 20
+        },
+        "900": {
+          "n": 9,
+          "energia": 253.99999999963782,
+          "vida": 12,
+          "plantas": 5,
+          "bajas": 50,
+          "enemigos": 4,
+          "oleada": 16,
+          "dps": 20
+        }
+      },
+      "combate": {
+        "atracciones": 0,
+        "coraza": 1453,
+        "disparosPerdidos": 60.5,
+        "proporcionImpactos": 0.9519717619599913,
+        "blancosPorPulso": null,
+        "danoPorEnergia": 7.3405489164886255,
+        "dpsEfectivo": 4.416421185715405
+      },
+      "censuradas": 0,
+      "tiempo": {
+        "p10": 536.1733333331744,
+        "p50": 744.2249999996518,
+        "p90": 889.7049999995195
+      },
+      "oleada": {
+        "p10": 11,
+        "p50": 14,
+        "p90": 16
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 38,
+        "espino": 0,
+        "campanilla": 0,
+        "hongo": 0
+      },
+      "danoPorPlanta": {
+        "cerbatana": 3298,
+        "espino": 0,
+        "hongo": 0
+      },
+      "tiempoRalentizado": 0,
+      "danoAbsorbidoEspino": 0,
+      "perdidasPorPlanta": {
+        "cerbatana": 33,
+        "espino": 0,
+        "campanilla": 0,
+        "hongo": 0
+      },
+      "primeraCompra": 10.333333333333426,
+      "primeraAmenaza": 20.866666666666763,
+      "intervaloCompraMaximo": 223.20000000001596,
+      "tiempoCritico": 1.7499999999999987,
+      "energiaGenerada": 744.2249999995465,
+      "energiaGastada": 447,
+      "perdidas": 33,
+      "ocupacion": 0.049586776859504134,
+      "energiaFinal": 281.0999999998549,
+      "maxSimultaneos": 35,
+      "desperdicio": 1755,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1431.5333333333588,
+          "dano": 1,
+          "duracionMedia": 14.315333333333587,
+          "danoMedio": 0.01
+        },
+        "pinza": {
+          "n": 310,
+          "duracion": 13117.999999999645,
+          "dano": 226,
+          "duracionMedia": 42.31612903225692,
+          "danoMedio": 0.7290322580645161
+        },
+        "enjambre": {
+          "n": 260,
+          "duracion": 6508.766666666626,
+          "dano": 669,
+          "duracionMedia": 25.033717948717793,
+          "danoMedio": 2.5730769230769233
+        },
+        "distraccion": {
+          "n": 276,
+          "duracion": 13108.449999999602,
+          "dano": 50,
+          "duracionMedia": 47.494384057969576,
+          "danoMedio": 0.18115942028985507
+        },
+        "concentrada": {
+          "n": 337,
+          "duracion": 14758.316666666278,
+          "dano": 108,
+          "duracionMedia": 43.793224530166995,
+          "danoMedio": 0.32047477744807124
+        }
+      }
+    },
+    "soloEspinos": {
+      "n": 100,
+      "derrotas": 100,
+      "evolucion": {
+        "60": {
+          "n": 100,
+          "energia": 8.000000000000533,
+          "vida": 30,
+          "plantas": 5,
+          "bajas": 0,
+          "enemigos": 2,
+          "oleada": 2,
+          "dps": 0
+        },
+        "120": {
+          "n": 100,
+          "energia": 8.000000000001457,
+          "vida": 30,
+          "plantas": 8,
+          "bajas": 1,
+          "enemigos": 2,
+          "oleada": 3,
+          "dps": 0
+        },
+        "180": {
+          "n": 100,
+          "energia": 10.000000000001561,
+          "vida": 30,
+          "plantas": 8,
+          "bajas": 4,
+          "enemigos": 1,
+          "oleada": 4,
+          "dps": 0
+        },
+        "300": {
+          "n": 98,
+          "energia": 11.000000000001027,
+          "vida": 30,
+          "plantas": 8,
+          "bajas": 12,
+          "enemigos": 2,
+          "oleada": 6,
+          "dps": 0
+        },
+        "420": {
+          "n": 82,
+          "energia": 10.00000000000243,
+          "vida": 30,
+          "plantas": 7,
+          "bajas": 21,
+          "enemigos": 5,
+          "oleada": 8,
+          "dps": 0
+        },
+        "600": {
+          "n": 6,
+          "energia": 7.000000000004338,
+          "vida": 30,
+          "plantas": 4.5,
+          "bajas": 38.5,
+          "enemigos": 7.5,
+          "oleada": 10,
+          "dps": 0
+        }
+      },
+      "combate": {
+        "atracciones": 192,
+        "coraza": 0,
+        "disparosPerdidos": 0,
+        "proporcionImpactos": null,
+        "blancosPorPulso": null,
+        "danoPorEnergia": 2.2737933634992458,
+        "dpsEfectivo": 2.259168010398504
+      },
+      "censuradas": 0,
+      "tiempo": {
+        "p10": 371.98499999999035,
+        "p50": 507.77499999986685,
+        "p90": 590.6949999997915
+      },
+      "oleada": {
+        "p10": 7,
+        "p50": 9,
+        "p90": 10
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 0,
+        "espino": 36,
+        "campanilla": 0,
+        "hongo": 0
+      },
+      "danoPorPlanta": {
+        "cerbatana": 0,
+        "espino": 1165,
+        "hongo": 0
+      },
+      "tiempoRalentizado": 0,
+      "danoAbsorbidoEspino": 1396,
+      "perdidasPorPlanta": {
+        "cerbatana": 0,
+        "espino": 32,
+        "campanilla": 0,
+        "hongo": 0
+      },
+      "primeraCompra": 10.333333333333426,
+      "primeraAmenaza": 20.866666666666763,
+      "intervaloCompraMaximo": 26.35000000002097,
+      "tiempoCritico": 1.3583333333333334,
+      "energiaGenerada": 507.7749999997907,
+      "energiaGastada": 504,
+      "perdidas": 32,
+      "ocupacion": 0.024793388429752067,
+      "energiaFinal": 5.141666666668858,
+      "maxSimultaneos": 19,
+      "desperdicio": 0,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 2032.3666666666786,
+          "dano": 0,
+          "duracionMedia": 20.323666666666785,
+          "danoMedio": 0
+        },
+        "pinza": {
+          "n": 181,
+          "duracion": 7392.383333333146,
+          "dano": 0,
+          "duracionMedia": 40.8418968692439,
+          "danoMedio": 0
+        },
+        "enjambre": {
+          "n": 164,
+          "duracion": 5530.199999999895,
+          "dano": 0,
+          "duracionMedia": 33.72073170731643,
+          "danoMedio": 0
+        },
+        "distraccion": {
+          "n": 145,
+          "duracion": 8072.466666666394,
+          "dano": 0,
+          "duracionMedia": 55.6721839080441,
+          "danoMedio": 0
+        },
+        "concentrada": {
+          "n": 175,
+          "duracion": 7680.616666666455,
+          "dano": 0,
+          "duracionMedia": 43.889238095236884,
+          "danoMedio": 0
+        }
+      }
+    },
+    "concentracion": {
+      "n": 100,
+      "derrotas": 100,
+      "evolucion": {
+        "60": {
+          "n": 100,
+          "energia": 8.000000000000533,
+          "vida": 30,
+          "plantas": 5,
+          "bajas": 0,
+          "enemigos": 1,
+          "oleada": 2,
+          "dps": 20
+        },
+        "120": {
+          "n": 100,
+          "energia": 6.000000000000908,
+          "vida": 30,
+          "plantas": 9,
+          "bajas": 0,
+          "enemigos": 0,
+          "oleada": 4,
+          "dps": 36
+        },
+        "180": {
+          "n": 100,
+          "energia": 14.000000000000789,
+          "vida": 30,
+          "plantas": 11,
+          "bajas": 0,
+          "enemigos": 1,
+          "oleada": 5,
+          "dps": 44
+        },
+        "300": {
+          "n": 100,
+          "energia": 3.9999999999969327,
+          "vida": 30,
+          "plantas": 14,
+          "bajas": 0,
+          "enemigos": 0.5,
+          "oleada": 8,
+          "dps": 56
+        },
+        "420": {
+          "n": 100,
+          "energia": 19.999999999993715,
+          "vida": 30,
+          "plantas": 16,
+          "bajas": 0,
+          "enemigos": 1,
+          "oleada": 10,
+          "dps": 64
+        },
+        "600": {
+          "n": 100,
+          "energia": 19.999999999986038,
+          "vida": 30,
+          "plantas": 18,
+          "bajas": 0,
+          "enemigos": 2,
+          "oleada": 13,
+          "dps": 72
+        },
+        "720": {
+          "n": 100,
+          "energia": 49.9999999999805,
+          "vida": 30,
+          "plantas": 18,
+          "bajas": 1,
+          "enemigos": 2,
+          "oleada": 15,
+          "dps": 72
+        },
+        "840": {
+          "n": 100,
+          "energia": 79.99999999997497,
+          "vida": 30,
+          "plantas": 19,
+          "bajas": 1,
+          "enemigos": 4,
+          "oleada": 17,
+          "dps": 76
+        },
+        "900": {
+          "n": 100,
+          "energia": 49.99999999997283,
+          "vida": 30,
+          "plantas": 19,
+          "bajas": 2,
+          "enemigos": 5,
+          "oleada": 17.5,
+          "dps": 76
+        },
+        "1200": {
+          "n": 52,
+          "energia": 27.999999999960867,
+          "vida": 30,
+          "plantas": 14,
+          "bajas": 11.5,
+          "enemigos": 8,
+          "oleada": 22,
+          "dps": 56
+        }
+      },
+      "combate": {
+        "atracciones": 0,
+        "coraza": 4898.5,
+        "disparosPerdidos": 368,
+        "proporcionImpactos": 0.9102302510289296,
+        "blancosPorPulso": null,
+        "danoPorEnergia": 8.258316769691046,
+        "dpsEfectivo": 8.153657637051104
+      },
+      "censuradas": 0,
+      "tiempo": {
+        "p10": 1079.4883333326802,
+        "p50": 1210.2333333325614,
+        "p90": 1374.2833333324122
+      },
+      "oleada": {
+        "p10": 20,
+        "p50": 22,
+        "p90": 24
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 27,
+        "espino": 0,
+        "campanilla": 0,
+        "hongo": 0
+      },
+      "danoPorPlanta": {
+        "cerbatana": 9725,
+        "espino": 0,
+        "hongo": 0
+      },
+      "tiempoRalentizado": 0,
+      "danoAbsorbidoEspino": 0,
+      "perdidasPorPlanta": {
+        "cerbatana": 16,
+        "espino": 0,
+        "campanilla": 0,
+        "hongo": 0
+      },
+      "primeraCompra": 10.333333333333426,
+      "primeraAmenaza": 20.866666666666763,
+      "intervaloCompraMaximo": 90.41666666658443,
+      "tiempoCritico": 0.7833333333333341,
+      "energiaGenerada": 1210.2333333324466,
+      "energiaGastada": 1191,
+      "perdidas": 16,
+      "ocupacion": 0.08677685950413223,
+      "energiaFinal": 16.533333333297005,
+      "maxSimultaneos": 48,
+      "desperdicio": 6452,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1462.6000000000258,
+          "dano": 14,
+          "duracionMedia": 14.626000000000259,
+          "danoMedio": 0.14
+        },
+        "pinza": {
+          "n": 524,
+          "duracion": 24462.283333332623,
+          "dano": 17,
+          "duracionMedia": 46.68374681933707,
+          "danoMedio": 0.03244274809160305
+        },
+        "enjambre": {
+          "n": 478,
+          "duracion": 11788.266666666606,
+          "dano": 279,
+          "duracionMedia": 24.66164574616445,
+          "danoMedio": 0.5836820083682008
+        },
+        "distraccion": {
+          "n": 471,
+          "duracion": 22622.23333333265,
+          "dano": 140,
+          "duracionMedia": 48.03021939136443,
+          "danoMedio": 0.29723991507430997
+        },
+        "concentrada": {
+          "n": 535,
+          "duracion": 24544.4999999993,
+          "dano": 113,
+          "duracionMedia": 45.87757009345664,
+          "danoMedio": 0.21121495327102804
+        }
+      }
+    },
+    "principiante": {
+      "n": 100,
+      "derrotas": 100,
+      "evolucion": {
+        "60": {
+          "n": 99,
+          "energia": 8.000000000001638,
+          "vida": 28,
+          "plantas": 5,
+          "bajas": 0,
+          "enemigos": 1,
+          "oleada": 2,
+          "dps": 20
+        },
+        "120": {
+          "n": 70,
+          "energia": 6.000000000002236,
+          "vida": 22,
+          "plantas": 9,
+          "bajas": 0,
+          "enemigos": 0,
+          "oleada": 4,
+          "dps": 36
+        },
+        "180": {
+          "n": 53,
+          "energia": 14.000000000001675,
+          "vida": 24,
+          "plantas": 11,
+          "bajas": 0,
+          "enemigos": 1,
+          "oleada": 5,
+          "dps": 44
+        },
+        "300": {
+          "n": 26,
+          "energia": 40.999999999997634,
+          "vida": 20.5,
+          "plantas": 13,
+          "bajas": 0,
+          "enemigos": 0,
+          "oleada": 7,
+          "dps": 52
+        },
+        "420": {
+          "n": 18,
+          "energia": 19.999999999993427,
+          "vida": 17.5,
+          "plantas": 15,
+          "bajas": 1,
+          "enemigos": 2,
+          "oleada": 9,
+          "dps": 58
+        },
+        "600": {
+          "n": 9,
+          "energia": 33.9999999999863,
+          "vida": 17,
+          "plantas": 16,
+          "bajas": 5,
+          "enemigos": 4,
+          "oleada": 12,
+          "dps": 56
+        },
+        "720": {
+          "n": 3,
+          "energia": 53.999999999984624,
+          "vida": 18,
+          "plantas": 15,
+          "bajas": 6,
+          "enemigos": 1,
+          "oleada": 14,
+          "dps": 56
+        },
+        "840": {
+          "n": 1,
+          "energia": 27.999999999975604,
+          "vida": 8,
+          "plantas": 13,
+          "bajas": 11,
+          "enemigos": 0,
+          "oleada": 16,
+          "dps": 48
+        }
+      },
+      "combate": {
+        "atracciones": 0,
+        "coraza": 94,
+        "disparosPerdidos": 13.5,
+        "proporcionImpactos": 0.8878406708595388,
+        "blancosPorPulso": null,
+        "danoPorEnergia": 2.004385964912281,
+        "dpsEfectivo": 1.7511878234282108
+      },
+      "censuradas": 0,
+      "tiempo": {
+        "p10": 100.19166666666227,
+        "p50": 191.0333333333775,
+        "p90": 567.3149999998129
+      },
+      "oleada": {
+        "p10": 3,
+        "p50": 5,
+        "p90": 12
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 11,
+        "espino": 0,
+        "campanilla": 0,
+        "hongo": 0
+      },
+      "danoPorPlanta": {
+        "cerbatana": 336,
+        "espino": 0,
+        "hongo": 0
+      },
+      "tiempoRalentizado": 0,
+      "danoAbsorbidoEspino": 0,
+      "perdidasPorPlanta": {
+        "cerbatana": 0.5,
+        "espino": 0,
+        "campanilla": 0,
+        "hongo": 0
+      },
+      "primeraCompra": 16.533333333333676,
+      "primeraAmenaza": 20.866666666666763,
+      "intervaloCompraMaximo": 26.866666666683912,
+      "tiempoCritico": 2.9749999999999943,
+      "energiaGenerada": 191.03333333331454,
+      "energiaGastada": 176,
+      "perdidas": 0.5,
+      "ocupacion": 0.09090909090909091,
+      "energiaFinal": 19.008333333332267,
+      "maxSimultaneos": 14,
+      "desperdicio": 142.5,
+      "composicion": {
+        "inicial": {
+          "n": 99,
+          "duracion": 1590.650000000023,
+          "dano": 350,
+          "duracionMedia": 16.06717171717195,
+          "danoMedio": 3.5353535353535355
+        },
+        "pinza": {
+          "n": 112,
+          "duracion": 3573.7166666666035,
+          "dano": 526,
+          "duracionMedia": 31.90818452380896,
+          "danoMedio": 4.696428571428571
+        },
+        "enjambre": {
+          "n": 80,
+          "duracion": 1715.0333333333347,
+          "dano": 347,
+          "duracionMedia": 21.437916666666684,
+          "danoMedio": 4.3375
+        },
+        "distraccion": {
+          "n": 76,
+          "duracion": 2937.0999999999294,
+          "dano": 65,
+          "duracionMedia": 38.646052631578016,
+          "danoMedio": 0.8552631578947368
+        },
+        "concentrada": {
+          "n": 128,
+          "duracion": 4063.233333333266,
+          "dano": 274,
+          "duracionMedia": 31.74401041666614,
+          "danoMedio": 2.140625
+        }
+      }
+    },
+    "intermedio": {
+      "n": 100,
+      "derrotas": 100,
+      "evolucion": {
+        "60": {
+          "n": 100,
+          "energia": 10.000000000000579,
+          "vida": 30,
+          "plantas": 5,
+          "bajas": 0,
+          "enemigos": 1,
+          "oleada": 2,
+          "dps": 16
+        },
+        "120": {
+          "n": 100,
+          "energia": 10.000000000001581,
+          "vida": 30,
+          "plantas": 10,
+          "bajas": 0,
+          "enemigos": 0,
+          "oleada": 4,
+          "dps": 20
+        },
+        "180": {
+          "n": 100,
+          "energia": 10.000000000002647,
+          "vida": 30,
+          "plantas": 15,
+          "bajas": 0,
+          "enemigos": 1,
+          "oleada": 5,
+          "dps": 32
+        },
+        "300": {
+          "n": 97,
+          "energia": 14.00000000000368,
+          "vida": 30,
+          "plantas": 20,
+          "bajas": 2,
+          "enemigos": 1,
+          "oleada": 7,
+          "dps": 40
+        },
+        "420": {
+          "n": 96,
+          "energia": 12.00000000000324,
+          "vida": 30,
+          "plantas": 23,
+          "bajas": 5,
+          "enemigos": 1,
+          "oleada": 9,
+          "dps": 48
+        },
+        "600": {
+          "n": 86,
+          "energia": 14.000000000001723,
+          "vida": 30,
+          "plantas": 24,
+          "bajas": 12,
+          "enemigos": 4,
+          "oleada": 12,
+          "dps": 44
+        },
+        "720": {
+          "n": 57,
+          "energia": 12.000000000000057,
+          "vida": 30,
+          "plantas": 23,
+          "bajas": 18,
+          "enemigos": 5,
+          "oleada": 14,
+          "dps": 44
+        },
+        "840": {
+          "n": 25,
+          "energia": 12.000000000000174,
+          "vida": 30,
+          "plantas": 21,
+          "bajas": 27,
+          "enemigos": 2,
+          "oleada": 16,
+          "dps": 44
+        },
+        "900": {
+          "n": 10,
+          "energia": 6.999999999996741,
+          "vida": 29,
+          "plantas": 22,
+          "bajas": 31.5,
+          "enemigos": 5,
+          "oleada": 16.5,
+          "dps": 42
+        }
+      },
+      "combate": {
+        "atracciones": 119.5,
+        "coraza": 927.5,
+        "disparosPerdidos": 57.5,
+        "proporcionImpactos": 0.9461453688859112,
+        "blancosPorPulso": null,
+        "danoPorEnergia": 4.736880843302552,
+        "dpsEfectivo": 4.6522753804649115
+      },
+      "censuradas": 0,
+      "tiempo": {
+        "p10": 579.2016666664686,
+        "p50": 735.5916666663263,
+        "p90": 892.7683333328501
+      },
+      "oleada": {
+        "p10": 12,
+        "p50": 14,
+        "p90": 16.10000000000001
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 20.5,
+        "espino": 8,
+        "campanilla": 14,
+        "hongo": 0
+      },
+      "danoPorPlanta": {
+        "cerbatana": 3145,
+        "espino": 242.5,
+        "hongo": 0
+      },
+      "tiempoRalentizado": 800.7416666662671,
+      "danoAbsorbidoEspino": 253,
+      "perdidasPorPlanta": {
+        "cerbatana": 10,
+        "espino": 5,
+        "campanilla": 6,
+        "hongo": 0
+      },
+      "primeraCompra": 10.333333333333426,
+      "primeraAmenaza": 20.866666666666763,
+      "intervaloCompraMaximo": 28.67499999997392,
+      "tiempoCritico": 1.3000000000000003,
+      "energiaGenerada": 735.5916666663259,
+      "energiaGastada": 720,
+      "perdidas": 21.5,
+      "ocupacion": 0.17355371900826447,
+      "energiaFinal": 8.941666666667548,
+      "maxSimultaneos": 35,
+      "desperdicio": 1257.5,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1459.250000000027,
+          "dano": 10,
+          "duracionMedia": 14.592500000000271,
+          "danoMedio": 0.1
+        },
+        "pinza": {
+          "n": 313,
+          "duracion": 13103.466666666322,
+          "dano": 217,
+          "duracionMedia": 41.864110756122436,
+          "danoMedio": 0.6932907348242812
+        },
+        "enjambre": {
+          "n": 295,
+          "duracion": 7675.883333333268,
+          "dano": 145,
+          "duracionMedia": 26.019943502824635,
+          "danoMedio": 0.4915254237288136
+        },
+        "distraccion": {
+          "n": 267,
+          "duracion": 12103.283333332987,
+          "dano": 119,
+          "duracionMedia": 45.330649188513064,
+          "danoMedio": 0.44569288389513106
+        },
+        "concentrada": {
+          "n": 323,
+          "duracion": 13472.433333332972,
+          "dano": 126,
+          "duracionMedia": 41.71031991743954,
+          "danoMedio": 0.39009287925696595
+        }
+      }
+    },
+    "especializado": {
+      "n": 100,
+      "derrotas": 100,
+      "evolucion": {
+        "60": {
+          "n": 100,
+          "energia": 10.000000000000531,
+          "vida": 30,
+          "plantas": 5,
+          "bajas": 0,
+          "enemigos": 1,
+          "oleada": 2,
+          "dps": 16
+        },
+        "120": {
+          "n": 100,
+          "energia": 10.000000000001457,
+          "vida": 30,
+          "plantas": 10,
+          "bajas": 0,
+          "enemigos": 0,
+          "oleada": 4,
+          "dps": 16
+        },
+        "180": {
+          "n": 99,
+          "energia": 6.000000000002502,
+          "vida": 30,
+          "plantas": 14,
+          "bajas": 1,
+          "enemigos": 1,
+          "oleada": 5,
+          "dps": 28
+        },
+        "300": {
+          "n": 93,
+          "energia": 8.000000000004944,
+          "vida": 30,
+          "plantas": 21,
+          "bajas": 2,
+          "enemigos": 1,
+          "oleada": 8,
+          "dps": 39.272727272727266
+        },
+        "420": {
+          "n": 89,
+          "energia": 12.000000000006384,
+          "vida": 30,
+          "plantas": 26,
+          "bajas": 5,
+          "enemigos": 1,
+          "oleada": 10,
+          "dps": 51.39393939393938
+        },
+        "600": {
+          "n": 80,
+          "energia": 11.000000000006368,
+          "vida": 30,
+          "plantas": 28,
+          "bajas": 12,
+          "enemigos": 1,
+          "oleada": 13,
+          "dps": 55.393939393939384
+        },
+        "720": {
+          "n": 72,
+          "energia": 12.000000000008214,
+          "vida": 30,
+          "plantas": 27.5,
+          "bajas": 18,
+          "enemigos": 3,
+          "oleada": 14,
+          "dps": 55.39393939393939
+        },
+        "840": {
+          "n": 62,
+          "energia": 10.000000000009212,
+          "vida": 30,
+          "plantas": 27,
+          "bajas": 25.5,
+          "enemigos": 4,
+          "oleada": 16,
+          "dps": 52.96969696969696
+        },
+        "900": {
+          "n": 54,
+          "energia": 10.000000000007333,
+          "vida": 30,
+          "plantas": 26,
+          "bajas": 29,
+          "enemigos": 5,
+          "oleada": 17,
+          "dps": 51.39393939393939
+        },
+        "1200": {
+          "n": 12,
+          "energia": 8.000000000008917,
+          "vida": 27,
+          "plantas": 23.5,
+          "bajas": 49.5,
+          "enemigos": 8,
+          "oleada": 22,
+          "dps": 45.75757575757576
+        }
+      },
+      "combate": {
+        "atracciones": 128,
+        "coraza": 1132.5,
+        "disparosPerdidos": 72,
+        "proporcionImpactos": 0.940468865133451,
+        "blancosPorPulso": 1.6992196240769748,
+        "danoPorEnergia": 6.168818712923782,
+        "dpsEfectivo": 6.093057461894518
+      },
+      "censuradas": 0,
+      "tiempo": {
+        "p10": 383.03333333331364,
+        "p50": 937.1833333328096,
+        "p90": 1204.5116666659
+      },
+      "oleada": {
+        "p10": 8.9,
+        "p50": 18,
+        "p90": 21
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 19,
+        "espino": 5,
+        "campanilla": 14,
+        "hongo": 18
+      },
+      "danoPorPlanta": {
+        "cerbatana": 3433.5,
+        "espino": 147,
+        "hongo": 1942
+      },
+      "tiempoRalentizado": 931.5999999994814,
+      "danoAbsorbidoEspino": 142,
+      "perdidasPorPlanta": {
+        "cerbatana": 11,
+        "espino": 3,
+        "campanilla": 7,
+        "hongo": 12.5
+      },
+      "primeraCompra": 10.333333333333426,
+      "primeraAmenaza": 20.866666666666763,
+      "intervaloCompraMaximo": 27.899999999974625,
+      "tiempoCritico": 1.566666666666666,
+      "energiaGenerada": 937.1833333328092,
+      "energiaGastada": 928,
+      "perdidas": 36.5,
+      "ocupacion": 0.18181818181818182,
+      "energiaFinal": 8.875000000009772,
+      "maxSimultaneos": 48,
+      "desperdicio": 1706,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1380.3000000000252,
+          "dano": 12,
+          "duracionMedia": 13.803000000000251,
+          "danoMedio": 0.12
+        },
+        "pinza": {
+          "n": 367,
+          "duracion": 16157.866666666238,
+          "dano": 319,
+          "duracionMedia": 44.026884650316724,
+          "danoMedio": 0.8692098092643051
+        },
+        "enjambre": {
+          "n": 372,
+          "duracion": 9514.849999999939,
+          "dano": 156,
+          "duracionMedia": 25.577553763440694,
+          "danoMedio": 0.41935483870967744
+        },
+        "distraccion": {
+          "n": 329,
+          "duracion": 15303.683333332887,
+          "dano": 134,
+          "duracionMedia": 46.515754812561966,
+          "danoMedio": 0.4072948328267477
+        },
+        "concentrada": {
+          "n": 382,
+          "duracion": 16537.416666666217,
+          "dano": 170,
+          "duracionMedia": 43.29166666666549,
+          "danoMedio": 0.44502617801047123
+        }
+      }
+    },
+    "soloCerbatanas": {
+      "n": 100,
+      "derrotas": 100,
+      "evolucion": {
+        "60": {
+          "n": 100,
+          "energia": 8.000000000000533,
+          "vida": 30,
+          "plantas": 5,
+          "bajas": 0,
+          "enemigos": 1,
+          "oleada": 2,
+          "dps": 20
+        },
+        "120": {
+          "n": 100,
+          "energia": 6.000000000000908,
+          "vida": 30,
+          "plantas": 9,
+          "bajas": 0,
+          "enemigos": 0,
+          "oleada": 4,
+          "dps": 36
+        },
+        "180": {
+          "n": 87,
+          "energia": 14.000000000000789,
+          "vida": 28,
+          "plantas": 11,
+          "bajas": 1,
+          "enemigos": 2,
+          "oleada": 5,
+          "dps": 44
+        },
+        "300": {
+          "n": 39,
+          "energia": 55.99999999999672,
+          "vida": 17,
+          "plantas": 12,
+          "bajas": 1,
+          "enemigos": 1,
+          "oleada": 7,
+          "dps": 48
+        },
+        "420": {
+          "n": 8,
+          "energia": 97.99999999999054,
+          "vida": 19,
+          "plantas": 12,
+          "bajas": 2.5,
+          "enemigos": 0,
+          "oleada": 9,
+          "dps": 48
+        }
+      },
+      "combate": {
+        "atracciones": 0,
+        "coraza": 183.5,
+        "disparosPerdidos": 31,
+        "proporcionImpactos": 0.8655175469691598,
+        "blancosPorPulso": null,
+        "danoPorEnergia": 2.5680124223602485,
+        "dpsEfectivo": 2.186336035765214
+      },
+      "censuradas": 0,
+      "tiempo": {
+        "p10": 174.6566666666978,
+        "p50": 278.75000000007515,
+        "p90": 406.0133333332928
+      },
+      "oleada": {
+        "p10": 4.9,
+        "p50": 7,
+        "p90": 9
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 13,
+        "espino": 0,
+        "campanilla": 0,
+        "hongo": 0
+      },
+      "danoPorPlanta": {
+        "cerbatana": 640.5,
+        "espino": 0,
+        "hongo": 0
+      },
+      "tiempoRalentizado": 0,
+      "danoAbsorbidoEspino": 0,
+      "perdidasPorPlanta": {
+        "cerbatana": 2,
+        "espino": 0,
+        "campanilla": 0,
+        "hongo": 0
+      },
+      "primeraCompra": 10.333333333333426,
+      "primeraAmenaza": 20.866666666666763,
+      "intervaloCompraMaximo": 48.91666666664396,
+      "tiempoCritico": 2.474999999999996,
+      "energiaGenerada": 278.7499999999873,
+      "energiaGastada": 230,
+      "perdidas": 2,
+      "ocupacion": 0.09917355371900827,
+      "energiaFinal": 26.833333333333442,
+      "maxSimultaneos": 11.100000000000009,
+      "desperdicio": 326.5,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1455.8333333333599,
+          "dano": 12,
+          "duracionMedia": 14.558333333333598,
+          "danoMedio": 0.12
+        },
+        "pinza": {
+          "n": 130,
+          "duracion": 3641.633333333288,
+          "dano": 402,
+          "duracionMedia": 28.012564102563754,
+          "danoMedio": 3.0923076923076924
+        },
+        "enjambre": {
+          "n": 113,
+          "duracion": 2336.916666666673,
+          "dano": 454,
+          "duracionMedia": 20.680678466076753,
+          "danoMedio": 4.017699115044247
+        },
+        "distraccion": {
+          "n": 94,
+          "duracion": 3405.1499999999264,
+          "dano": 149,
+          "duracionMedia": 36.22499999999922,
+          "danoMedio": 1.5851063829787233
+        },
+        "concentrada": {
+          "n": 144,
+          "duracion": 4256.5333333332765,
+          "dano": 200,
+          "duracionMedia": 29.559259259258866,
+          "danoMedio": 1.3888888888888888
+        }
+      }
+    },
+    "area": {
+      "n": 100,
+      "derrotas": 100,
+      "evolucion": {
+        "60": {
+          "n": 100,
+          "energia": 8.000000000000533,
+          "vida": 30,
+          "plantas": 5,
+          "bajas": 0,
+          "enemigos": 1,
+          "oleada": 2,
+          "dps": 20
+        },
+        "120": {
+          "n": 100,
+          "energia": 16.000000000001858,
+          "vida": 30,
+          "plantas": 9,
+          "bajas": 0,
+          "enemigos": 0,
+          "oleada": 4,
+          "dps": 34.42424242424242
+        },
+        "180": {
+          "n": 83,
+          "energia": 10.000000000002848,
+          "vida": 29,
+          "plantas": 12,
+          "bajas": 1,
+          "enemigos": 2,
+          "oleada": 5,
+          "dps": 41.696969696969695
+        },
+        "300": {
+          "n": 33,
+          "energia": 20.000000000003936,
+          "vida": 20,
+          "plantas": 17,
+          "bajas": 2,
+          "enemigos": 1,
+          "oleada": 7,
+          "dps": 55.39393939393939
+        },
+        "420": {
+          "n": 9,
+          "energia": 10.00000000000282,
+          "vida": 23,
+          "plantas": 20,
+          "bajas": 3,
+          "enemigos": 1,
+          "oleada": 9,
+          "dps": 67.39393939393938
+        }
+      },
+      "combate": {
+        "atracciones": 0,
+        "coraza": 154,
+        "disparosPerdidos": 18.5,
+        "proporcionImpactos": 0.8855323020928116,
+        "blancosPorPulso": 1.0903263403263401,
+        "danoPorEnergia": 2.1467331875341715,
+        "dpsEfectivo": 2.0580817726204863
+      },
+      "censuradas": 0,
+      "tiempo": {
+        "p10": 147.26833333334267,
+        "p50": 258.383333333427,
+        "p90": 400.45833333329784
+      },
+      "oleada": {
+        "p10": 4,
+        "p50": 6,
+        "p90": 9
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 10,
+        "espino": 0,
+        "campanilla": 0,
+        "hongo": 8
+      },
+      "danoPorPlanta": {
+        "cerbatana": 480,
+        "espino": 0,
+        "hongo": 53
+      },
+      "tiempoRalentizado": 0,
+      "danoAbsorbidoEspino": 0,
+      "perdidasPorPlanta": {
+        "cerbatana": 2,
+        "espino": 0,
+        "campanilla": 0,
+        "hongo": 0
+      },
+      "primeraCompra": 10.333333333333426,
+      "primeraAmenaza": 20.866666666666763,
+      "intervaloCompraMaximo": 18.083333333347724,
+      "tiempoCritico": 2.3833333333333298,
+      "energiaGenerada": 258.38333333340654,
+      "energiaGastada": 248,
+      "perdidas": 2,
+      "ocupacion": 0.1322314049586777,
+      "energiaFinal": 9.675000000003308,
+      "maxSimultaneos": 10,
+      "desperdicio": 247,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1455.8333333333599,
+          "dano": 12,
+          "duracionMedia": 14.558333333333598,
+          "danoMedio": 0.12
+        },
+        "pinza": {
+          "n": 122,
+          "duracion": 3294.2333333332986,
+          "dano": 274,
+          "duracionMedia": 27.001912568305727,
+          "danoMedio": 2.2459016393442623
+        },
+        "enjambre": {
+          "n": 107,
+          "duracion": 2190.783333333341,
+          "dano": 348,
+          "duracionMedia": 20.474610591900383,
+          "danoMedio": 3.2523364485981308
+        },
+        "distraccion": {
+          "n": 90,
+          "duracion": 3224.8166666665993,
+          "dano": 152,
+          "duracionMedia": 35.83129629629555,
+          "danoMedio": 1.6888888888888889
+        },
+        "concentrada": {
+          "n": 138,
+          "duracion": 3974.6666666666174,
+          "dano": 195,
+          "duracionMedia": 28.8019323671494,
+          "danoMedio": 1.4130434782608696
+        }
+      }
+    },
+    "proteccion": {
+      "n": 100,
+      "derrotas": 100,
+      "evolucion": {
+        "60": {
+          "n": 100,
+          "energia": 10.000000000000531,
+          "vida": 30,
+          "plantas": 5,
+          "bajas": 0,
+          "enemigos": 1,
+          "oleada": 2,
+          "dps": 16
+        },
+        "120": {
+          "n": 100,
+          "energia": 12.000000000001478,
+          "vida": 30,
+          "plantas": 10,
+          "bajas": 0,
+          "enemigos": 0,
+          "oleada": 4,
+          "dps": 32
+        },
+        "180": {
+          "n": 100,
+          "energia": 20.000000000001034,
+          "vida": 30,
+          "plantas": 12,
+          "bajas": 1,
+          "enemigos": 1,
+          "oleada": 5,
+          "dps": 40
+        },
+        "300": {
+          "n": 87,
+          "energia": 25.999999999999943,
+          "vida": 30,
+          "plantas": 15,
+          "bajas": 2,
+          "enemigos": 1,
+          "oleada": 8,
+          "dps": 48
+        },
+        "420": {
+          "n": 64,
+          "energia": 41.9999999999951,
+          "vida": 25,
+          "plantas": 16,
+          "bajas": 3,
+          "enemigos": 1,
+          "oleada": 10,
+          "dps": 52
+        },
+        "600": {
+          "n": 29,
+          "energia": 26.00000000000564,
+          "vida": 16,
+          "plantas": 15,
+          "bajas": 9,
+          "enemigos": 1,
+          "oleada": 13,
+          "dps": 48
+        },
+        "720": {
+          "n": 8,
+          "energia": 33.999999999983544,
+          "vida": 10.5,
+          "plantas": 15,
+          "bajas": 14,
+          "enemigos": 2.5,
+          "oleada": 14,
+          "dps": 48
+        }
+      },
+      "combate": {
+        "atracciones": 41.5,
+        "coraza": 459,
+        "disparosPerdidos": 71.5,
+        "proporcionImpactos": 0.8873405571884625,
+        "blancosPorPulso": null,
+        "danoPorEnergia": 3.911804909260121,
+        "dpsEfectivo": 3.256883247380393
+      },
+      "censuradas": 0,
+      "tiempo": {
+        "p10": 285.80333333340207,
+        "p50": 485.3333333332206,
+        "p90": 699.3849999996926
+      },
+      "oleada": {
+        "p10": 7,
+        "p50": 10,
+        "p90": 14
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 17,
+        "espino": 3,
+        "campanilla": 0,
+        "hongo": 0
+      },
+      "danoPorPlanta": {
+        "cerbatana": 1526,
+        "espino": 33,
+        "hongo": 0
+      },
+      "tiempoRalentizado": 0,
+      "danoAbsorbidoEspino": 28,
+      "perdidasPorPlanta": {
+        "cerbatana": 4,
+        "espino": 0,
+        "campanilla": 0,
+        "hongo": 0
+      },
+      "primeraCompra": 10.333333333333426,
+      "primeraAmenaza": 20.866666666666763,
+      "intervaloCompraMaximo": 60.70833333327812,
+      "tiempoCritico": 1.9583333333333313,
+      "energiaGenerada": 485.33333333312663,
+      "energiaGastada": 430,
+      "perdidas": 4,
+      "ocupacion": 0.1322314049586777,
+      "energiaFinal": 25.424999999998633,
+      "maxSimultaneos": 23,
+      "desperdicio": 777,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1455.8333333333599,
+          "dano": 12,
+          "duracionMedia": 14.558333333333598,
+          "danoMedio": 0.12
+        },
+        "pinza": {
+          "n": 220,
+          "duracion": 7757.666666666509,
+          "dano": 368,
+          "duracionMedia": 35.2621212121205,
+          "danoMedio": 1.6727272727272726
+        },
+        "enjambre": {
+          "n": 208,
+          "duracion": 4552.899999999999,
+          "dano": 245,
+          "duracionMedia": 21.8889423076923,
+          "danoMedio": 1.1778846153846154
+        },
+        "distraccion": {
+          "n": 188,
+          "duracion": 7561.849999999814,
+          "dano": 174,
+          "duracionMedia": 40.22260638297773,
+          "danoMedio": 0.925531914893617
+        },
+        "concentrada": {
+          "n": 238,
+          "duracion": 8691.533333333144,
+          "dano": 244,
+          "duracionMedia": 36.51904761904682,
+          "danoMedio": 1.0252100840336134
+        }
+      }
+    },
+    "ralentizacion": {
+      "n": 100,
+      "derrotas": 100,
+      "evolucion": {
+        "60": {
+          "n": 100,
+          "energia": 8.000000000000533,
+          "vida": 30,
+          "plantas": 5,
+          "bajas": 0,
+          "enemigos": 1,
+          "oleada": 2,
+          "dps": 16
+        },
+        "120": {
+          "n": 100,
+          "energia": 8.000000000001476,
+          "vida": 30,
+          "plantas": 10,
+          "bajas": 0,
+          "enemigos": 0,
+          "oleada": 4,
+          "dps": 24
+        },
+        "180": {
+          "n": 98,
+          "energia": 2.000000000002741,
+          "vida": 30,
+          "plantas": 15,
+          "bajas": 0,
+          "enemigos": 1,
+          "oleada": 5,
+          "dps": 32
+        },
+        "300": {
+          "n": 94,
+          "energia": 6.000000000002739,
+          "vida": 30,
+          "plantas": 18,
+          "bajas": 2,
+          "enemigos": 1,
+          "oleada": 7,
+          "dps": 40
+        },
+        "420": {
+          "n": 85,
+          "energia": 14.00000000000269,
+          "vida": 30,
+          "plantas": 21,
+          "bajas": 4,
+          "enemigos": 2,
+          "oleada": 9,
+          "dps": 48
+        },
+        "600": {
+          "n": 45,
+          "energia": 8.000000000000856,
+          "vida": 27,
+          "plantas": 22,
+          "bajas": 10,
+          "enemigos": 4,
+          "oleada": 12,
+          "dps": 48
+        },
+        "720": {
+          "n": 20,
+          "energia": 16.999999999996888,
+          "vida": 22,
+          "plantas": 20.5,
+          "bajas": 16,
+          "enemigos": 5.5,
+          "oleada": 14,
+          "dps": 44
+        },
+        "840": {
+          "n": 3,
+          "energia": 15.999999999997932,
+          "vida": 10,
+          "plantas": 18,
+          "bajas": 24,
+          "enemigos": 5,
+          "oleada": 16,
+          "dps": 40
+        },
+        "900": {
+          "n": 1,
+          "energia": 23.99999999999705,
+          "vida": 8,
+          "plantas": 18,
+          "bajas": 25,
+          "enemigos": 1,
+          "oleada": 17,
+          "dps": 40
+        }
+      },
+      "combate": {
+        "atracciones": 0,
+        "coraza": 616,
+        "disparosPerdidos": 46,
+        "proporcionImpactos": 0.9384681483352835,
+        "blancosPorPulso": null,
+        "danoPorEnergia": 3.7490073932092005,
+        "dpsEfectivo": 3.626076469899411
+      },
+      "censuradas": 0,
+      "tiempo": {
+        "p10": 379.3949999999836,
+        "p50": 570.22499999981,
+        "p90": 752.5883333329775
+      },
+      "oleada": {
+        "p10": 8.9,
+        "p50": 12,
+        "p90": 14.100000000000009
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 17,
+        "espino": 0,
+        "campanilla": 13,
+        "hongo": 0
+      },
+      "danoPorPlanta": {
+        "cerbatana": 2119,
+        "espino": 0,
+        "hongo": 0
+      },
+      "tiempoRalentizado": 500.97499999987303,
+      "danoAbsorbidoEspino": 0,
+      "perdidasPorPlanta": {
+        "cerbatana": 6,
+        "espino": 0,
+        "campanilla": 4,
+        "hongo": 0
+      },
+      "primeraCompra": 10.333333333333426,
+      "primeraAmenaza": 20.866666666666763,
+      "intervaloCompraMaximo": 28.416666666640822,
+      "tiempoCritico": 1.7666666666666653,
+      "energiaGenerada": 570.2249999997771,
+      "energiaGastada": 557,
+      "perdidas": 11,
+      "ocupacion": 0.1652892561983471,
+      "energiaFinal": 12.966666666667034,
+      "maxSimultaneos": 30.200000000000017,
+      "desperdicio": 851.5,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1455.8333333333599,
+          "dano": 12,
+          "duracionMedia": 14.558333333333598,
+          "danoMedio": 0.12
+        },
+        "pinza": {
+          "n": 252,
+          "duracion": 9693.383333333106,
+          "dano": 262,
+          "duracionMedia": 38.465806878305976,
+          "danoMedio": 1.0396825396825398
+        },
+        "enjambre": {
+          "n": 221,
+          "duracion": 5326.1499999999805,
+          "dano": 297,
+          "duracionMedia": 24.100226244343805,
+          "danoMedio": 1.3438914027149322
+        },
+        "distraccion": {
+          "n": 211,
+          "duracion": 9132.499999999747,
+          "dano": 255,
+          "duracionMedia": 43.28199052132582,
+          "danoMedio": 1.2085308056872037
+        },
+        "concentrada": {
+          "n": 263,
+          "duracion": 10130.233333333095,
+          "dano": 222,
+          "duracionMedia": 38.51799746514485,
+          "danoMedio": 0.844106463878327
+        }
+      }
+    },
+    "diversificado": {
+      "n": 100,
+      "derrotas": 100,
+      "evolucion": {
+        "60": {
+          "n": 100,
+          "energia": 10.000000000000531,
+          "vida": 30,
+          "plantas": 5,
+          "bajas": 0,
+          "enemigos": 1,
+          "oleada": 2,
+          "dps": 16
+        },
+        "120": {
+          "n": 100,
+          "energia": 10.000000000001457,
+          "vida": 30,
+          "plantas": 10,
+          "bajas": 0,
+          "enemigos": 0,
+          "oleada": 4,
+          "dps": 20
+        },
+        "180": {
+          "n": 100,
+          "energia": 10.000000000002414,
+          "vida": 30,
+          "plantas": 15,
+          "bajas": 0,
+          "enemigos": 1,
+          "oleada": 5,
+          "dps": 32
+        },
+        "300": {
+          "n": 99,
+          "energia": 8.000000000004652,
+          "vida": 30,
+          "plantas": 21,
+          "bajas": 2,
+          "enemigos": 1,
+          "oleada": 7,
+          "dps": 39.272727272727266
+        },
+        "420": {
+          "n": 97,
+          "energia": 12.000000000006576,
+          "vida": 30,
+          "plantas": 25,
+          "bajas": 6,
+          "enemigos": 2,
+          "oleada": 9,
+          "dps": 48.96969696969696
+        },
+        "600": {
+          "n": 70,
+          "energia": 10.000000000006331,
+          "vida": 30,
+          "plantas": 27,
+          "bajas": 14,
+          "enemigos": 4,
+          "oleada": 12,
+          "dps": 56.969696969696955
+        },
+        "720": {
+          "n": 43,
+          "energia": 10.00000000001135,
+          "vida": 30,
+          "plantas": 28,
+          "bajas": 20,
+          "enemigos": 4,
+          "oleada": 14,
+          "dps": 59.393939393939384
+        },
+        "840": {
+          "n": 20,
+          "energia": 8.000000000009074,
+          "vida": 30,
+          "plantas": 27,
+          "bajas": 28,
+          "enemigos": 5,
+          "oleada": 16,
+          "dps": 53.75757575757575
+        },
+        "900": {
+          "n": 13,
+          "energia": 12.000000000011072,
+          "vida": 30,
+          "plantas": 27,
+          "bajas": 33,
+          "enemigos": 6,
+          "oleada": 17,
+          "dps": 55.393939393939384
+        }
+      },
+      "combate": {
+        "atracciones": 111,
+        "coraza": 651.5,
+        "disparosPerdidos": 43,
+        "proporcionImpactos": 0.9425756696644425,
+        "blancosPorPulso": 1.3917525773195876,
+        "danoPorEnergia": 4.270636490148686,
+        "dpsEfectivo": 4.232023663583803
+      },
+      "censuradas": 0,
+      "tiempo": {
+        "p10": 487.37833333321873,
+        "p50": 675.2249999997146,
+        "p90": 918.9616666661597
+      },
+      "oleada": {
+        "p10": 10,
+        "p50": 13,
+        "p90": 17
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 14,
+        "espino": 8,
+        "campanilla": 10,
+        "hongo": 14
+      },
+      "danoPorPlanta": {
+        "cerbatana": 1967,
+        "espino": 239,
+        "hongo": 611.5
+      },
+      "tiempoRalentizado": 535.7249999998414,
+      "danoAbsorbidoEspino": 264.5,
+      "perdidasPorPlanta": {
+        "cerbatana": 4,
+        "espino": 6,
+        "campanilla": 2,
+        "hongo": 6
+      },
+      "primeraCompra": 10.333333333333426,
+      "primeraAmenaza": 20.866666666666763,
+      "intervaloCompraMaximo": 26.349999999976035,
+      "tiempoCritico": 1.2833333333333337,
+      "energiaGenerada": 675.224999999714,
+      "energiaGastada": 667,
+      "perdidas": 19.5,
+      "ocupacion": 0.21487603305785125,
+      "energiaFinal": 8.091666666674527,
+      "maxSimultaneos": 29.10000000000001,
+      "desperdicio": 971,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1455.8333333333599,
+          "dano": 12,
+          "duracionMedia": 14.558333333333598,
+          "danoMedio": 0.12
+        },
+        "pinza": {
+          "n": 293,
+          "duracion": 12034.916666666357,
+          "dano": 165,
+          "duracionMedia": 41.07480091012408,
+          "danoMedio": 0.5631399317406144
+        },
+        "enjambre": {
+          "n": 277,
+          "duracion": 7161.699999999944,
+          "dano": 84,
+          "duracionMedia": 25.85451263537886,
+          "danoMedio": 0.30324909747292417
+        },
+        "distraccion": {
+          "n": 251,
+          "duracion": 11228.799999999685,
+          "dano": 111,
+          "duracionMedia": 44.73625498007843,
+          "danoMedio": 0.44223107569721115
+        },
+        "concentrada": {
+          "n": 311,
+          "duracion": 12801.883333333004,
+          "dano": 136,
+          "duracionMedia": 41.163612004286186,
+          "danoMedio": 0.43729903536977494
+        }
+      }
+    },
+    "reactivo": {
+      "n": 100,
+      "derrotas": 100,
+      "evolucion": {
+        "60": {
+          "n": 100,
+          "energia": 10.000000000000531,
+          "vida": 30,
+          "plantas": 5,
+          "bajas": 0,
+          "enemigos": 1,
+          "oleada": 2,
+          "dps": 16
+        },
+        "120": {
+          "n": 100,
+          "energia": 10.000000000001457,
+          "vida": 30,
+          "plantas": 10,
+          "bajas": 0,
+          "enemigos": 0,
+          "oleada": 4,
+          "dps": 20
+        },
+        "180": {
+          "n": 98,
+          "energia": 10.000000000002414,
+          "vida": 30,
+          "plantas": 14,
+          "bajas": 1,
+          "enemigos": 1,
+          "oleada": 5,
+          "dps": 32
+        },
+        "300": {
+          "n": 93,
+          "energia": 10.000000000005013,
+          "vida": 30,
+          "plantas": 21,
+          "bajas": 3,
+          "enemigos": 0,
+          "oleada": 8,
+          "dps": 39.272727272727266
+        },
+        "420": {
+          "n": 84,
+          "energia": 12.000000000006699,
+          "vida": 30,
+          "plantas": 25,
+          "bajas": 5.5,
+          "enemigos": 1,
+          "oleada": 10,
+          "dps": 48.96969696969696
+        },
+        "600": {
+          "n": 74,
+          "energia": 12.00000000000642,
+          "vida": 30,
+          "plantas": 28,
+          "bajas": 12,
+          "enemigos": 2,
+          "oleada": 13,
+          "dps": 59.39393939393938
+        },
+        "720": {
+          "n": 60,
+          "energia": 11.000000000007079,
+          "vida": 30,
+          "plantas": 28,
+          "bajas": 18,
+          "enemigos": 2,
+          "oleada": 14,
+          "dps": 59.39393939393939
+        },
+        "840": {
+          "n": 52,
+          "energia": 8.00000000000652,
+          "vida": 30,
+          "plantas": 27,
+          "bajas": 25.5,
+          "enemigos": 3.5,
+          "oleada": 16,
+          "dps": 55.39393939393939
+        },
+        "900": {
+          "n": 42,
+          "energia": 10.000000000012383,
+          "vida": 30,
+          "plantas": 26.5,
+          "bajas": 29.5,
+          "enemigos": 3.5,
+          "oleada": 17,
+          "dps": 54.54545454545454
+        },
+        "1200": {
+          "n": 5,
+          "energia": 12.000000000007269,
+          "vida": 30,
+          "plantas": 18,
+          "bajas": 62,
+          "enemigos": 9,
+          "oleada": 21,
+          "dps": 36.84848484848485
+        }
+      },
+      "combate": {
+        "atracciones": 108.5,
+        "coraza": 919,
+        "disparosPerdidos": 67,
+        "proporcionImpactos": 0.938543815913712,
+        "blancosPorPulso": 1.7142857142857142,
+        "danoPorEnergia": 5.362026699745998,
+        "dpsEfectivo": 5.292576518413009
+      },
+      "censuradas": 0,
+      "tiempo": {
+        "p10": 350.1133333333436,
+        "p50": 852.0583333328871,
+        "p90": 1162.4883333326047
+      },
+      "oleada": {
+        "p10": 8,
+        "p50": 16,
+        "p90": 21
+      },
+      "danoCentral": 30,
+      "compras": {
+        "cerbatana": 17,
+        "espino": 5,
+        "campanilla": 12.5,
+        "hongo": 17
+      },
+      "danoPorPlanta": {
+        "cerbatana": 2896,
+        "espino": 130,
+        "hongo": 1520
+      },
+      "tiempoRalentizado": 784.5083333329485,
+      "danoAbsorbidoEspino": 138,
+      "perdidasPorPlanta": {
+        "cerbatana": 9,
+        "espino": 3,
+        "campanilla": 6,
+        "hongo": 11
+      },
+      "primeraCompra": 10.333333333333426,
+      "primeraAmenaza": 20.866666666666763,
+      "intervaloCompraMaximo": 26.349999999976035,
+      "tiempoCritico": 1.5583333333333327,
+      "energiaGenerada": 852.0583333328857,
+      "energiaGastada": 841,
+      "perdidas": 31.5,
+      "ocupacion": 0.18181818181818182,
+      "energiaFinal": 8.67500000001155,
+      "maxSimultaneos": 37.20000000000002,
+      "desperdicio": 1390,
+      "composicion": {
+        "inicial": {
+          "n": 100,
+          "duracion": 1380.3000000000252,
+          "dano": 12,
+          "duracionMedia": 13.803000000000251,
+          "danoMedio": 0.12
+        },
+        "pinza": {
+          "n": 337,
+          "duracion": 14513.116666666268,
+          "dano": 275,
+          "duracionMedia": 43.065628090997826,
+          "danoMedio": 0.8160237388724035
+        },
+        "enjambre": {
+          "n": 338,
+          "duracion": 8646.949999999932,
+          "dano": 249,
+          "duracionMedia": 25.582692307692106,
+          "danoMedio": 0.7366863905325444
+        },
+        "distraccion": {
+          "n": 301,
+          "duracion": 13837.833333332932,
+          "dano": 160,
+          "duracionMedia": 45.97286821705293,
+          "danoMedio": 0.53156146179402
+        },
+        "concentrada": {
+          "n": 360,
+          "duracion": 15578.799999999579,
+          "dano": 173,
+          "duracionMedia": 43.274444444443276,
+          "danoMedio": 0.48055555555555557
+        }
+      }
+    }
+  }
+}

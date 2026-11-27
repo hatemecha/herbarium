@@ -2,13 +2,13 @@
 
 Fuente de verdad: `src/config.js`, leído por `src/catalogo.js` y `src/combate.js`. Si un número de aquí no coincide con ese archivo, gana el archivo. Esta nota no se importa desde el juego.
 
-La configuración de la etapa 07 y sus resultados están al final de esta nota. Las cifras anteriores se conservan como referencia histórica para comparar etapas.
+La configuración beta y su validación están en [Etapa 08.3](ETAPA_083.md). Las cifras de esta nota corresponden a etapas anteriores y se conservan como referencia.
 
 Unidades: vida y daño en puntos, tiempo en segundos, distancia en casillas, velocidad en casillas/segundo. El tablero es 11×11 y la central está en `(5, 5)`.
 
-## Valores vigentes
+## Valores de la primera configuración
 
-Confirmados contra `src/config.js` y `src/catalogo.js` en esta consolidación.
+Instantánea histórica previa a los cambios posteriores.
 
 Energía, `ENERGIA`:
 

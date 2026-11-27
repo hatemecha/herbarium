@@ -56,11 +56,13 @@ function especiesDe(numero, oleadas) {
   return lista;
 }
 
-function componer(numero, presupuesto, rng, oleadas) {
+function componer(numero, presupuesto, rng, oleadas, patron) {
   const especies = especiesDe(numero, oleadas);
   const conteo = { pulgon: 0, escarabajo: 0, oruga: 0 };
   const salida = [];
   let resto = presupuesto;
+  const dominante = patron === 'enjambre' || patron === 'distraccion' ? 'pulgon'
+    : patron === 'concentrada' ? 'oruga' : 'escarabajo';
 
   while (resto >= AMENAZA.pulgon) {
     const posibles = especies.filter((id) => {
@@ -74,7 +76,9 @@ function componer(numero, presupuesto, rng, oleadas) {
     const bolsa = Object.values(conteo).filter(Boolean).length === 1 && posibles.some((id) => !conteo[id])
       ? posibles.filter((id) => !conteo[id])
       : posibles;
-    const id = bolsa[Math.floor(rng() * bolsa.length)];
+    const id = oleadas.sesgoDePatron > 0 && bolsa.includes(dominante) && rng() < oleadas.sesgoDePatron
+      ? dominante
+      : bolsa[Math.floor(rng() * bolsa.length)];
     salida.push(id);
     conteo[id] += 1;
     resto -= AMENAZA[id];
@@ -208,31 +212,33 @@ export function generarOleada({ numero, rng, tablero, ocupado, recientes = [], f
   const presupuesto = presupuestoDe(numero, oleadas);
   const sugerido = elegirPatron(numero, recientes, rng);
   const patron = patronForzado ?? sugerido;
-  const { unidades, conteo, sobrante } = componer(numero, presupuesto, rng, oleadas);
+  const { unidades, conteo, sobrante } = componer(numero, presupuesto, rng, oleadas, patron);
   const lados = ladosDelPatron(patron, rng);
   const grupos = patron === 'distraccion'
     ? ordenarDistraccion(unidades, rng, oleadas.grupoMax).filter((grupo) => grupo.length)
     : agrupar(barajar(unidades, rng), rng, oleadas.grupoMax);
-  const tiempos = programar(grupos, ventanaDe(numero, oleadas), rng, factor);
+  const compresion = lados.enjambre ? oleadas.compresionEnjambre : 1;
+  const tiempos = programar(grupos, ventanaDe(numero, oleadas) * compresion, rng, factor);
+  const anclasEnjambre = lados.enjambre ? [ancla(lados.a, tablero, rng), ancla(lados.b, tablero, rng)] : [];
   let cursor = 0;
   const cola = [];
   grupos.forEach((grupo, indice) => {
     let lado = lados.a;
-    if (lados.enjambre) lado = LADOS[Math.floor(rng() * 4)];
-    else if (patron === 'distraccion') lado = indice === 0 ? lados.a : lados.b;
+    if (patron === 'distraccion') lado = indice === 0 ? lados.a : lados.b;
     else if (patron === 'pinza') lado = indice % 2 === 0 ? lados.a : lados.b;
-    const celda = ancla(lado, tablero, rng);
+    const celda = anclasEnjambre[indice % 2] ?? ancla(lado, tablero, rng);
     const pareja = patron === 'pinza' ? tiempos[cursor - (indice % 2 ? grupos[indice - 1].length : 0)].en : null;
     for (const [local, id] of grupo.entries()) {
-      const marca = pareja === null
-        ? tiempos[cursor].en
-        : pareja - tiempoViaje(id, celda, tablero) * oleadas.compensaViaje + local * 0.3;
+      const viaje = pareja !== null || lados.enjambre
+        ? tiempoViaje(id, celda, tablero) * oleadas.compensaViaje
+        : 0;
+      const marca = pareja === null ? tiempos[cursor].en - viaje : pareja - viaje + local * 0.3;
       cola.push({ ...colocar(id, celda, tablero, ocupado, rng), en: marca });
       cursor += 1;
     }
   });
   cola.sort((a, b) => a.en - b.en);
-  if (patron === 'pinza' && cola.length) {
+  if ((patron === 'pinza' || lados.enjambre) && cola.length) {
     const ajuste = cola[0].en - 0.35;
     for (const orden of cola) orden.en -= ajuste;
   }
@@ -302,7 +308,10 @@ export function crearDirector({ tablero, aleatorio, semilla = 0, ocupante, alEnt
     duracionPrep = oleadas.preparacion;
     cola = [];
     emitidos = 0;
+    planificar();
   }
+
+  planificar();
 
   return {
     avanzar(dt, vivos) {
@@ -313,7 +322,6 @@ export function crearDirector({ tablero, aleatorio, semilla = 0, ocupante, alEnt
       tiempoFase += dt;
       if (fase === 'preparacion') {
         if (tiempoFase < duracionPrep) return [];
-        planificar();
         fase = 'combate';
         tiempoFase = 0;
         return [];
@@ -340,9 +348,13 @@ export function crearDirector({ tablero, aleatorio, semilla = 0, ocupante, alEnt
         fase,
         patron,
         restante: fase === 'preparacion' ? Math.max(0, Math.ceil(duracionPrep - tiempoFase)) : 0,
-        porSalir: cola.length,
+        porSalir: fase === 'combate' ? cola.length : 0,
         presupuesto,
       };
+    },
+    aviso() {
+      if (fase !== 'preparacion' || duracionPrep - tiempoFase > oleadas.aviso) return null;
+      return cola[0]?.celda ?? null;
     },
     historial: () => historial.map((oleada) => ({ ...oleada, conteo: { ...oleada.conteo } })),
     semilla: () => semilla,

@@ -42,6 +42,12 @@ export function crearRegistro() {
     danoCentral: 0,
     plantasPerdidas: 0,
     disparos: 0,
+    impactosCerbatana: 0,
+    disparosPerdidos: 0,
+    danoBloqueado: 0,
+    atracciones: 0,
+    pulsosHongo: 0,
+    impactosHongo: 0,
     danoAplicado: 0,
     danoDesperdiciado: 0,
     maxSimultaneos: 0,
@@ -62,11 +68,22 @@ export function crearRegistro() {
           datos.plantasPerdidas += 1;
           datos.perdidasPorPlanta[evento.planta] += 1;
         }
-        if (evento.tipo === 'disparo-perdido') datos.danoDesperdiciado += evento.dano;
+        if (evento.tipo === 'disparo-perdido') {
+          datos.disparosPerdidos += 1;
+          datos.danoDesperdiciado += evento.dano;
+        }
+        if (evento.tipo === 'atraccion') datos.atracciones += 1;
+        if (evento.tipo === 'esporas') datos.pulsosHongo += 1;
         if (evento.tipo === 'disparo') datos.disparos += 1;
         if (evento.tipo === 'mordida' && evento.planta === 'espino') datos.danoAbsorbidoEspino += evento.dano;
-        if (evento.tipo === 'reflejo') datos.danoPorPlanta.espino += evento.dano;
+        if (evento.tipo === 'reflejo') {
+          datos.danoPorPlanta.espino += evento.dano;
+          datos.danoAplicado += evento.dano;
+        }
         if (evento.tipo === 'impacto') {
+          if (evento.planta === 'cerbatana') datos.impactosCerbatana += 1;
+          if (evento.planta === 'hongo') datos.impactosHongo += 1;
+          datos.danoBloqueado += evento.bloqueado ?? 0;
           if (evento.planta) datos.danoPorPlanta[evento.planta] += evento.aplicado;
           datos.danoAplicado += evento.aplicado;
           datos.danoDesperdiciado += evento.sobra;

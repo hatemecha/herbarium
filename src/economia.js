@@ -4,5 +4,6 @@ import { ECONOMIA } from './config.js';
 export function costeDe(tipo, vivas, economia = ECONOMIA) {
   if (!tipo?.comprable) return 0;
   if (!economia.creciente) return tipo.coste;
-  return tipo.coste + economia.incremento * Math.floor(vivas / economia.grupo);
+  const tramo = Math.floor(vivas / economia.grupo);
+  return tipo.coste + economia.incremento * tramo + (economia.escalada ?? 0) * tramo * (tramo - 1);
 }

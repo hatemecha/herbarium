@@ -1,16 +1,18 @@
 # Herbarium
 
-Un jardín chico que crece en la oscuridad. Una planta en el centro genera energía y luz. Con esa energía se planta una cerbatana. Un escarabajo intenta llegar al centro. Si la planta central muere, el jardín cae.
+Un jardín chico que crece en la oscuridad. Una planta en el centro genera energía y luz. Con esa energía podés extender el jardín con Cerbatanas, Espinos, Campanillas y Hongos. Escarabajos, pulgones y orugas intentan llegar al centro. Si la planta central muere, el jardín cae.
 
-El proyecto es independiente. Más adelante va a vivir dentro de la web personal del autor. Ahora es una partida continua: tablero, dos plantas, tres insectos y oleadas procedurales. No hay tarot, sonido ni progresión entre partidas.
+El proyecto es independiente. Más adelante va a vivir dentro de la web personal del autor. Ahora es una partida continua: tablero, cuatro plantas comprables, tres insectos y oleadas procedurales. No hay tarot, sonido ni progresión entre partidas.
 
-![Planta central, contador de energía y tarjeta de la cerbatana](docs/capturas/jardin.png)
+![Primera oleada, catálogo y contador de energía](docs/capturas/etapa083/primer-combate.png)
 
 ## Estado
 
-Etapas 1 a 6 están en código. La etapa 6 añade el director de oleadas, el pulgón, la oruga y el espino. Los números son experimentales. Detalle en [docs/ROADMAP.md](docs/ROADMAP.md) y [docs/BALANCE.md](docs/BALANCE.md).
+Etapa 08.3 integrada. El Espino desvía insectos cercanos, la Campanilla prolonga su exposición al fuego y el Hongo limpia grupos. El escarabajo amortigua disparos en vuelo, el pulgón sobrevuela plantas comunes y la oruga intensifica sus mordidas cuando se afianza. Los puntos del borde anuncian la primera entrada de cada oleada.
 
-Los números de daño, vida y tiempos son provisionales.
+Elegí o tocá una carta para leer su función, incluso si todavía te falta energía. Para plantar, elegí una casilla libre junto al jardín. En pantalla táctil, el primer toque en una casilla previsualiza y el segundo confirma.
+
+El [informe de la etapa 08.3](docs/ETAPA_083.md) reúne estadísticas, escenarios y evidencia de la calibración. Los valores jugables viven en `src/config.js`.
 
 ## Tecnología
 

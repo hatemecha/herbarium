@@ -102,15 +102,13 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
   }
 
   function dibujarAlcance(alcance, t, reducido) {
-    if (alcance.tipo === 'espino') {
-      esquinas(alcance, roles.ambiental, 0.8, 1);
-      return;
-    }
+    if (!alcance.radio) return;
     const radio = alcance.radio * celda;
     const cx = (alcance.x + 0.5) * celda;
     const cy = (alcance.y + 0.5) * celda;
     const color = alcance.tipo === 'campanilla' ? roles.campanaLuz
-      : alcance.tipo === 'hongo' ? roles.hongoLuz : roles.bocaBrillo;
+      : alcance.tipo === 'hongo' ? roles.hongoLuz
+      : alcance.tipo === 'espino' ? roles.ambiental : roles.bocaBrillo;
     const puntos = Math.round(radio * 1.25);
     const paso = reducido ? 0 : Math.floor(t * 3);
     for (let i = 0; i < puntos; i++) {
@@ -288,6 +286,26 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
       ctx.fillRect(x - 3 - paso, y + 1, 2, 1);
       ctx.fillRect(x + 2 + paso, y + 1, 2, 1);
     }
+    if (enemigo.senuelo && !enemigo.senuelo.muerta && !enemigo.objetivo) {
+      const dx = enemigo.senuelo.celda.x + 0.5 - enemigo.x;
+      const dy = enemigo.senuelo.celda.y + 0.5 - enemigo.y;
+      const d = Math.hypot(dx, dy) || 1;
+      ctx.fillStyle = rgb(roles.ambiental, 0.72);
+      for (const paso of [4, 6]) ctx.fillRect(x + Math.round(dx * paso / d), y + Math.round(dy * paso / d), 1, 1);
+    }
+    if (enemigo.tipo.corazaFrontal) {
+      const objetivo = enemigo.objetivo;
+      const dx = objetivo ? objetivo.celda.x + 0.5 - enemigo.x : enemigo.vx;
+      const dy = objetivo ? objetivo.celda.y + 0.5 - enemigo.y : enemigo.vy;
+      const d = Math.hypot(dx, dy);
+      if (d > 0) {
+        const frenteX = x + Math.round(dx * 5 / d);
+        const frenteY = y - 2 + Math.round(dy * 4 / d);
+        const horizontal = Math.abs(dy) > Math.abs(dx);
+        ctx.fillStyle = rgb(roles.insectoReflejo, 0.45);
+        ctx.fillRect(frenteX, frenteY, horizontal ? 2 : 1, horizontal ? 1 : 2);
+      }
+    }
     const estado = estadoVisual(enemigo);
     if (estado === 'aterrizaje') {
       ctx.fillStyle = rgb(roles.insectoBrillo, 0.5 * (1 - enemigo.tiempoEnObjetivo / BALANCE.visual.aterrizaje));
@@ -298,6 +316,12 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
       // La oruga prepara su primera mordida; la señal se concentra en la cabeza.
       ctx.fillStyle = rgb(roles.insectoReflejo, 0.35 + 0.55 * enemigo.tiempoEnObjetivo / enemigo.tipo.preparacionAtaque);
       ctx.fillRect(x + enemigo.mirada * 5, y - 3, 1, 1);
+    }
+    if (enemigo.objetivo && enemigo.mordisco > 0 && enemigo.mordidas > enemigo.tipo.trasMordidas) {
+      ctx.fillStyle = rgb(roles.insectoReflejo, 0.8);
+      const boca = x + enemigo.mirada * 5;
+      ctx.fillRect(boca, y - 3, 2, 1);
+      ctx.fillRect(boca, y - 1, 2, 1);
     }
   }
 
@@ -331,7 +355,7 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
       if (planta.fuente) iluminacion.quitarFuente(planta.fuente);
       planta.fuente = null;
     },
-    dibujar({ t, impulso, reducido, central, plantas, enemigos, proyectiles, particulas, marcas, vista, alcance, gesto, pulsoCentro = 0, hoverCelda = null, tactil = false }) {
+    dibujar({ t, impulso, reducido, central, plantas, enemigos, proyectiles, particulas, marcas, vista, alcance, aviso, gesto, pulsoCentro = 0, hoverCelda = null, tactil = false }) {
       const luz = iluminacion.actualizar(t, reducido ? impulso : Math.max(impulso, pulsoCentro * 0.65), reducido, central.nucleo, central.opacidad);
 
       for (const planta of plantas) {
@@ -408,6 +432,14 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
       }
 
       particulas.dibujar(ctxLuminosa, roles.particula);
+      if (aviso) {
+        const { x, y } = tablero.origen(aviso.x, aviso.y);
+        const lateral = aviso.lado === 'oeste' || aviso.lado === 'este';
+        const ax = x + (lateral ? (aviso.lado === 'oeste' ? 1 : celda - 2) : celda / 2 - 3);
+        const ay = y + (lateral ? celda / 2 - 3 : (aviso.lado === 'norte' ? 1 : celda - 2));
+        ctxLuminosa.fillStyle = rgb(roles.insectoBrillo, 0.72);
+        for (const paso of [0, 3, 6]) ctxLuminosa.fillRect(ax + (lateral ? 0 : paso), ay + (lateral ? paso : 0), 1, 1);
+      }
       if (alcance) dibujarAlcance(alcance, t, reducido);
       if (gesto) {
         const color = gesto.tipo === 'invalida' ? roles.petalo
@@ -454,8 +486,13 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
           });
         }
       }
+      // Un enjambre comparte halo por casilla para conservar las siluetas superpuestas.
+      const halos = new Set();
       for (const enemigo of enemigos) {
         if (enemigo.muerto) continue;
+        const casilla = Math.floor(enemigo.y) * (tablero.columnas + 2) + Math.floor(enemigo.x);
+        if (halos.has(casilla)) continue;
+        halos.add(casilla);
         const altura = elevacion(enemigo, reducido);
         const destello = intensidadGolpe(enemigo);
         resplandorPunto(ctxSalida, { x: enemigo.x * celda, y: enemigo.y * celda - altura }, {

@@ -1,4 +1,4 @@
-import { FEEDBACK, PARTICULAS, SIMULACION, TABLERO } from './config.js';
+import { BALANCE, FEEDBACK, PARTICULAS, SIMULACION, TABLERO } from './config.js';
 import { crearAleatorio, semillaNueva } from './aleatorio.js';
 import { COMPRABLES, ENEMIGOS, PLANTAS } from './catalogo.js';
 import { crearAnimacion } from './animacion.js';
@@ -229,7 +229,12 @@ function crearPartida(dom, roles, frames, reducido, alDerrota) {
       }
       if (reduce) continue;
       if (ev.tipo === 'impacto' && ev.planta !== 'hongo') {
-        particulas.rafaga(x, y, 5, { familia: 'impacto', color: roles.bocaBrillo, ux: ev.ux, uy: ev.uy });
+        particulas.rafaga(x, y, ev.bloqueado ? 3 : 5, {
+          familia: ev.bloqueado ? 'reflejo' : 'impacto',
+          color: ev.bloqueado ? roles.ambiental : roles.bocaBrillo,
+          ux: ev.bloqueado ? -ev.ux : ev.ux,
+          uy: ev.bloqueado ? -ev.uy : ev.uy,
+        });
       } else if (ev.tipo === 'muerte-enemigo' || ev.tipo === 'muerte-planta') {
         particulas.rafaga(x, y, ev.central ? 18 : 7, {
           familia: 'restos',
@@ -239,6 +244,8 @@ function crearPartida(dom, roles, frames, reducido, alDerrota) {
         particulas.rafaga(x, y, 5, { familia: 'reflejo', color: roles.ambiental, ux: ev.ux, uy: ev.uy });
       } else if (ev.tipo === 'esporas') {
         particulas.rafaga(x, y, 14, { familia: 'espora', color: roles.hongoLuz, radio: BALANCE.hongo.alcance * celda });
+      } else if (ev.tipo === 'atraccion') {
+        particulas.rafaga(x, y, 2, { familia: 'control', color: roles.ambiental });
       } else if (ev.tipo === 'control') {
         particulas.rafaga(x, y, 3, { familia: 'control', color: roles.campanaLuz });
       } else if (ev.tipo === 'mordida') {
@@ -294,7 +301,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota) {
     const seleccionada = seleccion.seleccionada();
     const planta = seleccionada && tablero.ocupante(seleccionada.x, seleccionada.y);
     const tipo = vista ? PLANTAS[vista.tipoId] : planta?.tipo;
-    const radio = tipo?.area?.alcance ?? tipo?.ralentiza?.alcance ?? tipo?.ataque?.alcance;
+    const radio = tipo?.area?.alcance ?? tipo?.ralentiza?.alcance ?? tipo?.ataque?.alcance ?? tipo?.atraccion;
     const muestra = vista ? vista.valido && vista.puntero : seleccionada;
     const alcance = muestra && (radio || tipo?.reflejo) && { ...muestra, radio, tipo: tipo.id };
     const vistaOleada = director.vista();
@@ -315,6 +322,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota) {
 
     render.dibujar({
       alcance,
+      aviso: caido ? null : director.aviso(),
       gesto: gesto && { ...gesto, intensidad: (gesto.hasta - estado.tiempo) / FEEDBACK.gesto },
       pulsoCentro: pulsoCentro / FEEDBACK.oleada,
       t: estado.tiempo,

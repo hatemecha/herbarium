@@ -148,7 +148,7 @@ test('un proyectil rápido no atraviesa al enemigo aunque el paso sea grande', (
   jardin.sembrar('cerbatana', { x: 6, y: 5 });
   const e = combate.aparecerEn(8.5, 5.5);
   combate.actualizar(0.25);
-  assert.equal(e.vida, 12 - BALANCE.cerbatana.dano);
+  assert.equal(e.vida, 12 - BALANCE.cerbatana.dano + BALANCE.escarabajo.corazaEnVuelo);
   assert.equal(combate.proyectiles.length, 0);
   assert.equal(cuentaEventos(combate, 'impacto'), 1);
 });
@@ -157,7 +157,7 @@ test('un enemigo cuya vida llega a cero muere y desaparece tras la desintegraci�
   const { combate, jardin } = escena({ aparicion: Infinity });
   jardin.sembrar('cerbatana', { x: 6, y: 5 });
   const e = combate.aparecerEn(8.5, 5.5);
-  e.vida = BALANCE.cerbatana.dano;
+  e.vida = BALANCE.cerbatana.dano - BALANCE.escarabajo.corazaEnVuelo;
   combate.actualizar(0.25);
   assert.equal(e.muerto, true);
   assert.equal(combate.enemigos.includes(e), true, 'sigue en escena durante la desintegración');

@@ -11,10 +11,10 @@ export function textoFicha(planta) {
 
 const FUNCIONES = {
   central: { consejo: 'Genera energía. Si cae, termina la partida.' },
-  cerbatana: { corta: 'Disparo', consejo: 'Un disparo por vez. Cubre caminos abiertos.' },
-  espino: { corta: 'Escudo', consejo: 'Bloquea y devuelve mordidas. Delante de tus plantas.' },
-  campanilla: { corta: 'Freno', consejo: 'Frena a los cercanos. Combínala con ataque.' },
-  hongo: { corta: 'Área', consejo: 'Daño a todos los cercanos. Mejor contra grupos.' },
+  cerbatana: { corta: 'Disparo', consejo: 'Dispara a los insectos cercanos.' },
+  espino: { corta: 'Atracción', consejo: 'Atrae insectos y devuelve sus mordidas.' },
+  campanilla: { corta: 'Freno', consejo: 'Frena a los insectos cercanos.' },
+  hongo: { corta: 'Área', consejo: 'Daña a todos los insectos cercanos.' },
 };
 
 export function funcionDe(id) {

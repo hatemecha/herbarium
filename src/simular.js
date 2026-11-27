@@ -36,13 +36,15 @@ export function simularPartida({ semilla, estrategia, horizonte = 20 * 60, cada 
     tablero,
     jardin,
     tipoEnemigo: ENEMIGOS.escarabajo,
-    catalogoEnemigos: ENEMIGOS,
+    catalogoEnemigos: { ...ENEMIGOS, oruga: { ...ENEMIGOS.oruga, ...ajustes.oruga } },
     director,
     aleatorio: crearAleatorio((semilla + 1) >>> 0),
   });
   const jugador = crearAleatorio((semilla + 2) >>> 0);
   const dt = SIMULACION.paso;
   const pasos = Math.round(horizonte / dt);
+  const cortes = [60, 120, 180, 300, 420, 600, 720, 840, 900, 1200, 1800];
+  const evolucion = [];
   let espera = 0;
   let tiempoCritico = 0;
   let primeraCompra = null;
@@ -84,6 +86,19 @@ export function simularPartida({ semilla, estrategia, horizonte = 20 * 60, cada 
     let vivos = 0;
     for (const enemigo of combate.enemigos) if (!enemigo.muerto) vivos += 1;
     registro.simultaneos(vivos);
+    if (i + 1 === Math.round(cortes[evolucion.length] / dt)) {
+      const plantas = jardin.plantas.filter((planta) => !planta.muerta);
+      evolucion.push({
+        t: cortes[evolucion.length],
+        energia: estado.energia,
+        vida: jardin.central.vida,
+        plantas: plantas.length - 1,
+        bajas: registro.datos.plantasPerdidas,
+        enemigos: vivos,
+        oleada: director.vista().numero,
+        dps: dpsTeorico(jardin),
+      });
+    }
     if (vivos > 0) primeraAmenaza ??= combate.tiempo();
     if (jardin.central.vida <= jardin.central.vidaMax / 3) tiempoCritico += dt;
   }
@@ -105,6 +120,7 @@ export function simularPartida({ semilla, estrategia, horizonte = 20 * 60, cada 
     dpsFinal: dpsTeorico(jardin),
     coberturaFinal: cobertura(jardin, tablero),
     historial,
+    evolucion,
     primeraCompra,
     primeraAmenaza,
     intervaloCompraMaximo: Math.max(intervaloCompraMaximo, combate.tiempo() - ultimaCompra),

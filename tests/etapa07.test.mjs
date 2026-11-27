@@ -33,7 +33,7 @@ test('dos campanillas no acumulan la ralentización ni cambian la mordida', () =
 test('el hongo alcanza al grupo en su radio, no se activa desde más lejos y respeta el intervalo', () => {
   const { combate, jardin } = jardinDePrueba();
   jardin.sembrar('hongo', { x: 5, y: 4 });
-  const lejos = combate.aparecerEn(5.5, 2.8);
+  const lejos = combate.aparecerEn(5.5, 4.5 - BALANCE.hongo.alcance - 0.2);
   combate.actualizar(dt);
   assert.equal(combate.eventos().filter((ev) => ev.tipo === 'esporas').length, 0);
   const cerca = [4.8, 5.6, 6.2].map((x) => combate.aparecerEn(x, 3.4, ENEMIGOS.pulgon));
@@ -91,4 +91,83 @@ test('la oruga se prepara antes de empezar a desgastar su bloqueo', () => {
   assert.equal(espino.vida, espino.vidaMax);
   for (let t = 0; t < BALANCE.oruga.preparacionAtaque; t += dt) combate.actualizar(dt);
   assert.equal(espino.vida, espino.vidaMax - BALANCE.oruga.dano);
+});
+
+test('el Espino captura al pulgón en vuelo y conserva el desvío hasta que se pierde', () => {
+  const { combate, jardin } = jardinDePrueba();
+  const cerbatana = jardin.sembrar('cerbatana', { x: 5, y: 3 });
+  const espino = jardin.sembrar('espino', { x: 4, y: 3 });
+  const pulgon = combate.aparecerEn(5.5, 2.7, ENEMIGOS.pulgon);
+  combate.actualizar(dt);
+  assert.equal(pulgon.senuelo, espino);
+  assert.notEqual(pulgon.objetivo, cerbatana);
+  assert.ok(pulgon.vx < 0);
+  assert.equal(combate.eventos().filter((ev) => ev.tipo === 'atraccion').length, 1);
+  jardin.destruir(espino);
+  combate.actualizar(dt);
+  assert.equal(pulgon.senuelo, null);
+  assert.equal(pulgon.objetivo, null);
+  assert.ok(pulgon.vy > 0);
+});
+
+test('el pulgón sobrevuela plantas comunes pero se posa en la central', () => {
+  const { combate, jardin } = jardinDePrueba();
+  const planta = jardin.sembrar('campanilla', { x: 5, y: 4 });
+  const pulgon = combate.aparecerEn(5.5, 3.8, ENEMIGOS.pulgon);
+  for (let i = 0; i < 180; i++) combate.actualizar(dt);
+  assert.equal(planta.vida, planta.vidaMax);
+  assert.equal(pulgon.objetivo, jardin.central);
+  assert.ok(jardin.central.vida < jardin.central.vidaMax);
+});
+
+test('la oruga aumenta el daño solo después de afianzarse en la misma planta', () => {
+  const { combate, jardin } = jardinDePrueba();
+  const planta = jardin.sembrar('campanilla', { x: 5, y: 4 });
+  combate.aparecerEn(5.5, 3.8, ENEMIGOS.oruga);
+  const mordidas = [];
+  for (let i = 0; i < 210; i++) {
+    combate.actualizar(dt);
+    mordidas.push(...combate.eventos().filter((ev) => ev.tipo === 'mordida').map((ev) => ev.dano));
+  }
+  const { dano, danoSostenido } = ENEMIGOS.oruga;
+  assert.deepEqual(mordidas, [dano, dano, dano + danoSostenido]);
+  assert.equal(planta.vida, planta.vidaMax - dano * 3 - danoSostenido);
+});
+
+test('el aviso señala la primera entrada y solo aparece al final de la preparación', () => {
+  const tablero = crearTablero();
+  const director = crearDirector({ tablero, aleatorio: crearAleatorio(9) });
+  assert.equal(director.aviso(), null);
+  director.avanzar(18, 0);
+  const entrada = director.aviso();
+  assert.ok(entrada);
+  director.avanzar(2, 0);
+  assert.equal(director.aviso(), null);
+  const [primero] = director.avanzar(2, 0);
+  assert.equal(Math.floor(primero.x), entrada.x);
+  assert.equal(Math.floor(primero.y), entrada.y);
+});
+
+test('la oruga amortigua un tiro frontal, pero recibe daño completo desde un costado', () => {
+  const { combate } = jardinDePrueba();
+  const oruga = combate.aparecerEn(5.5, 2.5, ENEMIGOS.oruga);
+  const nuevoTiro = { y: 2.5, uy: 0, planta: 'cerbatana', dano: BALANCE.cerbatana.dano,
+    velocidad: 6, recorrido: 0, distanciaMaxima: 4.5, activo: true };
+  combate.proyectiles.push(
+    { ...nuevoTiro, x: 5.5, y: 2.6, ux: 0, uy: -1 },
+    { ...nuevoTiro, x: 5.4, ux: 1 },
+  );
+  combate.actualizar(dt);
+  const impactos = combate.eventos().filter((ev) => ev.tipo === 'impacto');
+  assert.deepEqual(impactos.map((ev) => ev.bloqueado), [BALANCE.oruga.corazaFrontal, 0]);
+  assert.equal(oruga.vida, oruga.vidaMax - 2 * BALANCE.cerbatana.dano + BALANCE.oruga.corazaFrontal);
+});
+
+test('un señuelo sembrado justo bajo el insecto permite que se pose', () => {
+  const { combate, jardin } = jardinDePrueba();
+  const pulgon = combate.aparecerEn(4.5, 3.5, ENEMIGOS.pulgon);
+  const espino = jardin.sembrar('espino', { x: 4, y: 3 });
+  combate.actualizar(dt);
+  assert.equal(pulgon.objetivo, espino);
+  assert.equal(pulgon.vida, pulgon.vidaMax - BALANCE.espino.reflejo);
 });

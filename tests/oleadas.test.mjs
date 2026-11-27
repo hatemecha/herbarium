@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { BALANCE } from '../src/config.js';
+import { BALANCE, OLEADAS } from '../src/config.js';
 import { crearAleatorio } from '../src/aleatorio.js';
 import { ENEMIGOS, PLANTAS } from '../src/catalogo.js';
 import { crearCombate } from '../src/combate.js';
@@ -143,4 +143,18 @@ test('un espino devuelve daño por mordida y no encadena', () => {
   assert.equal(enemigo.vida, vida - BALANCE.espino.reflejo);
   assert.equal(enemigo.colorImpacto, 'ambiental');
   assert.equal(tablero.ocupante(5, 4).vida, BALANCE.espino.vida - BALANCE.escarabajo.dano);
+});
+
+test('el enjambre comparte dos entradas y concentra las llegadas con el mismo presupuesto', () => {
+  const datos = { numero: 9, tablero, ocupado: () => false, patronForzado: 'enjambre' };
+  const compacta = generarOleada({ ...datos, rng: crearAleatorio(42) });
+  const amplia = generarOleada({ ...datos, rng: crearAleatorio(42), oleadas: { ...OLEADAS, compresionEnjambre: 1 } });
+  const anclas = new Set(compacta.cola.map(({ celda }) => celda.lado));
+  const llegada = ({ en, id, celda }) =>
+    en + Math.hypot(celda.x - tablero.centro.x, celda.y - tablero.centro.y) / BALANCE[id].velocidad;
+  const amplitud = ({ cola }) => Math.max(...cola.map(llegada)) - Math.min(...cola.map(llegada));
+  assert.equal(anclas.size, 2);
+  assert.equal(compacta.presupuesto, amplia.presupuesto);
+  assert.deepEqual(compacta.conteo, amplia.conteo);
+  assert.ok(amplitud(compacta) < amplitud(amplia));
 });

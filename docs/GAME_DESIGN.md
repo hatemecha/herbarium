@@ -22,11 +22,11 @@ Sin monetización, publicidad ni compras.
 Implementado:
 
 1. Hay una planta central en el centro del tablero. Genera energía e ilumina.
-2. Con esa energía se compran la cerbatana y el espino. El coste sube con las plantas vivas de ese mismo tipo.
+2. Con esa energía se compran las cuatro plantas del catálogo. El coste sube con las plantas vivas de ese mismo tipo.
 3. Solo se planta en una casilla libre, dentro del tablero, vecina en alguna de las ocho direcciones a una planta ya viva, y si la energía alcanza. Vale en la preparación y en el combate.
 4. El jardín crece desde las plantas existentes. La central no se compra ni se duplica.
 5. Tras 20 s de preparación entra la primera oleada: dos escarabajos y tres pulgones, no todos a la vez. Después hay oleadas procedurales con semilla.
-6. La cerbatana dispara sola al enemigo más cercano dentro de su alcance circular. El espino no dispara: devuelve 1 de daño a quien lo muerde.
+6. La cerbatana dispara sola al enemigo más cercano dentro de su alcance circular. El espino atrae insectos y devuelve 2 de daño a quien lo muerde.
 7. Si la central muere, la partida se detiene: no sube energía, no se compra y no se combate. Las animaciones pendientes terminan y, al apagarse la central, aparece el aviso «el jardín cayó».
 
 No hay recompensas por baja, tarot, sonido ni progresión entre partidas. Entre oleadas hay un gancho vacío (`alEntreOleadas`) para eso.
@@ -49,13 +49,13 @@ Implementado. No es comprable. Ocupa la casilla `(5, 5)` de un tablero 11×11. V
 
 ## Economía
 
-Implementado y experimental. La energía empieza en 0 y sube 1 por segundo en preparación y en combate. El indicador muestra el entero. El coste de cada compra es `costeBase + 2 × floor(vivasDelMismoTipo / 4)`. Lo desactiva `ECONOMIA.creciente` en `src/config.js`. La tarjeta, la validación y el descuento leen esa misma función.
+Implementado y experimental. La energía empieza en 0 y sube 1 por segundo en preparación y en combate. El indicador muestra el entero. El coste de cada compra es `costeBase + 2t + 6t(t − 1)`, con `t = floor(vivasDelMismoTipo / 4)`. Lo desactiva `ECONOMIA.creciente` en `src/config.js`. La tarjeta, la validación y el descuento leen esa misma función.
 
 No hay otras fuentes de energía, regeneración ni recompensa por matar. El detalle está en [BALANCE.md](BALANCE.md).
 
 ## Plantas, catálogo y expansión
 
-Hay cuatro tipos comprables. La **Cerbatana** concentra daño individual. El **Espino** absorbe mordidas y devuelve parte de la presión. La **Campanilla** reduce la velocidad de avance en su radio. El **Hongo** libera esporas cuando hay insectos dentro de su radio efectivo. El catálogo son tarjetas en canvas (`src/catalogoUI.js`). Estados: disponible, seleccionada e insuficiente. El número de la tarjeta es el coste actual, no el base.
+Hay cuatro tipos comprables. La **Cerbatana** concentra daño individual. El **Espino** atrae insectos cercanos en avance y devuelve daño por cada mordida. La **Campanilla** reduce la velocidad de avance en su radio. El **Hongo** libera esporas cuando hay insectos dentro de su radio efectivo. El catálogo son tarjetas en canvas (`src/catalogoUI.js`). Estados: disponible, seleccionada e insuficiente. El número de la tarjeta es el coste actual, no el base.
 
 La colocación (`src/colocacion.js`, `src/jardin.js`):
 
@@ -71,23 +71,29 @@ El espino es la planta defensiva. Bloquea porque ocupa una casilla, igual que la
 
 Implementado solo sobre casillas ocupadas. Persiste hasta otra planta, una casilla vacía, un pulsar fuera del canvas (el catálogo y el aviso de derrota, marcados `data-interfaz`, no cuentan) o hasta entrar en modo colocación, que la limpia.
 
-Al seleccionar una planta, la barra muestra su vida actual y máxima, el efecto, el daño y la cadencia cuando corresponden. Un contorno punteado en el tablero indica su alcance. No hay barras sobre el tablero. No abre mejoras.
+Un contorno punteado indica el alcance de la planta seleccionada. La consulta de cartas ofrece una descripción breve debajo del catálogo.
 
 El hover (borde de hormigas) solo sigue a mouse y lápiz. El toque no genera hover.
 
 ## Enemigos y combate
 
+En 08.3, el Escarabajo amortigua un punto por proyectil mientras está en vuelo. El Pulgón cruza sobre defensas comunes y se posa en el Espino o en la central. La Oruga amortigua tiros frontales e intensifica la tercera mordida y las siguientes contra la misma planta. Un Espino capta insectos libres dentro de su radio. Si se solapan radios, el insecto elige el Espino más cercano y sostiene el desvío hasta encontrar un bloqueo o perder el señuelo. La Campanilla reduce el avance durante el desvío y deja intacta la cadencia de las mordidas.
+
+Durante los últimos cuatro segundos de preparación, una marca en la grilla indica la primera entrada. Los patrones de oleada favorecen composiciones diferentes y se generan a partir de la semilla.
+
+### Reglas compartidas
+
 Tres enemigos comparten `src/combate.js`. El escarabajo conserva vida 12, velocidad 0,5, daño 2 e intervalo 1. El pulgón alado: vida 4, velocidad 1,05, daño 1, intervalo 0,65. La oruga: vida 28, velocidad 0,28, daño 3, intervalo 1,25. Camina, se toma un momento al fijar una planta y sostiene la presión con mordidas sucesivas. Los pulgones comparten puntos de salida por grupo y varían ligeramente su marcha. Esas cifras son el punto de partida medido en [BALANCE.md](BALANCE.md), no un cierre.
 
 - Las oleadas las arma `src/oleadas.js` con una semilla. La primera es fija. Desde la tercera puede salir la oruga.
-- Si el perímetro está ocupado, el insecto aparece justo afuera y muerde la planta del borde. No hay reintento infinito.
+- Si el perímetro está ocupado, el insecto aparece justo afuera y decide con sus reglas habituales de avance y bloqueo.
 - Posición continua, en unidades de casilla. La casilla `i` es el intervalo `[i, i+1)`.
-- El escarabajo vuela a 3 px y el pulgón a 2 px. La oruga queda en el suelo. Ninguno atraviesa plantas: el bloqueo es el de siempre.
-- Al fijar objetivo, el volador aterriza y se alimenta. La oruga contrae el cuerpo y baja la cabeza al morder. Al perder la planta, el volador despega. Esos estados son solo visuales; ver [ART_DIRECTION.md](ART_DIRECTION.md).
-- Camino directo hacia el centro de la central. Si la casilla inmediata en esa dirección tiene una planta viva, se detiene y la ataca. Al destruirla, la casilla se libera y sigue.
+- El escarabajo vuela a 3 px y el pulgón a 2 px. La oruga queda en el suelo. Solo el pulgón sobrevuela bloqueos comunes.
+- Al fijar objetivo, el volador aterriza y se alimenta. La oruga contrae el cuerpo y baja la cabeza al morder. Al perder la planta, el volador despega. El estado de vuelo determina si la coraza protege al escarabajo. Ver [ART_DIRECTION.md](ART_DIRECTION.md).
+- El camino va hacia la central o hacia un Espino que haya desviado al insecto. Si la casilla inmediata en esa dirección contiene un bloqueo válido, se detiene y lo ataca. Al destruirla, la casilla se libera y sigue.
 - La cerbatana elige el enemigo vivo más cercano a distancia ≤ alcance, apunta con una predicción corta y dispara con cadencia propia.
 - El proyectil tiene posición, dirección y velocidad. El daño ocurre al cruzar el radio del enemigo, con barrido del segmento para no atravesarlo entre frames. Si agota su distancia máxima, desaparece.
-- Entidades con vida actual y máxima. Al recibir daño hay un destello breve. Sin barras de vida.
+- Entidades con vida actual y máxima. Al recibir daño hay un destello breve. Las plantas dañadas muestran una barra discreta.
 - El escarabajo muerto se desintegra píxel a píxel y luego sale de la lista.
 - Una planta destruida libera la casilla al momento, se marchita por opacidad y al terminar se retira junto con su luz.
 
@@ -104,7 +110,7 @@ No hay cartas ni preguntas. No inventarlas.
 
 ## Pendiente de diseño
 
-- Si el presupuesto calibrado se queda. La medición de 100 semillas está en [BALANCE.md](BALANCE.md). No es una prueba de diversión humana.
-- Cuánto vale un Espino situado en una ruta real de ataque. Los resultados de la etapa 07 separan la eficacia bajo presión de la supervivencia de una política concreta.
+- Si el presupuesto calibrado se queda. La medición de 100 semillas está en [Etapa 08.3](ETAPA_083.md). No es una prueba de diversión humana.
+- Cuánto valor obtiene un jugador del Espino en partidas completas. La etapa 08.3 mide la protección en escenarios controlados y con políticas automatizadas.
 - Qué hace el insecto vivo cuando la central cae.
 - Licencia y visibilidad del repositorio. No están elegidas.

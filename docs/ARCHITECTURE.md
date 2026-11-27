@@ -163,3 +163,7 @@ El director planifica composición, sector, punto de referencia y tiempo. Al emi
 ## Etapa 08.2
 
 La composición de producción vive en `styles.css`; el laboratorio cambia solo su distribución con `lab082.css`. `juego.js` coordina energía, cartas y estado cerrado del catálogo. `catalogoUI.js` mantiene la interacción con botones y dibujo en canvas; al cerrar se deshabilitan y se reconstruyen al reiniciar. `combate.js` añade metadatos de dirección y entrada al estado de ralentización, sin cambiar las decisiones ni cifras de combate. `render.js` y `entidades/enemigo.js` los traducen a píxeles y cadencia. El presupuesto de partículas se limita en config y usa un generador aleatorio visual separado; no consume la semilla del director. Los scripts de desarrollo instrumentan respuestas HTTP en Chromium, no abren una API de depuración de producción. Ver [dirección artística y validación](ART_DIRECTION.md#etapa-082--composición-movimiento-y-cierre-artístico).
+
+## Etapa 08.3
+
+`combate.js` fija el señuelo al entrar en su radio y reinicia el contador de mordidas al fijar el siguiente objetivo. Las reglas dependen del estado del enemigo. El director planifica al comienzo de la preparación y expone en `aviso()` solo la primera entrada durante los últimos cuatro segundos de esa fase. La simulación entrega a las políticas el jardín, el saldo y los insectos presentes. El catálogo dibuja una descripción DOM vinculada a la carta consultada. Los avisos de perímetro y de desvío consumen estado del juego en el renderer.

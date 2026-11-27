@@ -20,13 +20,13 @@ test('la ficha muestra vida y el dato principal solo con una planta elegida', ()
   };
   assert.match(textoFicha(cerbatana), /Cerbatana\s+8\/12\s+daño 4\s+alcance 3/);
   const espino = { tipo: PLANTAS.espino, vida: 36, vidaMax: BALANCE.espino.vida, muerta: false };
-  assert.match(textoFicha(espino), /Espino\s+36\/54\s+refleja 3/);
+  assert.match(textoFicha(espino), /Espino\s+36\/42\s+refleja 2/);
   assert.equal(textoFicha(null), '');
   assert.equal(textoFicha({ ...cerbatana, muerta: true }), '');
 });
 
 test('todas las cartas comprables informan su función antes de plantar', () => {
   const funciones = COMPRABLES.map(({ id }) => funcionDe(id));
-  assert.deepEqual(funciones.map(({ corta }) => corta), ['Disparo', 'Escudo', 'Freno', 'Área']);
+  assert.deepEqual(funciones.map(({ corta }) => corta), ['Disparo', 'Atracción', 'Freno', 'Área']);
   assert.ok(funciones.every(({ consejo }) => consejo.length > 0));
 });

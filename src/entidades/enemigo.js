@@ -18,6 +18,8 @@ export function crearEnemigo({ x, y, tipo, desfase = 0 }) {
     vida: tipo.vida,
     vidaMax: tipo.vida,
     objetivo: null,
+    senuelo: null,
+    mordidas: 0,
     cooldown: 0,
     destello: 0,
     golpe: { x: 0, y: 0 },
