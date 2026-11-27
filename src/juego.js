@@ -1,4 +1,4 @@
-import { BALANCE, FEEDBACK, OLEADAS, PARTICULAS, SIMULACION, TABLERO } from './config.js';
+import { FEEDBACK, PARTICULAS, SIMULACION, TABLERO } from './config.js';
 import { crearAleatorio, semillaNueva } from './aleatorio.js';
 import { COMPRABLES, ENEMIGOS, PLANTAS } from './catalogo.js';
 import { crearAnimacion } from './animacion.js';
@@ -6,11 +6,10 @@ import { crearCatalogoUI } from './catalogoUI.js';
 import { crearColocacion } from './colocacion.js';
 import { crearCombate } from './combate.js';
 import { crearDerrota } from './derrota.js';
-import { textoFicha } from './ficha.js';
 import { calcularEscala, celdaDeCliente, pantallaAMundo } from './escala.js';
 import { apagar, crearEstado, avanzar } from './estado.js';
 import { crearJardin } from './jardin.js';
-import { asegurarVariables, crearRoles, leerPaleta } from './paleta.js';
+import { asegurarVariables, crearRoles, leerPaleta, rgb } from './paleta.js';
 import { crearDirector } from './oleadas.js';
 import { crearParticulas } from './particulas.js';
 import { crearReloj } from './reloj.js';
@@ -18,44 +17,58 @@ import { crearRenderer } from './render.js';
 import { crearSeleccion } from './seleccion.js';
 import { crearTablero } from './tablero.js';
 import { construirFotogramas } from './sprites/dibujo.js';
+import { LADO_ESTRELLA, pintarEstrellaYTexto } from './sprites/estrella.js';
+
+const FUENTE_ENERGIA = '11px MonoMEK, ui-monospace, monospace';
+const ALTO_ENERGIA = 14;
+
+function pintarEnergia(canvas, roles, valor) {
+  const texto = String(valor);
+  const probe = canvas.getContext('2d');
+  probe.setTransform(1, 0, 0, 1, 0, 0);
+  probe.font = FUENTE_ENERGIA;
+  const ancho = Math.ceil(LADO_ESTRELLA + 2 + probe.measureText(texto).width);
+  const css = parseFloat(getComputedStyle(canvas.parentElement).fontSize) || 40;
+  const dpr = window.devicePixelRatio || 1;
+  const zoom = Math.max(2, Math.round((css / 11) * dpr));
+  if (canvas.width !== ancho * zoom || canvas.height !== ALTO_ENERGIA * zoom) {
+    canvas.width = ancho * zoom;
+    canvas.height = ALTO_ENERGIA * zoom;
+  }
+  canvas.style.width = `${(ancho * zoom) / dpr}px`;
+  canvas.style.height = `${(ALTO_ENERGIA * zoom) / dpr}px`;
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(zoom, 0, 0, zoom, 0, 0);
+  ctx.imageSmoothingEnabled = false;
+  ctx.clearRect(0, 0, ancho, ALTO_ENERGIA);
+  ctx.font = FUENTE_ENERGIA;
+  ctx.textAlign = 'left';
+  pintarEstrellaYTexto(ctx, 0, 11, texto, rgb(roles.energiaUI), rgb(roles.energiaUI));
+}
 
 function construirDom(contenedor) {
   contenedor.classList.add('herbario');
   contenedor.innerHTML = `
     <header class="herbario-barra">
-      <div class="energia">
-        <span class="energia-punto" aria-hidden="true"></span>
-        <span class="energia-etiqueta">energía</span>
-        <span class="energia-valor">0</span>
-        <span class="energia-trazos" aria-hidden="true">${'<i></i>'.repeat(8)}</span>
-      </div>
-      <div class="fase">
-        <span class="fase-oleada">oleada 1</span>
-        <span class="fase-detalle"><span class="fase-etiqueta">preparación</span> <span class="fase-valor">20 s</span></span>
-        <span class="fase-hitos" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+      <div class="energia" aria-live="polite">
+        <canvas class="energia-lienzo" aria-hidden="true"></canvas>
       </div>
       <span class="solo-lector" role="status"></span>
-      <div class="ficha" data-interfaz>
-        <p class="ficha-accion"></p>
-      </div>
     </header>
-    <div class="herbario-escenario">
-      <canvas class="tablero" role="img" aria-label="Jardín en penumbra con una planta central que genera energía"></canvas>
+    <div class="herbario-campo">
+      <div class="herbario-escenario">
+        <canvas class="tablero" role="img" aria-label="Jardín en penumbra con una planta central que genera energía"></canvas>
+        <div class="escenario-evento" aria-hidden="true"></div>
+      </div>
     </div>`;
   return {
+    campo: contenedor.querySelector('.herbario-campo'),
     escenario: contenedor.querySelector('.herbario-escenario'),
     canvas: contenedor.querySelector('.tablero'),
     energia: contenedor.querySelector('.energia'),
-    trazos: [...contenedor.querySelectorAll('.energia-trazos i')],
-    fase: contenedor.querySelector('.fase'),
-    hitos: [...contenedor.querySelectorAll('.fase-hitos i')],
+    energiaLienzo: contenedor.querySelector('.energia-lienzo'),
     anuncio: contenedor.querySelector('.solo-lector'),
-    valor: contenedor.querySelector('.energia-valor'),
-    oleada: contenedor.querySelector('.fase-oleada'),
-    etiquetaFase: contenedor.querySelector('.fase-etiqueta'),
-    valorFase: contenedor.querySelector('.fase-valor'),
-    ficha: contenedor.querySelector('.ficha'),
-    accion: contenedor.querySelector('.ficha-accion'),
+    evento: contenedor.querySelector('.escenario-evento'),
   };
 }
 
@@ -67,7 +80,7 @@ function construirFrames(roles) {
   return frames;
 }
 
-function crearPartida(dom, roles, frames, reducido, alDerrota, reinicio) {
+function crearPartida(dom, roles, frames, reducido, alDerrota) {
   const tablero = crearTablero();
   const semilla = semillaNueva();
   const director = crearDirector({
@@ -81,15 +94,14 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, reinicio) {
   let gesto = null;
   let consulta = null;
   let inspeccion = null;
-  let aviso = null;
-  let pulsoCentro = reinicio ? FEEDBACK.oleada : 0;
+  let pulsoCentro = FEEDBACK.oleada;
   let faseVisual = '';
-  let pendientesFase = 0;
+  let eventoHasta = 0;
+  let criticoAnterior = false;
   const pulsos = new Map();
 
   function marcar(tipo, celda) {
     gesto = { tipo, celda, hasta: estado.tiempo + FEEDBACK.gesto };
-    if (tipo === 'preview') aviso = null;
     if (tipo === 'invalida') {
       avisar(tablero.ocupante(celda.x, celda.y)
         ? 'Esa casilla está ocupada.'
@@ -98,8 +110,10 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, reinicio) {
   }
 
   function avisar(mensaje) {
-    aviso = { mensaje, hasta: estado.tiempo + 2.2 };
     texto(dom.anuncio, mensaje);
+    texto(dom.evento, mensaje);
+    delete dom.evento.dataset.evento;
+    eventoHasta = estado.tiempo + 2.2;
   }
 
   function texto(elemento, valor) {
@@ -110,7 +124,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, reinicio) {
     elemento.dataset.pulso = clase;
     pulsos.set(elemento, estado.tiempo + duracion);
   }
-  const particulas = crearParticulas();
+  const particulas = crearParticulas({ aleatorio: crearAleatorio((semilla + 2) >>> 0) });
   const render = crearRenderer({ tablero, salida: dom.canvas, roles, frames });
 
   const animadores = Object.fromEntries(
@@ -136,14 +150,16 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, reinicio) {
       actualizarEnergia();
       if (planta.id !== 'central') {
         inspeccion = null;
-        avisar(`En el jardín · ${planta.tipo.nombre}`);
         marcar('plantada', planta.celda);
         pulso(dom.energia, 'compra', FEEDBACK.gesto);
+        catalogo.comprada?.(planta.id, estado.tiempo);
+        if (!reducido.matches) particulas.rafaga(planta.nucleo.x, planta.nucleo.y, 9, { familia: 'brote', color: roles.hojaBrillo });
       }
     },
     alRetirar: (planta) => render.retirarPlanta(planta),
   });
   jardin.sembrar('central', tablero.centro);
+  if (!reducido.matches) particulas.rafaga(jardin.central.nucleo.x, jardin.central.nucleo.y, 10, { familia: 'brote', color: roles.nucleo });
   const combate = crearCombate({
     tablero,
     jardin,
@@ -157,20 +173,18 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, reinicio) {
     canvas: dom.canvas,
     alPulsarCelda: (celda) => {
       inspeccion = null;
-      aviso = null;
       marcar('seleccion', celda);
     },
   });
   const tactil = window.matchMedia('(pointer: coarse)');
   const catalogo = crearCatalogoUI({
-    contenedor: dom.escenario,
+    contenedor: dom.campo,
     tipos: COMPRABLES,
     animadores,
     roles,
     alConsultar: (id) => { consulta = id; },
     alElegir: (id) => {
       if (combate.derrota()) return;
-      aviso = null;
       if (estado.energia < jardin.coste(id)) {
         colocacion.cancelar();
         seleccion.limpiar();
@@ -194,7 +208,11 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, reinicio) {
   let derrotaAvisada = false;
 
   function actualizarEnergia() {
-    texto(dom.valor, String(Math.floor(estado.energia)));
+    const valor = Math.floor(estado.energia);
+    if (dom.energia.dataset.valor === String(valor) && dom.energiaLienzo.width) return;
+    dom.energia.dataset.valor = String(valor);
+    pintarEnergia(dom.energiaLienzo, roles, valor);
+    dom.energia.setAttribute('aria-label', `energía ${valor}`);
   }
 
   function procesarEventos() {
@@ -203,23 +221,30 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, reinicio) {
     for (const ev of combate.eventos()) {
       const x = ev.x * celda;
       const y = ev.y * celda;
-      if (ev.tipo === 'mordida' && ev.central) estado.impulso = Math.max(estado.impulso, 0.8);
+      if (ev.tipo === 'mordida' && ev.central) {
+        estado.impulso = Math.max(estado.impulso, 0.8);
+      }
+      if (ev.tipo === 'muerte-planta' && !ev.central) {
+        texto(dom.anuncio, PLANTAS[ev.planta].nombre + ' se marchitó');
+      }
       if (reduce) continue;
       if (ev.tipo === 'impacto' && ev.planta !== 'hongo') {
-        particulas.rafaga(x, y, 2, { color: roles.bocaBrillo, vida: FEEDBACK.gesto });
+        particulas.rafaga(x, y, 5, { familia: 'impacto', color: roles.bocaBrillo, ux: ev.ux, uy: ev.uy });
       } else if (ev.tipo === 'muerte-enemigo' || ev.tipo === 'muerte-planta') {
-        particulas.rafaga(x, y, 3, {
-          color: ev.tipo === 'muerte-planta' ? roles.marca : roles.insectoBrillo,
-          vida: FEEDBACK.oleada,
+        particulas.rafaga(x, y, ev.central ? 18 : 7, {
+          familia: 'restos',
+          color: ev.tipo === 'muerte-planta' ? roles.hojaLuz : roles.insectoBrillo,
         });
       } else if (ev.tipo === 'reflejo') {
-        particulas.rafaga(x, y, 2, { color: roles.ambiental, vida: FEEDBACK.gesto });
+        particulas.rafaga(x, y, 5, { familia: 'reflejo', color: roles.ambiental, ux: ev.ux, uy: ev.uy });
       } else if (ev.tipo === 'esporas') {
-        particulas.rafaga(x, y - 4, 4, { color: roles.hongoLuz, vida: BALANCE.visual.esporas });
+        particulas.rafaga(x, y, 14, { familia: 'espora', color: roles.hongoLuz, radio: BALANCE.hongo.alcance * celda });
+      } else if (ev.tipo === 'control') {
+        particulas.rafaga(x, y, 3, { familia: 'control', color: roles.campanaLuz });
       } else if (ev.tipo === 'mordida') {
-        particulas.rafaga(x, y, 2);
+        particulas.rafaga(x, y, 3, { familia: 'restos', color: roles.hojaLuz });
       } else if (ev.tipo === 'disparo') {
-        particulas.rafaga(x + ev.ux * 4, y + ev.uy * 4, 1);
+        particulas.rafaga(x + ev.ux * 4, y + ev.uy * 4, 3, { familia: 'disparo', color: roles.bocaBrillo, ux: ev.ux, uy: ev.uy });
       }
     }
   }
@@ -232,7 +257,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, reinicio) {
     } else if (avanzar(estado, dt)) {
       actualizarEnergia();
       if (dom.energia.dataset.pulso !== 'compra') pulso(dom.energia, 'latido', FEEDBACK.gesto);
-      if (!reduce) particulas.rafaga(jardin.central.nucleo.x, jardin.central.nucleo.y, PARTICULAS.rafaga);
+      if (!reduce) particulas.rafaga(jardin.central.nucleo.x, jardin.central.nucleo.y, PARTICULAS.rafaga, { familia: 'energia', color: roles.energiaUI });
     }
     for (const [elemento, hasta] of pulsos) {
       if (estado.tiempo < hasta) continue;
@@ -240,14 +265,18 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, reinicio) {
       pulsos.delete(elemento);
     }
     if (gesto && estado.tiempo >= gesto.hasta) gesto = null;
-    if (aviso && estado.tiempo >= aviso.hasta) aviso = null;
+    if (eventoHasta && estado.tiempo >= eventoHasta) {
+      eventoHasta = 0;
+      texto(dom.evento, '');
+      delete dom.evento.dataset.evento;
+    }
     pulsoCentro = Math.max(0, pulsoCentro - dt);
     jardin.actualizar(dt, reduce);
     combate.actualizar(dt);
     procesarEventos();
 
     const central = jardin.central;
-    particulas.actualizar(dt, central.nucleo.x, central.nucleo.y, !reduce && !caida);
+    particulas.actualizar(dt, central.nucleo.x, central.nucleo.y, !reduce && !caida, reduce);
     seleccion.actualizar(dt);
     colocacion.actualizar(dt);
     for (const animador of Object.values(animadores)) animador.actualizar(dt, reduce);
@@ -259,6 +288,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, reinicio) {
   }
 
   function dibujar() {
+    actualizarEnergia();
     const vista = colocacion.vista();
     const marcas = seleccion.marcas().filter((marca) => !(vista && marca.tipo === 'sobrevuelo'));
     const seleccionada = seleccion.seleccionada();
@@ -272,22 +302,17 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, reinicio) {
     if (faseVisual !== fase) {
       const inicio = vistaOleada.fase === 'combate';
       if (faseVisual) {
-        pulso(dom.fase, inicio ? 'entra' : 'descansa', FEEDBACK.oleada);
         pulsoCentro = FEEDBACK.oleada;
         texto(dom.anuncio, inicio ? `Comienza la oleada ${vistaOleada.numero}` : `Oleada superada. Prepara la ${vistaOleada.numero}`);
+        if (!inicio && !reducido.matches) particulas.rafaga(jardin.central.nucleo.x, jardin.central.nucleo.y, 12, { familia: 'brote', color: roles.energiaUI });
       }
-      if (inicio) pendientesFase = vistaOleada.porSalir;
-      dom.fase.dataset.fase = vistaOleada.fase;
       faseVisual = fase;
     }
-    const preparacion = vistaOleada.numero === 1 ? OLEADAS.preparacionInicial : OLEADAS.preparacion;
-    const hitos = vistaOleada.fase === 'combate'
-      ? Math.ceil(5 * vistaOleada.porSalir / Math.max(1, pendientesFase))
-      : Math.ceil(5 * vistaOleada.restante / preparacion);
-    dom.hitos.forEach((hito, i) => {
-      const activo = i < hitos;
-      if (hito.hasAttribute('data-activo') !== activo) hito.toggleAttribute('data-activo', activo);
-    });
+    const costes = Object.fromEntries(COMPRABLES.map(({ id }) => [id, jardin.coste(id)]));
+    const activa = colocacion.tipoActivo();
+    const caido = combate.derrota();
+    const panelId = caido ? null : activa ?? consulta ?? inspeccion;
+
     render.dibujar({
       alcance,
       gesto: gesto && { ...gesto, intensidad: (gesto.hasta - estado.tiempo) / FEEDBACK.gesto },
@@ -302,30 +327,16 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, reinicio) {
       particulas,
       marcas,
       vista,
+      hoverCelda: seleccion.sobrevuelo(),
+      tactil: tactil.matches,
     });
-    const vivos = combate.enemigos.reduce((cantidad, enemigo) => cantidad + (enemigo.muerto ? 0 : 1), 0);
-    texto(dom.oleada, `oleada ${vistaOleada.numero}`);
-    const preparando = vistaOleada.fase === 'preparacion';
-    texto(dom.etiquetaFase, preparando ? 'preparación' : vistaOleada.porSalir > 0 ? 'por salir' : 'en jardín');
-    texto(dom.valorFase, preparando ? `${vistaOleada.restante} s` : String(vistaOleada.porSalir || vivos));
-    dom.fase.toggleAttribute('data-alerta', preparando && vistaOleada.restante <= 3);
+    const central = jardin.central;
+    const criticaCentral = !central.muerta && central.vida <= central.vidaMax * FEEDBACK.critico;
+    if (criticaCentral && !criticoAnterior) {
+      texto(dom.anuncio, 'La planta central está en estado crítico.');
+    }
+    criticoAnterior = criticaCentral;
 
-    const costes = Object.fromEntries(COMPRABLES.map(({ id }) => [id, jardin.coste(id)]));
-    const activa = colocacion.tipoActivo();
-    const panelId = consulta ?? activa ?? inspeccion;
-    const objetivo = costes[panelId] ?? Math.min(...Object.values(costes));
-    const carga = Math.min(8, Math.floor(8 * estado.energia / objetivo));
-    dom.trazos.forEach((trazo, i) => trazo.toggleAttribute('data-activo', i < carga));
-
-    const critica = planta && planta.vida > 0 && planta.vida <= planta.vidaMax * FEEDBACK.critico;
-    const panelActivo = panelId && PLANTAS[panelId];
-    const faltan = panelActivo?.comprable ? Math.max(0, Math.ceil(costes[panelId] - estado.energia)) : 0;
-    const accionPanel = vista
-      ? vista.valido && tactil.matches ? 'Toca otra vez.' : 'Junto al jardín.'
-      : faltan === 1 ? 'Falta 1.' : faltan > 1 ? `Faltan ${faltan}.` : '';
-    texto(dom.accion, aviso?.mensaje || (planta ? textoFicha(planta) : ''));
-    dom.ficha.toggleAttribute('data-critica', Boolean(critica && !aviso));
-    dom.ficha.toggleAttribute('data-aviso', Boolean(aviso));
     catalogo.actualizar({
       energia: estado.energia,
       activa,
@@ -333,7 +344,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, reinicio) {
       t: estado.tiempo,
       reducido: reducido.matches,
       panel: panelId,
-      accionPanel,
+      bloqueado: caido,
     });
   }
 
@@ -368,14 +379,14 @@ export function montarHerbario(contenedor) {
   const reloj = crearReloj();
   let partida = null;
 
-  function iniciarPartida(reinicio = false) {
-    partida = crearPartida(dom, roles, frames, reducido, () => derrota.mostrar(), reinicio);
+  function iniciarPartida() {
+    partida = crearPartida(dom, roles, frames, reducido, () => derrota.mostrar());
   }
 
   function reiniciar() {
     partida.destruir();
     derrota.ocultar();
-    iniciarPartida(true);
+    iniciarPartida();
     ajustar();
   }
 
@@ -425,6 +436,7 @@ export function montarHerbario(contenedor) {
     dom.canvas.style.left = `${izquierda + Math.floor((ancho - escala.css) / 2)}px`;
     dom.canvas.style.top = `${arriba + Math.floor((alto - escala.css) / 2)}px`;
     contenedor.style.setProperty('--ancho-jardin', `${escala.css}px`);
+    delete dom.energia.dataset.valor;
 
     partida.ajustarCatalogo();
     partida.dibujar();

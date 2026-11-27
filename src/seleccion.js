@@ -71,6 +71,7 @@ export function crearSeleccion({ tablero, canvas, alPulsarCelda }) {
       return lista;
     },
     seleccionada: () => (marcas.seleccion.activa ? { ...marcas.seleccion.celda } : null),
+    sobrevuelo: () => (marcas.sobrevuelo.activa ? { ...marcas.sobrevuelo.celda } : null),
     limpiar() {
       marcas.seleccion.activa = false;
     },
