@@ -42,6 +42,18 @@ Conservar pixel art auténtico, grilla interna, oscuridad como composición, luz
 
 Antes de un sprite nuevo, estudiar `src/sprites/`. Nada de emojis, iconos de librería, vectores genéricos ni fotos como sustituto del pixel art. El glow no tapa un sprite flojo. Sin suavizado, rotación interpolada ni colores sueltos donde corresponda un rol de `src/paleta.js`. El pixel art original sigue nítido aunque un resplandor se dibuje en otra capa. No subir tamaño, brillo o densidad sin una razón artística o funcional.
 
+## Contrato visual obligatorio
+
+Herbarium es un videojuego construido sobre una grilla de píxeles, no una interfaz web con estética retro. La identidad visual es una restricción de implementación, también en tareas de lógica que producen señales o componentes visibles.
+
+Antes de crear o modificar cualquier elemento visible, leer `.agents/skills/herbarium-pixel-art/SKILL.md` y `docs/ART_DIRECTION.md`. Si afecta a UI, leer también `.agents/skills/herbarium-pixel-ui/SKILL.md`; si hay movimiento o efectos, `.agents/skills/herbarium-pixel-motion/SKILL.md`. Para entregar cualquier cambio visual, aplicar `.agents/skills/herbarium-visual-review/SKILL.md`. Si el entorno no descubre skills automáticamente, abrir los archivos manualmente. Esta obligación no depende del nombre del modelo ni del prompt concreto.
+
+- Dibujar en píxeles lógicos enteros; elegir una escala física entera y alinear origen; texto, marcos, iconos y sprites deben responder a la misma lógica raster por familia. No confundir `image-rendering: pixelated` o una fuente pixel con una garantía de pixel-perfect. Cualquier fallback o capa suave debe estar documentado y justificado; nunca esconderlo.
+- Mantener HTML semántico, accesibilidad y controles táctiles. HUD permanente: energía y acceso a pausa ya existente; no agregar paneles, frases, métricas o adornos sin necesidad. Identidad minimalista, botánica, animada y viva.
+- No modificar estadísticas, reglas, alcance ni temporización para corregir el dibujo. No introducir un motor, dependencia o rediseño general por preferencia. Las correcciones visuales solicitadas sí se permiten dentro de su alcance.
+- Si una implementación existente contradice esta norma, identificarla como deuda visual: el código es fuente de verdad del estado actual, no una autorización a replicar defectos. Las excepciones requieren justificación y revisión.
+- Ningún cambio visible se considera cerrado sin evidencia de escala real, contraste, grilla, movimiento si aplica y revisión de las resoluciones pertinentes. Pruebas verdes no equivalen a aprobación artística. Comunicar bloqueos y no afirmar aprobación del propietario.
+
 ## Escritorio y táctil
 
 Toda mecánica nueva vale igual en puntero y en dedo. Sin hover obligatorio, sin clic derecho y sin arrastre si un toque alcanza. Misma lógica en todos los dispositivos. La casilla bajo el dedo se resuelve en coordenadas lógicas, no en píxeles de pantalla. Respetar safe areas. No bloquear el scroll o el zoom de la página que embeba el juego más de lo que el tablero ya necesita. Un `PointerEvent` sintético no cuenta como prueba en un teléfono.

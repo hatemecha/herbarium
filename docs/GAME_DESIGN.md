@@ -63,6 +63,8 @@ La colocación (`src/colocacion.js`, `src/jardin.js`):
 - Modo colocación al pulsar la tarjeta, si hay energía.
 - Volver a pulsarla, pulsar fuera del tablero y del catálogo, o Escape, cancela.
 - El clic en una casilla válida confirma. Con dedo, el primer toque muestra la posición y el alcance y el segundo en esa casilla confirma.
+- Arrastrar una carta y soltarla sobre una casilla válida confirma la plantación en un solo gesto. Un gesto cancelado no consume energía.
+- La rueda, el pellizco y las teclas `+` y `−` amplían el tablero. Una vez ampliado se puede desplazar arrastrándolo. `0` devuelve la vista completa.
 - Una casilla inválida no gasta nada.
 - En modo colocación se marcan las casillas válidas y, con puntero fino, se previsualiza el sprite.
 

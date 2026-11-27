@@ -1,5 +1,6 @@
 import { BALANCE, FEEDBACK, PARTICULAS, SIMULACION, TABLERO } from './config.js';
 import { crearAleatorio, semillaNueva } from './aleatorio.js';
+import { crearCamara } from './camara.js';
 import { COMPRABLES, ENEMIGOS, PLANTAS } from './catalogo.js';
 import { crearAnimacion } from './animacion.js';
 import { crearCatalogoUI } from './catalogoUI.js';
@@ -8,7 +9,9 @@ import { crearCombate } from './combate.js';
 import { crearDerrota } from './derrota.js';
 import { crearDescubrimientos } from './descubrimientos.js';
 import { crearPausa } from './pausa.js';
-import { calcularEscala, celdaDeCliente, pantallaAMundo } from './escala.js';
+import { alinearPixel, celdaDeCliente, pantallaAMundo } from './escala.js';
+import { crearGestos } from './gestos.js';
+import { alinearSalida, altoLectura, cargarFuentePixel, colocarSalida, crearRotulo, INTERLINEADO_LECTURA, medirTexto, prepararSalida, presentar, superficie } from './interfazPixel.js';
 import { apagar, crearEstado, avanzar } from './estado.js';
 import { crearJardin } from './jardin.js';
 import { asegurarVariables, crearRoles, leerPaleta, rgb } from './paleta.js';
@@ -21,31 +24,27 @@ import { crearTablero } from './tablero.js';
 import { construirFotogramas } from './sprites/dibujo.js';
 import { LADO_ESTRELLA, pintarEstrellaYTexto } from './sprites/estrella.js';
 
-const FUENTE_ENERGIA = '11px MonoMEK, ui-monospace, monospace';
 const ALTO_ENERGIA = 14;
+const AVISOS_COLOCACION = {
+  ocupada: 'Casilla ocupada.',
+  aislada: 'Junto a una planta viva.',
+};
 
-function pintarEnergia(canvas, roles, valor) {
+function pintarEnergia(canvas, botonPausa, roles, valor) {
   const texto = String(valor);
-  const probe = canvas.getContext('2d');
-  probe.setTransform(1, 0, 0, 1, 0, 0);
-  probe.font = FUENTE_ENERGIA;
-  const ancho = Math.ceil(LADO_ESTRELLA + 2 + probe.measureText(texto).width);
+  const ancho = LADO_ESTRELLA + 2 + medirTexto(texto);
   const css = parseFloat(getComputedStyle(canvas.parentElement).fontSize) || 40;
   const dpr = window.devicePixelRatio || 1;
-  const zoom = Math.max(2, Math.round((css / 11) * dpr));
-  if (canvas.width !== ancho * zoom || canvas.height !== ALTO_ENERGIA * zoom) {
-    canvas.width = ancho * zoom;
-    canvas.height = ALTO_ENERGIA * zoom;
-  }
-  canvas.style.width = `${(ancho * zoom) / dpr}px`;
-  canvas.style.height = `${(ALTO_ENERGIA * zoom) / dpr}px`;
-  const ctx = canvas.getContext('2d');
-  ctx.setTransform(zoom, 0, 0, zoom, 0, 0);
-  ctx.imageSmoothingEnabled = false;
-  ctx.clearRect(0, 0, ancho, ALTO_ENERGIA);
-  ctx.font = FUENTE_ENERGIA;
-  ctx.textAlign = 'left';
-  pintarEstrellaYTexto(ctx, 0, 11, texto, rgb(roles.energiaUI), rgb(roles.energiaUI));
+  const zoomNormal = Math.max(2, Math.round((css / 12) * dpr));
+  const barra = botonPausa.parentElement.clientWidth;
+  const libre = barra - 2 * botonPausa.offsetWidth - 16;
+  const zoom = Math.max(1, Math.min(zoomNormal, Math.floor(libre * dpr / ancho)));
+  canvas.parentElement.style.minHeight = `${ALTO_ENERGIA * zoomNormal / dpr}px`;
+  const origen = superficie(ancho, ALTO_ENERGIA);
+  pintarEstrellaYTexto(origen.getContext('2d'), 0, 10, texto, rgb(roles.energiaUI), rgb(roles.energiaUI));
+  prepararSalida(canvas, ancho, ALTO_ENERGIA, zoom, dpr);
+  presentar(origen, canvas);
+  alinearSalida(canvas, dpr);
 }
 
 function construirDom(contenedor) {
@@ -56,11 +55,11 @@ function construirDom(contenedor) {
         <canvas class="energia-lienzo" aria-hidden="true"></canvas>
       </div>
       <span class="solo-lector" role="status"></span>
-      <button type="button" class="pausa-boton" aria-haspopup="dialog">Pausa</button>
+      <button type="button" class="pausa-boton" aria-haspopup="dialog"></button>
     </header>
     <div class="herbario-campo">
       <div class="herbario-escenario">
-        <canvas class="tablero" role="img" aria-label="Jardín en penumbra con una planta central que genera energía"></canvas>
+        <canvas class="tablero" tabindex="0" role="img" aria-label="Jardín en penumbra. Más y menos para acercar o alejar. Cero para volver a la vista completa."></canvas>
         <div class="escenario-evento" aria-hidden="true"></div>
       </div>
     </div>
@@ -86,7 +85,7 @@ function construirFrames(roles) {
   return frames;
 }
 
-function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos) {
+function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, camara, alMoverVista, habilitado) {
   const tablero = crearTablero();
   const semilla = semillaNueva();
   const director = crearDirector({
@@ -119,8 +118,8 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos) 
     if (tipo === 'seleccion' || tipo === 'preview') motasDeCasilla(celda, 3, roles.marca);
     if (tipo === 'invalida') {
       avisar(tablero.ocupante(celda.x, celda.y)
-        ? 'Esa casilla está ocupada.'
-        : 'Planta junto a otra planta viva.');
+        ? AVISOS_COLOCACION.ocupada
+        : AVISOS_COLOCACION.aislada);
     }
   }
 
@@ -132,7 +131,9 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos) 
   }
 
   function texto(elemento, valor) {
-    if (elemento.textContent !== valor) elemento.textContent = valor;
+    if (elemento.textContent === valor) return;
+    if (elemento === dom.evento) dom.rotuloEvento.actualizar(valor);
+    else elemento.textContent = valor;
   }
 
   function pulso(elemento, clase, duracion) {
@@ -183,9 +184,13 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos) 
     director,
     aleatorio: aleatorioVisual,
   });
+  const celdaDe = ({ clientX, clientY }) => camara.contiene(clientX, clientY)
+    ? celdaDeCliente(dom.canvas, clientX, clientY, tablero)
+    : null;
   const seleccion = crearSeleccion({
     tablero,
     canvas: dom.canvas,
+    celdaDe,
     alPulsarCelda: (celda) => {
       inspeccion = null;
       marcar('seleccion', celda);
@@ -198,31 +203,66 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos) 
     animadores,
     roles,
     alConsultar: (id) => { consulta = id; },
-    alElegir: (id) => {
-      if (combate.derrota()) return;
-      if (estado.energia < jardin.coste(id)) {
-        colocacion.cancelar();
-        seleccion.limpiar();
-        inspeccion = id;
-        const faltan = Math.ceil(jardin.coste(id) - estado.energia);
-        texto(dom.anuncio, faltan === 1 ? 'Falta 1 de energía.' : `Faltan ${faltan} de energía.`);
-        return;
-      }
-      inspeccion = null;
-      colocacion.alternar(id);
-    },
+    alElegir: (id) => { if (elegible(id)) colocacion.alternar(id); },
   });
   const colocacion = crearColocacion({
-    tablero,
     canvas: dom.canvas,
     jardin,
     zona: catalogo.elemento,
+    celdaDe,
     alActivar: () => seleccion.limpiar(),
     alIntentar: marcar,
   });
   let derrotaAvisada = false;
   let ultimoBrote = -Infinity;
   let trayecto;
+
+  function elegible(id, conservarSeleccion = false) {
+    if (combate.derrota()) return false;
+    const faltan = Math.ceil(jardin.coste(id) - estado.energia);
+    if (faltan > 0) {
+      if (!conservarSeleccion) {
+        colocacion.cancelar();
+        seleccion.limpiar();
+      }
+      inspeccion = id;
+      texto(dom.anuncio, faltan === 1 ? 'Falta 1 de energía.' : `Faltan ${faltan} de energía.`);
+      return false;
+    }
+    inspeccion = null;
+    return true;
+  }
+
+  const gestos = crearGestos({
+    campo: dom.campo,
+    canvas: dom.canvas,
+    catalogo: catalogo.elemento,
+    camara,
+    habilitado: () => habilitado() && !combate.derrota(),
+    alMoverVista() {
+      trayecto = null;
+      colocacion.salir();
+      seleccion.limpiarSobrevuelo();
+      alMoverVista();
+      dibujar();
+    },
+    alTocar(e) {
+      if (!celdaDe(e)) return;
+      if (!colocacion.pulsar(e)) seleccion.pulsar(e);
+    },
+    alSobrevolar(e) {
+      colocacion.mover(e);
+      seleccion.mover(e);
+    },
+    alArrastrar(id) {
+      if (!elegible(id, true)) return false;
+      colocacion.arrastrar(id);
+      return true;
+    },
+    alMoverSemilla: colocacion.moverSemilla,
+    alSoltar: colocacion.soltar,
+    alCancelarSemilla: colocacion.cancelar,
+  });
 
   function dibujarMotas() {
     const edad = estado.tiempo - ultimoBrote;
@@ -242,11 +282,16 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos) 
       };
     }
     const { x, y, finX, finY } = trayecto;
+    const dpr = window.devicePixelRatio || 1;
+    const capa = dom.motas.getBoundingClientRect();
+    const lado = Math.max(1, Math.round(dpr)) / dpr;
     for (const [i, mota] of Array.from(dom.motas.children).entries()) {
       const t = Math.max(0, Math.min(1, (edad - i * 0.16) / 0.8));
       const arco = Math.sin(Math.PI * t);
       mota.style.opacity = String(arco * (i ? 0.19 : 0.32));
-      mota.style.transform = `translate(${Math.round(x + (finX - x) * t + arco * (i ? -7 : 5))}px, ${Math.round(y + (finY - y) * t)}px)`;
+      mota.style.width = mota.style.height = `${lado}px`;
+      mota.style.left = `${alinearPixel(capa.left + x + (finX - x) * t + arco * (i ? -7 : 5), dpr) - capa.left}px`;
+      mota.style.top = `${alinearPixel(capa.top + y + (finY - y) * t, dpr) - capa.top}px`;
     }
   }
 
@@ -254,7 +299,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos) 
     const valor = Math.floor(estado.energia);
     if (dom.energia.dataset.valor === String(valor) && dom.energiaLienzo.width) return;
     dom.energia.dataset.valor = String(valor);
-    pintarEnergia(dom.energiaLienzo, roles, valor);
+    pintarEnergia(dom.energiaLienzo, dom.pausa, roles, valor);
     dom.energia.setAttribute('aria-label', `energía ${valor}`);
   }
 
@@ -345,6 +390,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos) 
 
     if (caida && !derrotaAvisada && central.opacidad <= 0) {
       derrotaAvisada = true;
+      gestos.cancelar();
       alDerrota();
     }
   }
@@ -428,8 +474,10 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos) 
       catalogo.ajustar();
     },
     derrota: () => combate.derrota(),
+    cancelarGestos: gestos.cancelar,
     seleccion,
     destruir() {
+      gestos.destruir();
       for (const elemento of pulsos.keys()) delete elemento.dataset.pulso;
       texto(dom.anuncio, '');
       dom.motas.hidden = true;
@@ -444,9 +492,15 @@ export function montarHerbario(contenedor) {
   asegurarVariables();
   const roles = crearRoles(leerPaleta());
   const dom = construirDom(contenedor);
+  const rotuloPausa = crearRotulo(dom.pausa, 'Pausa', { escala: 2, pausa: true });
+  dom.rotuloEvento = crearRotulo(dom.evento, '', {
+    ancho: () => dom.evento.clientWidth, centro: true, interlineado: INTERLINEADO_LECTURA,
+  });
   const frames = construirFrames(roles);
   const reducido = matchMedia('(prefers-reduced-motion: reduce)');
-  const derrota = crearDerrota(dom.escenario, frames.central[0][0], rgb(roles.petaloSombra), () => reiniciar());
+  const lado = TABLERO.columnas * TABLERO.celda;
+  const camara = crearCamara(lado);
+  const derrota = crearDerrota(dom.escenario, () => reiniciar());
 
   let raf = 0;
   let ultimo = 0;
@@ -463,6 +517,7 @@ export function montarHerbario(contenedor) {
     descubrimientos,
     caido: () => partida.derrota(),
     alAbrir() {
+      partida.cancelarGestos();
       detener();
       reloj.cortar();
       contenedor.classList.add('herbario-en-pausa');
@@ -475,11 +530,13 @@ export function montarHerbario(contenedor) {
   });
 
   function iniciarPartida() {
-    partida = crearPartida(dom, roles, frames, reducido, () => derrota.mostrar(), descubrimientos);
+    partida = crearPartida(dom, roles, frames, reducido, () => derrota.mostrar(), descubrimientos,
+      camara, proyectarTablero, () => !document.hidden && !pausa.abierta());
   }
 
   function reiniciar() {
     partida.destruir();
+    camara.restablecer();
     derrota.ocultar();
     iniciarPartida();
     ajustar();
@@ -507,63 +564,84 @@ export function montarHerbario(contenedor) {
   }
 
   function ajustar() {
+    const dpr = window.devicePixelRatio || 1;
+    dom.escenario.style.minWidth = `${TABLERO.columnas * TABLERO.celda / dpr}px`;
+    rotuloPausa.actualizar();
+    partida.ajustarCatalogo();
+    const altoAviso = altoLectura(Object.values(AVISOS_COLOCACION), dom.evento.clientWidth, dpr);
+    dom.escenario.style.setProperty('--alto-aviso', `${altoAviso}px`);
     const cs = getComputedStyle(dom.escenario);
     const izquierda = parseFloat(cs.paddingLeft);
     const derecha = parseFloat(cs.paddingRight);
     const arriba = parseFloat(cs.paddingTop);
     const abajo = parseFloat(cs.paddingBottom);
-    const ancho = dom.escenario.clientWidth - izquierda - derecha;
-    const alto = dom.escenario.clientHeight - arriba - abajo;
+    dom.escenario.style.minHeight = `${TABLERO.filas * TABLERO.celda / dpr + arriba + abajo}px`;
+    const rect = dom.escenario.getBoundingClientRect();
+    const ancho = rect.width - izquierda - derecha;
+    const alto = rect.height - arriba - abajo;
 
-    const escala = calcularEscala({
-      anchoCss: ancho,
-      altoCss: alto,
-      dpr: window.devicePixelRatio || 1,
-      lado: TABLERO.columnas * TABLERO.celda,
-    });
-
-    if (dom.canvas.width !== escala.pixeles) {
-      dom.canvas.width = escala.pixeles;
-      dom.canvas.height = escala.pixeles;
-    }
-    dom.canvas.style.width = `${escala.css}px`;
-    dom.canvas.style.height = `${escala.css}px`;
-    dom.canvas.style.left = `${izquierda + Math.floor((ancho - escala.css) / 2)}px`;
-    dom.canvas.style.top = `${arriba + Math.floor((alto - escala.css) / 2)}px`;
-    contenedor.style.setProperty('--ancho-jardin', `${escala.css}px`);
+    camara.ajustar({ left: rect.left + izquierda, top: rect.top + arriba, width: ancho, height: alto }, dpr);
+    proyectarTablero();
     delete dom.energia.dataset.valor;
 
-    partida.ajustarCatalogo();
     partida.dibujar();
+    dom.rotuloEvento.actualizar();
+    derrota.ajustar();
+    pausa.ajustar();
+  }
+
+  function proyectarTablero() {
+    const dpr = window.devicePixelRatio || 1;
+    const { origen, area, escala } = camara.vista();
+    const rect = dom.escenario.getBoundingClientRect();
+    prepararSalida(dom.canvas, lado, lado, escala, dpr);
+    colocarSalida(dom.canvas, origen.x - rect.left, origen.y - rect.top);
+    alinearSalida(dom.canvas, dpr, camara.ampliada() ? area : undefined);
+    contenedor.style.setProperty('--ancho-jardin', `${lado * escala / dpr}px`);
   }
 
   const observador = new ResizeObserver(() => partida && ajustar());
   observador.observe(dom.escenario);
   const alVisibilidad = () => {
     if (document.hidden) {
+      partida?.cancelarGestos();
       detener();
       reloj.cortar();
     } else iniciar();
   };
   const alCambiarVentana = () => partida && ajustar();
+  let consultaDpr;
+  function observarDpr() {
+    consultaDpr?.removeEventListener('change', observarDpr);
+    consultaDpr = matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);
+    consultaDpr.addEventListener('change', observarDpr);
+    alCambiarVentana();
+  }
   window.addEventListener('resize', alCambiarVentana);
+  window.addEventListener('scroll', alCambiarVentana, { passive: true });
   document.addEventListener('visibilitychange', alVisibilidad);
 
   iniciarPartida();
-  ajustar();
+  observarDpr();
+  cargarFuentePixel().then(alCambiarVentana, () => {});
   iniciar();
 
   return {
     pantallaAMundo: (clientX, clientY) =>
       pantallaAMundo(dom.canvas.getBoundingClientRect(), clientX, clientY, TABLERO.columnas * TABLERO.celda),
-    celdaEnPantalla: (clientX, clientY) => celdaDeCliente(dom.canvas, clientX, clientY, crearTablero()),
+    celdaEnPantalla: (clientX, clientY) => camara.contiene(clientX, clientY)
+      ? celdaDeCliente(dom.canvas, clientX, clientY, crearTablero())
+      : null,
     seleccionada: () => partida.seleccion.seleccionada(),
     destruir() {
       detener();
       pausa.destruir();
       partida.destruir();
+      partida = null;
       observador.disconnect();
       window.removeEventListener('resize', alCambiarVentana);
+      window.removeEventListener('scroll', alCambiarVentana);
+      consultaDpr.removeEventListener('change', observarDpr);
       document.removeEventListener('visibilitychange', alVisibilidad);
       contenedor.replaceChildren();
       contenedor.classList.remove('herbario', 'herbario-en-pausa');

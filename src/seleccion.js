@@ -1,23 +1,13 @@
 import { MARCADORES } from './config.js';
 import { punteroFino } from './entrada.js';
-import { celdaDeCliente } from './escala.js';
 
 const igual = (a, b) => a && b && a.x === b.x && a.y === b.y;
 
-export function crearSeleccion({ tablero, canvas, alPulsarCelda }) {
+export function crearSeleccion({ tablero, canvas, celdaDe, alPulsarCelda }) {
   const marcas = {
     sobrevuelo: { celda: null, activa: false, presencia: 0 },
     seleccion: { celda: null, activa: false, presencia: 0 },
   };
-
-  function celdaDe(e) {
-    return celdaDeCliente(canvas, e.clientX, e.clientY, tablero);
-  }
-
-  function dentroDelCanvas(e) {
-    const r = canvas.getBoundingClientRect();
-    return e.clientX >= r.left && e.clientX < r.right && e.clientY >= r.top && e.clientY < r.bottom;
-  }
 
   function fijar(marca, celda) {
     marca.activa = Boolean(celda);
@@ -41,16 +31,19 @@ export function crearSeleccion({ tablero, canvas, alPulsarCelda }) {
   };
 
   const alPulsarFuera = (e) => {
-    if (dentroDelCanvas(e) || e.target.closest?.('[data-interfaz]')) return;
+    if (canvas.contains(e.target) || e.target.closest?.('[data-interfaz]')) return;
     marcas.seleccion.activa = false;
   };
 
-  canvas.addEventListener('pointermove', alMover);
   canvas.addEventListener('pointerleave', alSalir);
-  canvas.addEventListener('pointerdown', alPulsar);
   document.addEventListener('pointerdown', alPulsarFuera);
 
   return {
+    pulsar: alPulsar,
+    mover: alMover,
+    limpiarSobrevuelo() {
+      marcas.sobrevuelo.activa = false;
+    },
     actualizar(dt) {
       const suavizado = 1 - Math.exp(-dt * MARCADORES.desvanecimiento);
       for (const marca of Object.values(marcas)) {
@@ -76,9 +69,7 @@ export function crearSeleccion({ tablero, canvas, alPulsarCelda }) {
       marcas.seleccion.activa = false;
     },
     destruir() {
-      canvas.removeEventListener('pointermove', alMover);
       canvas.removeEventListener('pointerleave', alSalir);
-      canvas.removeEventListener('pointerdown', alPulsar);
       document.removeEventListener('pointerdown', alPulsarFuera);
     },
   };

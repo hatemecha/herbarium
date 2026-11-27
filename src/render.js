@@ -114,8 +114,10 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
       const { x, y } = planta.nucleo;
       const fase = planta.celda.x * 2.17 + planta.celda.y * 1.43;
       const pulso = reducido ? 1 : 1 + 0.12 * Math.sin(t * 1.25 + fase);
-      const color = roles[planta.tipo.resplandor?.color ?? 'petalo'];
-      foco(x, y + 2, (principal ? 21 : 16) * pulso, color, planta.opacidad * central.opacidad * pulso, true);
+      const { rebote, resplandor } = planta.tipo;
+      const color = roles[rebote?.color ?? resplandor?.color ?? 'petalo'];
+      const opacidad = planta.opacidad * central.opacidad * pulso * (rebote?.intensidad ?? 1);
+      foco(x, y + 2, (principal ? 21 : 16) * pulso, color, opacidad, true);
     }
     for (const [casilla, luz] of destellos) {
       const resto = 1 - (t - luz.t) / 0.36;

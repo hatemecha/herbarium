@@ -2,6 +2,8 @@ import { ENERGIA, TABLERO } from './config.js';
 import { crearAnimacion } from './animacion.js';
 import { PLANTAS } from './catalogo.js';
 import { crearEnemigo, elevacion, fotogramaEnemigo } from './entidades/enemigo.js';
+import { alinearPixel } from './escala.js';
+import { alinearSalida, colocarSalida, crearRotulo, INTERLINEADO_LECTURA, pintarMarco, prepararSalida, presentar, superficie, vestirMarco } from './interfazPixel.js';
 import { rgb } from './paleta.js';
 
 const numero = new Intl.NumberFormat('es-AR', { maximumFractionDigits: 3 });
@@ -32,11 +34,11 @@ function retrato(tipo, frames, roles, grande) {
   const animacion = secuencia && crearAnimacion({ secuencia });
   const insecto = !animacion && tipo.locomocion && crearEnemigo({ x: 0, y: 0, tipo });
   const lienzo = document.createElement('canvas');
-  lienzo.width = grande ? 7 * celda : frames[0].width;
-  lienzo.height = grande ? 4 * celda : frames[0].height;
-  if (grande) lienzo.className = 'registro-lamina';
+  const origen = superficie(grande ? 7 * celda : frames[0].width, grande ? 4 * celda : frames[0].height);
+  lienzo.className = 'raster-ui';
+  if (grande) lienzo.classList.add('registro-lamina');
   lienzo.setAttribute('aria-hidden', 'true');
-  const ctx = lienzo.getContext('2d');
+  const ctx = origen.getContext('2d');
   ctx.imageSmoothingEnabled = false;
   const escala = grande ? 3 : 1;
   const x = grande ? 2 * celda : 0;
@@ -47,6 +49,12 @@ function retrato(tipo, frames, roles, grande) {
 
   return {
     lienzo,
+    ajustar(zoom) {
+      const dpr = window.devicePixelRatio || 1;
+      prepararSalida(lienzo, origen.width, origen.height, Math.max(1, Math.round(zoom * dpr)), dpr);
+      presentar(origen, lienzo);
+      alinearSalida(lienzo, dpr);
+    },
     actualizar(dt, reducido) {
       animacion?.actualizar(dt, reducido);
       if (insecto) insecto.reloj += dt;
@@ -56,13 +64,14 @@ function retrato(tipo, frames, roles, grande) {
       if (frame === anterior && altura === alturaAnterior) return;
       anterior = frame;
       alturaAnterior = altura;
-      ctx.clearRect(0, 0, lienzo.width, lienzo.height);
+      ctx.clearRect(0, 0, origen.width, origen.height);
       if (grande) {
         ctx.fillStyle = sombra;
         ctx.fillRect(2 * celda, 4 * celda - 5, 3 * celda, 2);
         ctx.fillRect(2 * celda + 4, 4 * celda - 3, 3 * celda - 8, 2);
       }
       ctx.drawImage(frame, x, y - altura, frame.width * escala, frame.height * escala);
+      presentar(origen, lienzo);
     },
   };
 }
@@ -98,35 +107,98 @@ export function crearPausa({ contenedor, boton, frames, roles, reducido, descubr
         <button type="button" data-grupo="plantas">Plantas</button>
         <button type="button" data-grupo="enemigos">Enemigos</button>
       </div>
-      <div class="registro-contenido">
+      <div class="registro-contenido" data-recorte-pixel tabindex="0" role="region" aria-label="Fichas de especies">
         <div class="registro-lista" role="group" aria-label="Especies descubiertas"></div>
         <article class="registro-ficha"></article>
       </div>
     </section>`;
   const central = retrato(PLANTAS.central, frames.central[0], roles, true);
+  const marco = document.createElement('canvas');
+  marco.dataset.marcoCatalogo = '';
+  marco.setAttribute('aria-hidden', 'true');
+  dialogo.prepend(marco);
   dialogo.querySelector('[data-vista="menu"] h2').after(central.lienzo);
   contenedor.append(dialogo);
   const reanudar = dialogo.querySelector('[data-accion="reanudar"]');
   const lista = dialogo.querySelector('.registro-lista');
+  const contenido = dialogo.querySelector('.registro-contenido');
   const ficha = dialogo.querySelector('.registro-ficha');
   const grupos = [...dialogo.querySelectorAll('[data-grupo]')];
   const vistas = [...dialogo.querySelectorAll('[data-vista]')];
+  function rotular(elemento, opciones) {
+    const valor = elemento.textContent;
+    elemento.textContent = '';
+    return crearRotulo(elemento, valor, opciones);
+  }
+  const rotulos = [...dialogo.querySelectorAll('h2, p, button')].map((el) => rotular(el, {
+    escala: el.matches('h2') ? 2.25 : 1.65,
+    ancho: el.matches('h2, p') ? () => el.clientWidth : null,
+    cursor: el.matches('button'),
+  }));
   let vista = 'menu';
   let grupo = 'plantas';
   let seleccion;
   let principal;
   let miniaturas = [];
+  let fichas = [];
+  let nombres = [];
   let raf = 0;
   let ultimo = 0;
+  let tamañoMarco;
+
+  function ajustarMarco(dpr) {
+    const clave = `${window.innerWidth}/${window.innerHeight}/${dpr}`;
+    if (clave === tamañoMarco) return;
+    tamañoMarco = clave;
+    for (const propiedad of ['--ancho-catalogo', '--alto-catalogo', '--origen-x', '--origen-y']) {
+      dialogo.style.removeProperty(propiedad);
+    }
+    const k = Math.max(1, Math.round(dpr));
+    const disponible = dialogo.getBoundingClientRect();
+    const ancho = Math.floor(disponible.width * dpr / k);
+    const alto = Math.floor(disponible.height * dpr / k);
+    dialogo.style.setProperty('--ancho-catalogo', `${ancho * k / dpr}px`);
+    dialogo.style.setProperty('--alto-catalogo', `${alto * k / dpr}px`);
+    const { left, top } = dialogo.getBoundingClientRect();
+    dialogo.style.setProperty('--origen-x', `${alinearPixel(left, dpr) - left}px`);
+    dialogo.style.setProperty('--origen-y', `${alinearPixel(top, dpr) - top}px`);
+    const origen = superficie(ancho, alto);
+    pintarMarco(origen.getContext('2d'), ancho, alto, 'transparent', rgb(roles.marcaSuave), 2);
+    prepararSalida(marco, ancho, alto, k, dpr);
+    colocarSalida(marco, 0, 0);
+    alinearSalida(marco, dpr);
+    presentar(origen, marco);
+  }
+
+  function actualizarRotulos() {
+    if (!dialogo.open) return;
+    for (const rotulo of [...rotulos, ...nombres, ...fichas]) rotulo.actualizar();
+  }
+
+  function ajustar() {
+    if (!dialogo.open) return;
+    const estilo = getComputedStyle(dialogo);
+    const zoom = parseFloat(estilo.getPropertyValue('--escala-retrato'));
+    const zoomMenu = parseFloat(estilo.getPropertyValue('--escala-retrato-pausa'));
+    const dpr = window.devicePixelRatio || 1;
+    if (vista === 'catalogo') ajustarMarco(dpr);
+    else vestirMarco(dialogo, rgb(roles.cuadricula), dpr);
+    central.ajustar(zoomMenu);
+    principal?.ajustar(zoom);
+    for (const miniatura of miniaturas) miniatura.ajustar(2);
+    actualizarRotulos();
+    // Las cajas de texto pueden cambiar el alto de las filas y centrar de nuevo el diálogo.
+    alinearSalida(central.lienzo, dpr);
+    if (principal) alinearSalida(principal.lienzo, dpr);
+    for (const miniatura of miniaturas) alinearSalida(miniatura.lienzo, dpr);
+    actualizarRotulos();
+  }
 
   function animar(ahora) {
     const dt = Math.min(0.1, (ahora - ultimo) / 1000);
     ultimo = ahora;
     if (vista === 'menu') central.actualizar(dt, reducido.matches);
-    if (vista === 'catalogo') {
-      principal?.actualizar(dt, reducido.matches);
-      for (const miniatura of miniaturas) miniatura.actualizar(dt, reducido.matches);
-    }
+    if (vista === 'catalogo') principal?.actualizar(dt, reducido.matches);
     raf = requestAnimationFrame(animar);
   }
 
@@ -155,20 +227,32 @@ export function crearPausa({ contenedor, boton, frames, roles, reducido, descubr
     principal.actualizar(0, reducido.matches);
     ficha.replaceChildren(principal.lienzo, titulo, descripcion, datos);
     ficha.hidden = false;
+    fichas = [rotular(titulo, { escala: 2.25, ancho: () => titulo.clientWidth }),
+      rotular(descripcion, { ancho: () => descripcion.clientWidth, interlineado: INTERLINEADO_LECTURA })];
+    for (const el of datos.children) {
+      fichas.push(rotular(el, { ancho: () => el.clientWidth }));
+    }
+    ajustar();
   }
 
   function mostrarGrupo(nuevoGrupo) {
     grupo = nuevoGrupo;
+    contenido.scrollTop = 0;
     for (const control of grupos) {
       control.setAttribute('aria-pressed', String(control.dataset.grupo === grupo));
     }
     lista.replaceChildren();
     miniaturas = [];
+    nombres = [];
+    fichas = [];
     principal = null;
     const especies = descubrimientos.listar(grupo);
     if (!especies.length) {
-      lista.textContent = 'Todavía no encontraste enemigos';
+      nombres.push(crearRotulo(lista, 'Todavía no encontraste enemigos', {
+        ancho: () => lista.clientWidth, interlineado: INTERLINEADO_LECTURA,
+      }));
       ficha.hidden = true;
+      ajustar();
       return;
     }
     for (const tipo of especies) {
@@ -178,7 +262,10 @@ export function crearPausa({ contenedor, boton, frames, roles, reducido, descubr
       const miniatura = retrato(tipo, frames[tipo.id][0], roles, false);
       miniatura.actualizar(0, reducido.matches);
       miniaturas.push(miniatura);
-      opcion.append(miniatura.lienzo, tipo.nombre);
+      const nombre = document.createElement('span');
+      nombre.className = 'registro-nombre';
+      nombres.push(crearRotulo(nombre, tipo.nombre, { escala: 1.5, cursor: true, ancho: () => nombre.clientWidth }));
+      opcion.append(miniatura.lienzo, nombre);
       opcion.addEventListener('click', () => mostrarFicha(tipo));
       lista.append(opcion);
     }
@@ -189,9 +276,11 @@ export function crearPausa({ contenedor, boton, frames, roles, reducido, descubr
     vista = nuevaVista;
     for (const seccion of vistas) seccion.hidden = seccion.dataset.vista !== vista;
     dialogo.dataset.vistaActiva = vista;
+    if (vista === 'catalogo') tamañoMarco = undefined;
     dialogo.setAttribute('aria-label', dialogo.querySelector('section:not([hidden]) h2').textContent);
     dialogo.querySelector(foco)?.focus();
     dialogo.scrollTop = 0;
+    ajustar();
   }
 
   function volver() {
@@ -232,6 +321,9 @@ export function crearPausa({ contenedor, boton, frames, roles, reducido, descubr
   boton.addEventListener('pointerdown', detenerPropagacion);
   dialogo.addEventListener('pointerdown', detenerPropagacion);
   dialogo.addEventListener('keydown', detenerPropagacion);
+  dialogo.addEventListener('focusin', actualizarRotulos);
+  dialogo.addEventListener('focusout', actualizarRotulos);
+  dialogo.addEventListener('scroll', ajustar, { capture: true });
   dialogo.addEventListener('click', (evento) => {
     const control = evento.target.closest('button');
     if (control?.dataset.grupo) mostrarGrupo(control.dataset.grupo);
@@ -244,6 +336,7 @@ export function crearPausa({ contenedor, boton, frames, roles, reducido, descubr
   });
 
   return {
+    ajustar,
     abierta: () => dialogo.open,
     destruir() {
       detenerRetratos();

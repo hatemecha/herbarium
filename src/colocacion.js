@@ -1,14 +1,11 @@
 import { COLOCACION } from './config.js';
 import { punteroFino } from './entrada.js';
-import { celdaDeCliente } from './escala.js';
 
-export function crearColocacion({ tablero, canvas, jardin, zona, alActivar, alIntentar }) {
+export function crearColocacion({ canvas, jardin, zona, celdaDe, alActivar, alIntentar }) {
   let tipoId = null;
   let puntero = null;
   let presencia = 0;
   let confirmacion = null;
-
-  const celdaDe = (e) => celdaDeCliente(canvas, e.clientX, e.clientY, tablero);
 
   function activar(id) {
     tipoId = id;
@@ -33,22 +30,22 @@ export function crearColocacion({ tablero, canvas, jardin, zona, alActivar, alIn
   }
 
   function alPulsar(e) {
-    if (!tipoId) return;
-    e.stopImmediatePropagation();
+    if (!tipoId) return false;
     const celda = celdaDe(e);
-    if (!celda) return;
+    if (!celda) return true;
     if (!jardin.colocable(tipoId, celda)) {
       alIntentar?.('invalida', celda);
-      return;
+      return true;
     }
     if (!punteroFino(e) && (confirmacion?.x !== celda.x || confirmacion?.y !== celda.y)) {
       confirmacion = celda;
       puntero = celda;
       alIntentar?.('preview', celda);
-      return;
+      return true;
     }
     jardin.plantar(tipoId, celda);
     cancelar();
+    return true;
   }
 
   function alPulsarFuera(e) {
@@ -60,15 +57,26 @@ export function crearColocacion({ tablero, canvas, jardin, zona, alActivar, alIn
     if (e.key === 'Escape') cancelar();
   }
 
-  canvas.addEventListener('pointermove', alMover);
   canvas.addEventListener('pointerleave', alSalir);
-  canvas.addEventListener('pointerdown', alPulsar, { capture: true });
   document.addEventListener('pointerdown', alPulsarFuera);
   document.addEventListener('keydown', alTeclear);
 
   return {
     activa: () => tipoId !== null,
     cancelar,
+    pulsar: alPulsar,
+    mover: alMover,
+    salir: alSalir,
+    arrastrar(id) {
+      activar(id);
+      presencia = 1;
+    },
+    moverSemilla(e) { puntero = celdaDe(e); },
+    soltar(e) {
+      const celda = celdaDe(e);
+      if (tipoId && celda && !jardin.plantar(tipoId, celda)) alIntentar?.('invalida', celda);
+      cancelar();
+    },
     tipoActivo: () => tipoId,
     alternar(id) {
       if (tipoId === id) cancelar();
@@ -90,9 +98,7 @@ export function crearColocacion({ tablero, canvas, jardin, zona, alActivar, alIn
       };
     },
     destruir() {
-      canvas.removeEventListener('pointermove', alMover);
       canvas.removeEventListener('pointerleave', alSalir);
-      canvas.removeEventListener('pointerdown', alPulsar, { capture: true });
       document.removeEventListener('pointerdown', alPulsarFuera);
       document.removeEventListener('keydown', alTeclear);
     },

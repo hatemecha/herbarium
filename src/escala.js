@@ -1,11 +1,12 @@
-import { ESCALA } from './config.js';
-
 export function calcularEscala({ anchoCss, altoCss, dpr, lado }) {
   const disponible = Math.max(1, Math.floor(Math.min(anchoCss, altoCss) * dpr));
-  const escalaEntera = Math.floor(disponible / lado);
-  const entera = escalaEntera >= 1 && escalaEntera * lado >= disponible * ESCALA.aprovechamientoMinimo;
-  const pixeles = entera ? escalaEntera * lado : disponible;
-  return { pixeles, css: pixeles / dpr, entera };
+  const multiplo = Math.max(1, Math.floor(disponible / lado));
+  const pixeles = multiplo * lado;
+  return { pixeles, css: pixeles / dpr, multiplo };
+}
+
+export function alinearPixel(css, dpr) {
+  return Math.round(css * dpr) / dpr;
 }
 
 export function celdaDeCliente(canvas, clientX, clientY, tablero) {

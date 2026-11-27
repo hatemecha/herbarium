@@ -27,13 +27,40 @@ La cámara no se mueve. La grilla lógica (casillas) y la grilla de píxeles (el
 
 ## Escalado
 
-`src/escala.js`. Se elige un entero de ampliación cuando el tablero ocupa al menos el 80 % del lado disponible en píxeles físicos (`ESCALA.aprovechamientoMinimo`). Si no, se usa el lado físico disponible. `devicePixelRatio` entra en ese cálculo. El canvas de salida desactiva el suavizado al copiar la escena, la oscuridad y la capa luminosa. El CSS del tablero y de las tarjetas usa `image-rendering: pixelated`.
+`src/escala.js` elige el mayor múltiplo entero que cabe en ambos ejes físicos como vista inicial. El zoom permite hasta el doble de ese múltiplo y recorta el excedente en el área del jardín. En un espacio menor que la resolución lógica, el campo conserva un mínimo físico de 176 × 176 y puede desbordar hacia el área desplazable. La posición de entrada se sigue resolviendo desde el rectángulo real del tablero y excluye los píxeles recortados.
 
-El resplandor radial se dibuja después, con suavizado activado, en la resolución de salida. Es glow, no el sprite. No rotar ni escalar un sprite con interpolación para “apuntar”: la cerbatana tiene ocho dibujos y el escarabajo se espeja.
+La luz ambiente se compone en una capa de 2 × 2 píxeles lógicos por muestra. La escena, la sombra y los sprites conservan sus capas lógicas y se amplían sin interpolación. La cerbatana tiene ocho dibujos y el escarabajo se espeja.
+
+## Interfaz rasterizada
+
+- `src/interfazPixel.js` concentra texto, marcos y presentación. Energía, cartas, avisos, descripciones, pausa, fichas y derrota dibujan en un lienzo lógico. Los botones y el diálogo conservan sus hitboxes, nombres, foco y teclado en HTML. La estrella de energía y de coste sigue siendo la misma matriz de 7 × 7.
+- MonoMEK declara 1200 unidades por em, contornos en pasos de 100 y avance de 600. A 12 px lógicos el avance es de 6 px y el contorno cae sobre la grilla. Las máscaras usan una línea base lógica común, normalización NFC y alfa binaria con umbral 128. Se reutilizan por glifo y tinta. Los párrafos saltan por palabras y las cadenas más largas que su columna pueden partirse por carácter. No se usa `fillText(maxWidth)`.
+- Las descripciones, datos y ayudas apuntan a 2× antes de ajustar al múltiplo físico. Los párrafos suman dos píxeles lógicos entre líneas. Los avisos tienen una franja propia sobre el tablero y la bandeja reserva el alto de su ayuda más larga al ancho disponible para que el texto aparezca sin mover las cartas.
+- Cada salida tiene `ancho lógico × k` y `alto lógico × k` píxeles físicos. El DOM reserva su espacio en CSS. La salida se proyecta 1:1 sobre un origen físico entero y se recorta al área desplazable del diálogo. Esto evita el remuestreo que puede introducir Chromium al pintar el mismo backing store en una caja CSS fraccionaria. Se recalcula al cambiar tamaño, DPR o posición por scroll.
+- La pausa usa el marco rasterizado de la familia de cartas y un cursor en píxeles. El herbario tiene una caja fija de referencia de 39 × 34 casillas, limitada por el área disponible, con marco raster de dos píxeles lógicos. Las categorías y fichas comparten esa caja. La cabecera queda fija mientras el contenido se desplaza y en móvil la lista también admite desplazamiento horizontal. Las miniaturas quedan quietas para identificar las especies. El retrato seleccionado reutiliza los cuadros y la cadencia del juego con su propio reloj, que solo corre con el diálogo abierto y respeta movimiento reducido.
+
+### Excepciones
+
+- El foco nativo suplementario del diálogo y de Reiniciar, la barra de desplazamiento y la composición del fondo modal siguen bajo control del navegador. El contorno pixel de las cartas y el cursor raster del diálogo también indican foco.
+- La opacidad de la penumbra del diálogo y la aparición escalonada de la derrota afectan capas enteras. Durante una transición, distintas capas pueden superponer sus grillas. Las motas que viajan al HUD son una capa de un píxel de UI, alineada por separado del mundo. El polen, los impactos y los efectos de combate se componen en el tablero lógico.
+- El zoom de página que cambia DPR recalcula la salida. El zoom táctil transitorio del compositor y una página anfitriona que transforme el juego quedan fuera de la garantía física; se conserva el control de zoom del navegador.
+
+### Auditoría de consolidación
+
+La comparación parte de `f731765`. La tipografía funciona como parte de la composición en MEK.txt y DOS Age usa jerarquía por densidad de píxel, contraste y ritmo. En Herbarium ese orden pone el organismo y las acciones por delante del marco. Se conservaron los recursos propios. [MEK.txt](https://mektxt.com/) · [DOS Age](https://dos-age.com/)
+
+| Superficie | Hallazgo y corrección |
+| --- | --- |
+| Tablero y organismos | El umbral anterior admitía tamaños intermedios. La ampliación física ahora es entera. Se conservaron sprites, poses, sombras y coordenadas del mundo. |
+| Energía e iconos | El hexagrama ya era una matriz, pero la cifra y Pausa pasaban por un contexto ampliado o por CSS. Ahora comparten una salida raster y el saldo se reduce solo por múltiplos enteros si invade el control. |
+| Cartas, avisos y descripciones | El tamaño CSS de la carta podía diferir del backing store. El nombre comprimía glifos, el texto contextual quedaba a cargo del navegador y la selección tenía una sombra suave. Ahora comparten métricas, copia entera y foco dibujado. |
+| Pausa y herbario | Los rectángulos y recortes CSS dominaban la composición. Un marco común, el cursor y el retrato concentran el contraste. Los textos y las poses usan la misma salida que el resto de la interfaz. |
+| Derrota | El cierre opaco centra el mensaje y el botón raster. La marchitez ocurre en el tablero antes de que aparezca el cierre. |
+| Partículas, luz y efectos | Las partículas y el campo de luz ya se resuelven en píxeles lógicos. Se alinearon las motas externas que conectan con el HUD. Los impactos, señales de alcance, tiempos y paletas de efectos conservaron sus reglas. |
+
+Para revisar una salida, tomar un PNG físico en el juego real, registrar `data-escala-pixel`, medir el origen del canvas y ejecutar `.agents/skills/herbarium-visual-review/scripts/comprobar_bloques.py` con ese origen, la resolución lógica y la escala. Probar ampliaciones de 2× o mayores, además del caso nativo. El resultado de bloques y la legibilidad a tamaño real son verificaciones distintas.
 
 ## Paleta
-
-El menú de pausa y el catálogo usan la casilla lógica para ordenar espacios y filas. Los marcos y controles tienen cantos escalonados. Los retratos reutilizan los cuadros y ritmos del juego, se dibujan a escala entera y quedan quietos con movimiento reducido. Su animación tiene un reloj independiente del tablero pausado.
 
 `src/paleta.js` repite las claves y los hex de `nicotinalex-web/src/styles/paleta.ts`:
 
@@ -159,9 +186,9 @@ Derrota: la luz de la central se atenúa con su opacidad. Su halo y el ambiente 
 
 ## Interfaz
 
-La interfaz vigente deja la energía centrada en el eje de la flor, con un hexagrama de 7×7 (`src/sprites/estrella.js`) alineado a la cifra. La misma estrella marca el coste de cada carta y el reinicio. Sin oleada, sin reloj y sin trazos. Las cuatro cartas forman un solo grupo bajo el jardín (dos por dos en angosto). La vida de cada planta es una barra de 10×1 píxeles bajo el sprite: en puntero fino al pasar por la casilla, en táctil solo mientras la atacan. Un aviso breve en el escenario cubre casilla inválida; el resto va al lector de pantalla. MonoMEK. Las cartas de 72×80 muestran espécimen, nombre y coste, con aire entre el dibujo y el borde. El botón de reinicio es pixel art. El foco, selección, desbloqueo, compra e insuficiencia reciben señales diferenciadas sin mover el botón.
+La energía está centrada, con un hexagrama de 7 × 7 (`src/sprites/estrella.js`) alineado a la cifra. La misma estrella marca el coste de cada carta. Pausa queda al extremo derecho. Las cuatro cartas forman un grupo bajo el jardín o a un lado en horizontal bajo. La vida de cada planta se muestra en una barra bajo el sprite. El escenario muestra los avisos breves y el lector de pantalla recibe los mensajes semánticos. Las cartas de 72 × 80 muestran espécimen, nombre y coste. Foco, selección, desbloqueo, compra e insuficiencia tienen señales diferenciadas con el botón quieto.
 
-La derrota deja visible el jardín apagado; el texto se respalda con una pequeña banda opaca para que los insectos no interfieran con la lectura, y el botón permite reiniciar. El catálogo queda cerrado. El fundido del aviso dura 1,2 s después de la marchitez.
+Tras la marchitez, una capa oscura entra en seis pasos durante 1,2 s. El texto y Reiniciar comparten ese fondo. La bandeja de compra queda cerrada. El herbario sigue disponible desde Pausa.
 
 ## Marcado
 
@@ -173,7 +200,7 @@ La derrota deja visible el jardín apagado; el texto se respalda con una pequeñ
 
 ## Responsive y movimiento reducido
 
-`styles.css`: `100dvh`, safe areas, `touch-action: none` solo en el canvas, sin selección de texto ni callout táctil en el tablero. El catálogo va abajo en vertical; a un lado en horizontal bajo o en escritorio ancho. `--escala-carta` es 2 por defecto y en escritorio ancho; baja a 1,45 en móvil y horizontal bajo, y a 1,18 en móvil de hasta 360 px. El botón de reinicio reserva 2,75 rem de alto.
+`styles.css` conserva `100dvh`, safe areas y `touch-action: none` en el tablero. La bandeja va debajo en vertical y a un lado en horizontal bajo. `--escala-carta` expresa un tamaño CSS objetivo, que se traduce a un múltiplo físico entero. Los botones táctiles tienen al menos 44 px CSS.
 
 `prefers-reduced-motion` (leído en cada paso, no solo al cargar): idle en el primer fotograma, luz sin pulso ni ondulación, hormigas quietas, sin partículas de ambiente, ráfagas de combate ni ráfaga al sumar energía. Las plantas no retroceden al disparar. El escarabajo vuela con un cuadro fijo y no oscila. El combate sigue, y los cambios de estado (aterrizaje, mordida, desintegración) se muestran con cuadros y fundidos, no con desplazamientos.
 
@@ -271,3 +298,5 @@ Las motas de interacción aparecen al seleccionar, previsualizar una casilla o a
 ### Bioluminiscencia y bruma
 
 Cada planta tiñe la grilla alrededor de su núcleo con tres niveles de luz y una respiración desfasada. En los cruces de luz aparece una bruma entrecortada. El foco dominante fija el color del píxel y el brillo queda acotado. Las motas nacen junto a una planta viva y llevan su color. Disparos, esporas y reflejos activan un destello local de 0,36 s que comparte ese mismo límite. Con movimiento reducido, la luz y la bruma quedan estáticas y se omiten las motas ambientales.
+
+La penumbra deja pasar hasta un 6 % más del terreno mientras vive la central. El rebote ambiental usa el rojo de la central, el azul de Campanilla y verdes de distinta intensidad para Cerbatana, Espino y Hongo. El Hongo conserva su color propio en el sprite. Los radios, el techo de opacidad y los destellos de combate conservan sus valores.

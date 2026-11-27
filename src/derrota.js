@@ -1,42 +1,39 @@
-export function crearDerrota(escenario, flor, tinta, alReiniciar) {
+import { crearRotulo } from './interfazPixel.js';
+
+export function crearDerrota(escenario, alReiniciar) {
   const raiz = document.createElement('div');
   raiz.className = 'derrota';
   raiz.dataset.interfaz = '';
   raiz.hidden = true;
 
-  const silueta = document.createElement('canvas');
-  silueta.className = 'derrota-flor';
-  silueta.setAttribute('aria-hidden', 'true');
-  silueta.width = flor.width;
-  silueta.height = flor.height;
-  const ctx = silueta.getContext('2d');
-  // Se inclina la copa en pasos enteros para conservar el píxel del sprite.
-  const mitad = Math.floor(flor.height / 2);
-  ctx.drawImage(flor, 0, 0, flor.width, mitad, 2, 0, flor.width, mitad);
-  ctx.drawImage(flor, 0, mitad, flor.width, flor.height - mitad, 0, mitad, flor.width, flor.height - mitad);
-  ctx.globalCompositeOperation = 'source-in';
-  ctx.fillStyle = tinta;
-  ctx.fillRect(0, 0, flor.width, flor.height);
-
   const texto = document.createElement('p');
   texto.className = 'derrota-texto';
-  texto.textContent = 'el jardín cayó';
+  const titulo = crearRotulo(texto, 'el jardín cayó', { escala: 3, centro: true });
 
   const boton = document.createElement('button');
   boton.type = 'button';
   boton.className = 'derrota-boton';
-  boton.textContent = 'reiniciar';
+  const reinicio = crearRotulo(boton, 'reiniciar', { cursor: true });
   boton.setAttribute('aria-describedby', 'final-jardin');
   texto.id = 'final-jardin';
   boton.addEventListener('click', alReiniciar);
 
-  raiz.append(silueta, texto, boton);
+  raiz.append(texto, boton);
   escenario.append(raiz);
 
+  function ajustar() {
+    if (raiz.hidden) return;
+    titulo.actualizar();
+    reinicio.actualizar();
+  }
+  boton.addEventListener('focus', ajustar);
+
   return {
+    ajustar,
     mostrar() {
       raiz.hidden = false;
       boton.focus({ preventScroll: true });
+      ajustar();
     },
     ocultar() { raiz.hidden = true; },
     destruir() { raiz.remove(); },

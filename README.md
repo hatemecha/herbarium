@@ -12,6 +12,8 @@ Etapa 08.3 integrada. El Espino desvía insectos cercanos, la Campanilla prolong
 
 Elegí o tocá una carta para leer su función, incluso si todavía te falta energía. Para plantar, elegí una casilla libre junto al jardín. En pantalla táctil, el primer toque en una casilla previsualiza y el segundo confirma.
 
+También podés arrastrar la carta y soltarla en una casilla válida. Acercá el jardín con la rueda o con dos dedos. Cuando esté ampliado, arrastrá el tablero para moverte. Con el tablero enfocado, usá `+` y `−` para el zoom y `0` para volver a la vista completa.
+
 El [informe de la etapa 08.3](docs/ETAPA_083.md) reúne estadísticas, escenarios y evidencia de la calibración. Los valores jugables viven en `src/config.js`.
 
 ## Tecnología

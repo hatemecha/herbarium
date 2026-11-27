@@ -28,6 +28,7 @@ src/render.js           capas y dibujo
 src/iluminacion.js      oscuridad por transmisión
 src/paleta.js           lectura de variables y roles
 src/escala.js           DPR, escala, puntero → casilla
+src/interfazPixel.js    presentación física, glifos y primitivas raster de UI
 src/seleccion.js        hover y selección
 src/colocacion.js       modo de plantado
 src/catalogoUI.js       tarjetas de compra en canvas
@@ -89,13 +90,13 @@ Un escarabajo se dibuja en la capa luminosa con alfa `AUTOLUZ_ENEMIGO` (0,8). Es
 - Casilla entera `(x, y)`. Centro de juego: `(x + 0,5, y + 0,5)`.
 - Píxel lógico de una casilla: `tablero.origen`.
 - El escarabajo guarda `x, y` en casillas. Se dibuja en `round(x * celda - 8)`.
-- El puntero: rectángulo del canvas en CSS → 176 px lógicos (`pantallaAMundo`) → `floor` de casilla (`celdaEnMundo`). Vale a cualquier escala entera o fraccionaria.
+- El puntero: rectángulo real del canvas en CSS → 176 px lógicos (`pantallaAMundo`) → `floor` de casilla (`celdaEnMundo`). La salida usa un múltiplo físico entero, incluso si la caja CSS es fraccionaria.
 
 El bloqueo del escarabajo mira media casilla por delante de su centro (`ALCANCE_DE_BLOQUEO`).
 
 ## Eventos de entrada
 
-Pointer Events. El hover ignora `pointerType === 'touch'`. La selección escucha `pointerdown` en el canvas. La colocación escucha en captura y hace `stopImmediatePropagation` para no seleccionar a la vez. Escape y el puntero fuera cancelan la colocación. No hay manejador de clic derecho ni de arrastre.
+Pointer Events. `gestos.js` captura el puntero y distingue toque, pellizco, desplazamiento y arrastre de carta. Un toque se resuelve al soltar, con prioridad para la semilla seleccionada. El arrastre de carta reutiliza la previsualización y valida la compra al soltar. El hover ignora `pointerType === 'touch'`. La cámara ajusta escala y origen físico del tablero dentro de su área visible. El HUD y los menús conservan sus propias escalas.
 
 ## Paleta en caliente
 

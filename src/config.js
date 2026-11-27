@@ -18,12 +18,9 @@ export const SIMULACION = {
   tiempoMaximo: 0.1,
 };
 
-export const ESCALA = {
-  aprovechamientoMinimo: 0.8,
-};
-
 export const LUZ = {
   niveles: 6,
+  levantarPenumbra: 0.06,
   nucleo: { radio: 3.2, intensidad: 1 },
   brillo: { radio: 15, intensidad: 0.5 },
   ambiente: { radio: 56, intensidad: 0.26 },

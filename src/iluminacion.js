@@ -57,6 +57,7 @@ export function crearIluminacion({ lado, fondo }) {
     const aInt = LUZ.ambiente.intensidad * opacidad;
     const organica = k * LUZ.organica;
 
+    const oscuridad = 1 - LUZ.levantarPenumbra * opacidad;
     for (let y = 0; y < lado; y++) {
       for (let x = 0; x < lado; x++) {
         const dx = x + 0.5 - centro.x;
@@ -90,7 +91,7 @@ export function crearIluminacion({ lado, fondo }) {
         datos[p] = r;
         datos[p + 1] = g;
         datos[p + 2] = b;
-        datos[p + 3] = Math.round(255 * (1 - nivel / pasos));
+        datos[p + 3] = Math.round(255 * (1 - nivel / pasos) * oscuridad);
       }
     }
 

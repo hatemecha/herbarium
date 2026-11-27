@@ -1,51 +1,45 @@
 import { FEEDBACK } from './config.js';
 import { funcionDe } from './ficha.js';
+import { alinearSalida, altoLectura, crearRotulo, INTERLINEADO_LECTURA, medirTexto, pintarMarco, pintarTexto, prepararSalida, presentar, repartirTexto, superficie } from './interfazPixel.js';
 import { punteroFino } from './entrada.js';
 import { rgb } from './paleta.js';
 import { LADO_ESTRELLA, pintarEstrellaYTexto } from './sprites/estrella.js';
 
 const ANCHO = 72;
 const ALTO = 80;
-const FUENTE = '11px MonoMEK, ui-monospace, monospace';
 function dibujarCarta(ctx, carta, roles, t, reducido, consultada) {
   const { tipo, animador, estado, enfoque, alcanzable } = carta;
   const seleccionada = estado === 'seleccionada';
   const pulso = alcanzable ? Math.max(0, (carta.pulsoHasta - t) / FEEDBACK.oleada) : 0;
   const destello = pulso > 0 && (reducido || pulso > 0.7 || (pulso > 0.2 && pulso < 0.5));
   const borde = destello ? roles.energiaUI
-    : seleccionada ? roles.marca : enfoque || consultada ? roles.marcaSuave : roles.cuadricula;
+    : seleccionada ? roles.marca : carta.boton.matches(':focus-visible') ? roles.tintaUI
+      : enfoque || consultada ? roles.marcaSuave : roles.cuadricula;
   const falta = estado === 'insuficiente' ? Math.max(0, (carta.faltaHasta - t) / FEEDBACK.gesto) : 0;
 
   ctx.clearRect(0, 0, ANCHO, ALTO);
   ctx.globalAlpha = 1;
 
-  ctx.fillStyle = rgb(roles.terreno);
-  ctx.fillRect(2, 0, ANCHO - 4, ALTO);
-  ctx.fillRect(0, 2, ANCHO, ALTO - 4);
+  pintarMarco(ctx, ANCHO, ALTO, rgb(roles.terreno), rgb(borde));
   ctx.fillStyle = rgb(roles.fondo, 0.5);
   ctx.fillRect(3, 3, ANCHO - 6, ALTO - 6);
-
-  ctx.fillStyle = rgb(borde);
-  ctx.fillRect(2, 0, ANCHO - 4, 1);
-  ctx.fillRect(2, ALTO - 1, ANCHO - 4, 1);
-  ctx.fillRect(0, 2, 1, ALTO - 4);
-  ctx.fillRect(ANCHO - 1, 2, 1, ALTO - 4);
-  for (const x of [1, ANCHO - 2]) for (const y of [1, ALTO - 2]) ctx.fillRect(x, y, 1, 1);
+  if (carta.boton.matches(':focus-visible')) {
+    ctx.fillStyle = rgb(roles.tintaUI);
+    ctx.fillRect(4, 4, 6, 1);
+    ctx.fillRect(4, 4, 1, 6);
+  }
 
   ctx.globalAlpha = alcanzable ? 1 : 0.36;
   ctx.drawImage(animador.fotograma(), 20, 8, 32, 32);
   ctx.globalAlpha = 1;
 
-  ctx.font = FUENTE;
-  ctx.textBaseline = 'top';
-  ctx.textAlign = 'center';
-  ctx.fillStyle = rgb(roles.tintaUI);
-  ctx.fillText(tipo.nombre, ANCHO / 2, 46, ANCHO - 16);
+  repartirTexto(tipo.nombre, ANCHO - 8).forEach((linea, i) => {
+    pintarTexto(ctx, linea, Math.floor((ANCHO - medirTexto(linea)) / 2), 52 + i * 9, rgb(roles.tintaUI));
+  });
 
   const coste = String(carta.coste);
-  const anchoCoste = ctx.measureText(coste).width;
+  const anchoCoste = medirTexto(coste);
   const x = Math.floor((ANCHO - anchoCoste - LADO_ESTRELLA - 2) / 2);
-  ctx.textAlign = 'left';
   pintarEstrellaYTexto(
     ctx,
     x,
@@ -100,11 +94,15 @@ export function crearCatalogoUI({ contenedor, tipos, animadores, roles, alElegir
     lienzo.setAttribute('aria-hidden', 'true');
     boton.append(lienzo);
 
+    const origen = superficie(ANCHO, ALTO);
+    const ctx = origen.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
     const carta = {
       tipo,
       boton,
       lienzo,
-      ctx: lienzo.getContext('2d'),
+      origen,
+      ctx,
       animador: animadores[tipo.id],
       estado: null,
       pulsoHasta: 0,
@@ -138,19 +136,21 @@ export function crearCatalogoUI({ contenedor, tipos, animadores, roles, alElegir
 
   raiz.append(descripcion);
   contenedor.append(raiz);
+  const rotulo = crearRotulo(descripcion, '', {
+    ancho: () => descripcion.clientWidth, centro: true, interlineado: INTERLINEADO_LECTURA,
+  });
 
   function ajustar() {
     const escala = parseFloat(getComputedStyle(raiz).getPropertyValue('--escala-carta')) || 2;
     const dpr = window.devicePixelRatio || 1;
-    const multiplo = Math.max(1, Math.ceil(escala * dpr));
+    const multiplo = Math.max(1, Math.floor(escala * dpr));
     for (const carta of cartas) {
-      carta.lienzo.width = ANCHO * multiplo;
-      carta.lienzo.height = ALTO * multiplo;
-      carta.lienzo.style.width = `${ANCHO * escala}px`;
-      carta.lienzo.style.height = `${ALTO * escala}px`;
-      carta.ctx.setTransform(multiplo, 0, 0, multiplo, 0, 0);
-      carta.ctx.imageSmoothingEnabled = false;
+      prepararSalida(carta.lienzo, ANCHO, ALTO, multiplo, dpr);
     }
+    const alto = altoLectura(tipos.map((tipo) => tipo.descripcion), descripcion.clientWidth, dpr);
+    raiz.style.setProperty('--alto-ayuda', `${alto}px`);
+    for (const carta of cartas) alinearSalida(carta.lienzo, dpr);
+    rotulo.actualizar();
   }
 
   ajustar();
@@ -160,7 +160,7 @@ export function crearCatalogoUI({ contenedor, tipos, animadores, roles, alElegir
     ajustar,
     actualizar({ energia, activa, costes, t, reducido, panel, bloqueado = false }) {
       const consejo = bloqueado ? '' : funcionDe(panel)?.consejo ?? '';
-      if (descripcion.textContent !== consejo) descripcion.textContent = consejo;
+      if (descripcion.textContent !== consejo) rotulo.actualizar(consejo);
       for (const carta of cartas) {
         carta.ultimoT = t;
         const coste = costes?.[carta.tipo.id] ?? carta.tipo.coste;
@@ -187,6 +187,7 @@ export function crearCatalogoUI({ contenedor, tipos, animadores, roles, alElegir
         const consultada = !bloqueado && panel === carta.tipo.id;
         carta.boton.toggleAttribute('data-consulta', consultada);
         dibujarCarta(carta.ctx, carta, roles, t, reducido, consultada);
+        presentar(carta.origen, carta.lienzo);
       }
     },
     destruir() {
