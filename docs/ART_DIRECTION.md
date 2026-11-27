@@ -256,3 +256,16 @@ La inspección de la derrota detectó texto sobre insectos y cartas que sugería
 ## Etapa 08.3 · señales de combate
 
 Tres puntos del perímetro anuncian la primera entrada. Dos puntos delante del insecto acompañan el rumbo hacia el Espino. Al consultar o colocar el Espino se dibuja su radio de atracción. El caparazón devuelve fragmentos en dirección contraria al tiro. Un trazo de dos píxeles señala el frente real de la oruga y las mordidas sostenidas muestran una doble marca en la boca. Estas señales reutilizan la grilla y los roles de tinta. El halo de insectos se dibuja una vez por casilla en grupos densos. Cada insecto conserva su sprite y su señal propia. El texto de compra ocupa un renglón propio bajo el catálogo y puede partirse en dos líneas.
+
+## Pulido de luz y derrota
+
+La luz del terreno conserva su grilla escalonada. La flor y las plantas de apoyo proyectan rebotes cortos en sus propios tonos. Los insectos llevan los acentos en sus siluetas y ya no tienen halos suaves. El aviso de tres puntos del perímetro se retiró.
+
+Al generar energía, dos motas tenues suben desde la flor a la estrella. El polen tiene un máximo global de doce motas. Ambos efectos se omiten con movimiento reducido y salen de escena al caer la flor. El cierre atenúa el tablero, muestra la silueta marchita de la central y da foco a Reiniciar en MonoMEK.
+
+Las motas de interacción aparecen al seleccionar, previsualizar una casilla o aterrizar un insecto. El mouse solo las activa al pasar a otra posición válida mientras se coloca una planta. Las cartas sin energía muestran un candado y se pueden consultar. Al alcanzar el precio vigente, la carta titila en verde y conserva el precio iluminado. Con movimiento reducido, el aviso es un breve realce fijo.
+
+
+### Bioluminiscencia y bruma
+
+Cada planta tiñe la grilla alrededor de su núcleo con tres niveles de luz y una respiración desfasada. En los cruces de luz aparece una bruma entrecortada. El foco dominante fija el color del píxel y el brillo queda acotado. Las motas nacen junto a una planta viva y llevan su color. Disparos, esporas y reflejos activan un destello local de 0,36 s que comparte ese mismo límite. Con movimiento reducido, la luz y la bruma quedan estáticas y se omiten las motas ambientales.

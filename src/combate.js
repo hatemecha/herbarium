@@ -158,6 +158,7 @@ export function crearCombate({
         enemigo.objetivo = bloqueo;
         enemigo.tiempoEnObjetivo = 0;
         enemigo.mordidas = 0;
+        if (enemigo.tipo.locomocion === 'vuelo') evento({ tipo: 'aterrizaje', x: enemigo.x, y: enemigo.y });
         if (enemigo.tipo.preparacionAtaque) enemigo.cooldown = enemigo.tipo.preparacionAtaque;
         const hacia = centroDe(bloqueo).x - enemigo.x;
         if (Math.abs(hacia) > 0.2) enemigo.mirada = Math.sign(hacia);

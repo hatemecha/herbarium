@@ -171,3 +171,12 @@ test('un señuelo sembrado justo bajo el insecto permite que se pose', () => {
   assert.equal(pulgon.objetivo, espino);
   assert.equal(pulgon.vida, pulgon.vidaMax - BALANCE.espino.reflejo);
 });
+
+test('el aterrizaje emite una señal al posarse y no la repite al morder', () => {
+  const { combate } = jardinDePrueba();
+  combate.aparecerEn(5.5, 4.7, ENEMIGOS.escarabajo);
+  combate.actualizar(dt);
+  assert.equal(combate.eventos().filter((ev) => ev.tipo === 'aterrizaje').length, 1);
+  combate.actualizar(dt);
+  assert.equal(combate.eventos().some((ev) => ev.tipo === 'aterrizaje'), false);
+});

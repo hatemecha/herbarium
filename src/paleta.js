@@ -129,6 +129,7 @@ export function crearRoles(p) {
     petalo: p.brand,
     nucleo: mezcla(p.brand, p.ink, 0.45),
     nucleoBrillo: mezcla(p.ink, p.brand, 0.2),
+    luciernaga: mezcla([245, 196, 75], p.ink, 0.18),
     particula: mezcla(p.spark, p.ink, 0.35),
     resplandor: p.brand,
     ambiental: p.spark,

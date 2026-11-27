@@ -94,7 +94,7 @@ export const PLANTAS = {
     area: BALANCE.hongo,
     arte: { matriz: hongo.MATRIZ, codigos: hongo.CODIGOS, variantes: hongo.VARIANTES, secuencia: hongo.SECUENCIA, nucleo: hongo.NUCLEO },
     propia: 0.46,
-    resplandor: { radio: 8, alfa: 0.08, color: 'hongoLuz' },
+    resplandor: { radio: 8, alfa: 0.08, color: 'hongo' },
     luz: { nucleo: { radio: 2, intensidad: 0.24 }, radio: 16, intensidad: 0.1 },
   },
 };

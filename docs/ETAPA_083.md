@@ -4,6 +4,8 @@
 
 La línea base de la 08.2, con semillas 1–16 y horizonte de 30 minutos, dio una mediana de 8:42 para Cerbatanas con prioridad por el borde, 16:26 para el jardín diversificado y 23:46 para el reactivo. El primer piloto con desvío, sobrevuelo y blindaje bajó a 7:33 la mediana de la primera política. Una prueba adversarial cambió el diagnóstico: plantar exclusivamente Cerbatanas del centro hacia afuera llevó las 100 corridas de la primera validación al horizonte, con daño mediano cero al núcleo. La ubicación y la capacidad de formar un bloque importaban más que el catálogo que se creía estar comparando.
 
+El aviso visual de tres puntos y los halos de estas capturas corresponden a la versión de la 08.3 previa al [pulido de luz y derrota](ART_DIRECTION.md#pulido-de-luz-y-derrota).
+
 ## Diseño aplicado
 
 - George Fan enseña cada acción en el momento en que sirve. Elegir una carta en Herbarium muestra una frase junto al catálogo. Se puede consultar con saldo cero en escritorio y en táctil. [Charla de George Fan](https://www.gdcvault.com/play/1015541/How-I-Got-My-Mom)

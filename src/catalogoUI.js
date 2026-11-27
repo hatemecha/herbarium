@@ -10,10 +10,11 @@ const FUENTE = '11px MonoMEK, ui-monospace, monospace';
 function dibujarCarta(ctx, carta, roles, t, reducido, consultada) {
   const { tipo, animador, estado, enfoque, alcanzable } = carta;
   const seleccionada = estado === 'seleccionada';
-  const borde = seleccionada ? roles.marca : enfoque || consultada ? roles.marcaSuave : roles.cuadricula;
-  const pulso = estado === 'cerrada' ? 0 : Math.max(0, (carta.pulsoHasta - t) / FEEDBACK.gesto);
-  const compra = estado === 'cerrada' ? 0 : Math.max(0, (carta.compraHasta - t) / FEEDBACK.oleada);
-  const falta = Math.max(0, (carta.faltaHasta - t) / FEEDBACK.gesto);
+  const pulso = alcanzable ? Math.max(0, (carta.pulsoHasta - t) / FEEDBACK.oleada) : 0;
+  const destello = pulso > 0 && (reducido || pulso > 0.7 || (pulso > 0.2 && pulso < 0.5));
+  const borde = destello ? roles.energiaUI
+    : seleccionada ? roles.marca : enfoque || consultada ? roles.marcaSuave : roles.cuadricula;
+  const falta = estado === 'insuficiente' ? Math.max(0, (carta.faltaHasta - t) / FEEDBACK.gesto) : 0;
 
   ctx.clearRect(0, 0, ANCHO, ALTO);
   ctx.globalAlpha = 1;
@@ -31,7 +32,7 @@ function dibujarCarta(ctx, carta, roles, t, reducido, consultada) {
   ctx.fillRect(ANCHO - 1, 2, 1, ALTO - 4);
   for (const x of [1, ANCHO - 2]) for (const y of [1, ALTO - 2]) ctx.fillRect(x, y, 1, 1);
 
-  ctx.globalAlpha = alcanzable ? 1 : 0.58;
+  ctx.globalAlpha = alcanzable ? 1 : 0.36;
   ctx.drawImage(animador.fotograma(), 20, 8, 32, 32);
   ctx.globalAlpha = 1;
 
@@ -54,14 +55,23 @@ function dibujarCarta(ctx, carta, roles, t, reducido, consultada) {
     rgb(alcanzable ? roles.energiaUI : roles.tintaUI),
   );
 
-  if (compra > 0 || pulso > 0 || seleccionada) {
-    const intensidad = reducido || seleccionada ? 1 : compra || pulso;
-    ctx.fillStyle = rgb(compra > 0 ? roles.energiaUI : seleccionada ? roles.marca : roles.energiaUI, intensidad);
-    ctx.fillRect((ANCHO - (compra > 0 ? 36 : seleccionada ? 14 : 8)) / 2, 0, compra > 0 ? 36 : seleccionada ? 14 : 8, 2);
+  if (estado === 'insuficiente') {
+    ctx.fillStyle = rgb(roles.marcaSuave);
+    ctx.fillRect(60, 10, 5, 4);
+    ctx.fillRect(61, 7, 3, 1);
+    ctx.fillRect(60, 8, 1, 2);
+    ctx.fillRect(64, 8, 1, 2);
   }
   if (falta > 0) {
     ctx.fillStyle = rgb(roles.petalo, reducido ? 1 : falta);
     ctx.fillRect(8, ALTO - 5, ANCHO - 16, 1);
+  }
+  if (destello) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'source-atop';
+    ctx.fillStyle = rgb(roles.energiaUI, reducido ? 0.10 : pulso > 0.7 ? 0.19 : 0.12);
+    ctx.fillRect(0, 0, ANCHO, ALTO);
+    ctx.restore();
   }
   ctx.globalAlpha = 1;
 }
@@ -98,7 +108,6 @@ export function crearCatalogoUI({ contenedor, tipos, animadores, roles, alElegir
       animador: animadores[tipo.id],
       estado: null,
       pulsoHasta: 0,
-      compraHasta: 0,
       faltaHasta: 0,
       ultimoT: 0,
       enfoque: false,
@@ -149,10 +158,6 @@ export function crearCatalogoUI({ contenedor, tipos, animadores, roles, alElegir
   return {
     elemento: raiz,
     ajustar,
-    comprada(id, t) {
-      const carta = cartas.find((c) => c.tipo.id === id);
-      if (carta) carta.compraHasta = t + FEEDBACK.oleada;
-    },
     actualizar({ energia, activa, costes, t, reducido, panel, bloqueado = false }) {
       const consejo = panel && !bloqueado ? funcionDe(panel).consejo : '';
       if (descripcion.textContent !== consejo) descripcion.textContent = consejo;
@@ -163,8 +168,8 @@ export function crearCatalogoUI({ contenedor, tipos, animadores, roles, alElegir
         const alcanzable = !bloqueado && energia >= coste;
         const estado = bloqueado ? 'cerrada' : seleccionada ? 'seleccionada' : alcanzable ? 'disponible' : 'insuficiente';
         const faltan = Math.max(0, Math.ceil(coste - energia));
-        if (carta.estado !== null && ((seleccionada && carta.estado !== estado) || (alcanzable && !carta.alcanzable))) {
-          carta.pulsoHasta = t + FEEDBACK.gesto;
+        if (carta.estado !== null && alcanzable && !carta.alcanzable) {
+          carta.pulsoHasta = t + FEEDBACK.oleada;
         }
         if (carta.estado !== estado || carta.coste !== coste || carta.faltan !== faltan) {
           carta.estado = estado;
@@ -176,6 +181,7 @@ export function crearCatalogoUI({ contenedor, tipos, animadores, roles, alElegir
           const disponibilidad = bloqueado ? 'jardín caído' : alcanzable ? 'disponible' : faltan === 1 ? 'falta 1 de energía, consultar' : `faltan ${faltan} de energía, consultar`;
           carta.boton.setAttribute('aria-label', `${carta.tipo.nombre}, ${funcionDe(carta.tipo.id).corta}, coste ${coste} de energía, ${disponibilidad}`);
         }
+        if (!alcanzable) carta.pulsoHasta = 0;
         carta.alcanzable = alcanzable;
         const consultada = !bloqueado && panel === carta.tipo.id;
         carta.boton.toggleAttribute('data-consulta', consultada);

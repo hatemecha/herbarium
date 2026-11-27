@@ -4,6 +4,7 @@ import { rgb } from './paleta.js';
 // Presupuesto visual independiente de la simulación. Las ráfagas importantes
 // desplazan polen y energía antes de competir con otros efectos de combate.
 const FAMILIAS = {
+  gesto:   { prioridad: 1, vida: [0.22, 0.36], velocidad: [5, 10], forma: 'punto', deriva: 0 },
   polen:   { prioridad: 0, vida: [2.6, 4.8], velocidad: [1, 3], forma: 'punto', deriva: 0.8 },
   energia: { prioridad: 1, vida: [0.5, 0.9], velocidad: [5, 9], forma: 'cruz', deriva: 0.5 },
   brote:   { prioridad: 3, vida: [0.5, 0.9], velocidad: [12, 23], forma: 'semilla', deriva: 0.2 },
@@ -54,11 +55,15 @@ export function crearParticulas({ aleatorio = Math.random } = {}) {
     rafaga(x, y, cantidad, aspecto) {
       for (let i = 0; i < cantidad; i++) nacer(x, y, aspecto, i, cantidad);
     },
-    actualizar(dt, x, y, emitiendo, reducido = false) {
+    actualizar(dt, emitiendo, reducido = false, elegirEmisor) {
       if (reducido) { lista.length = 0; return; }
-      if (emitiendo && aleatorio() < PARTICULAS.tasa * dt) nacer(x + azar(-5, 5), y + azar(-4, 4));
+      if (emitiendo && elegirEmisor && aleatorio() < PARTICULAS.tasa * dt) {
+        const { x, y, color } = elegirEmisor(aleatorio());
+        nacer(x + azar(-3, 3), y + azar(-2, 2), { color });
+      }
       for (let i = lista.length - 1; i >= 0; i--) {
         const p = lista[i];
+        if (!emitiendo && p.familia === 'polen') { lista.splice(i, 1); continue; }
         p.edad += dt;
         if (p.edad >= p.vida) { lista.splice(i, 1); continue; }
         const freno = p.familia === 'restos' || p.familia === 'espora' ? Math.exp(-dt * 2) : 1;
@@ -74,7 +79,7 @@ export function crearParticulas({ aleatorio = Math.random } = {}) {
         const progreso = p.edad / p.vida;
         const x = Math.round(p.x), y = Math.round(p.y);
         ctx.fillStyle = rgb(p.color ?? color);
-        ctx.globalAlpha = p.brillo * (p.prioridad < 2 ? Math.sin(Math.PI * progreso) * 0.5 : (1 - progreso));
+        ctx.globalAlpha = p.brillo * (p.prioridad < 2 ? Math.sin(Math.PI * progreso) * 0.35 : (1 - progreso));
         ctx.fillRect(x, y, p.tam, p.tam);
         if (p.forma === 'trazo' && progreso < 0.65) {
           ctx.globalAlpha *= 0.48;

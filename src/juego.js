@@ -60,8 +60,10 @@ function construirDom(contenedor) {
         <canvas class="tablero" role="img" aria-label="Jardín en penumbra con una planta central que genera energía"></canvas>
         <div class="escenario-evento" aria-hidden="true"></div>
       </div>
-    </div>`;
+    </div>
+    <div class="motas-energia" aria-hidden="true"><i></i><i></i></div>`;
   return {
+    motas: contenedor.querySelector('.motas-energia'),
     campo: contenedor.querySelector('.herbario-campo'),
     escenario: contenedor.querySelector('.herbario-escenario'),
     canvas: contenedor.querySelector('.tablero'),
@@ -99,9 +101,18 @@ function crearPartida(dom, roles, frames, reducido, alDerrota) {
   let eventoHasta = 0;
   let criticoAnterior = false;
   const pulsos = new Map();
+  let ultimoPreview = -Infinity;
+  let casillaPreview;
+
+  function motasDeCasilla(celda, cantidad, color) {
+    if (reducido.matches || combate.derrota()) return;
+    particulas.rafaga((celda.x + 0.5) * tablero.celda, (celda.y + 0.5) * tablero.celda,
+      cantidad, { familia: 'gesto', color });
+  }
 
   function marcar(tipo, celda) {
     gesto = { tipo, celda, hasta: estado.tiempo + FEEDBACK.gesto };
+    if (tipo === 'seleccion' || tipo === 'preview') motasDeCasilla(celda, 3, roles.marca);
     if (tipo === 'invalida') {
       avisar(tablero.ocupante(celda.x, celda.y)
         ? 'Esa casilla está ocupada.'
@@ -152,7 +163,6 @@ function crearPartida(dom, roles, frames, reducido, alDerrota) {
         inspeccion = null;
         marcar('plantada', planta.celda);
         pulso(dom.energia, 'compra', FEEDBACK.gesto);
-        catalogo.comprada?.(planta.id, estado.tiempo);
         if (!reducido.matches) particulas.rafaga(planta.nucleo.x, planta.nucleo.y, 9, { familia: 'brote', color: roles.hojaBrillo });
       }
     },
@@ -206,6 +216,34 @@ function crearPartida(dom, roles, frames, reducido, alDerrota) {
     alIntentar: marcar,
   });
   let derrotaAvisada = false;
+  let ultimoBrote = -Infinity;
+  let trayecto;
+
+  function dibujarMotas() {
+    const edad = estado.tiempo - ultimoBrote;
+    const visibles = !reducido.matches && !combate.derrota() && edad < 0.96;
+    dom.motas.hidden = !visibles;
+    if (!visibles) return;
+    if (!trayecto) {
+      const capa = dom.motas.getBoundingClientRect();
+      const tableroRect = dom.canvas.getBoundingClientRect();
+      const destino = dom.energiaLienzo.getBoundingClientRect();
+      const escala = tableroRect.width / tablero.ancho;
+      trayecto = {
+        x: tableroRect.left - capa.left + jardin.central.nucleo.x * escala,
+        y: tableroRect.top - capa.top + jardin.central.nucleo.y * escala,
+        finX: destino.left - capa.left + destino.height * LADO_ESTRELLA / ALTO_ENERGIA / 2,
+        finY: destino.top - capa.top + destino.height * 7 / ALTO_ENERGIA,
+      };
+    }
+    const { x, y, finX, finY } = trayecto;
+    for (const [i, mota] of Array.from(dom.motas.children).entries()) {
+      const t = Math.max(0, Math.min(1, (edad - i * 0.16) / 0.8));
+      const arco = Math.sin(Math.PI * t);
+      mota.style.opacity = String(arco * (i ? 0.19 : 0.32));
+      mota.style.transform = `translate(${Math.round(x + (finX - x) * t + arco * (i ? -7 : 5))}px, ${Math.round(y + (finY - y) * t)}px)`;
+    }
+  }
 
   function actualizarEnergia() {
     const valor = Math.floor(estado.energia);
@@ -241,9 +279,13 @@ function crearPartida(dom, roles, frames, reducido, alDerrota) {
           color: ev.tipo === 'muerte-planta' ? roles.hojaLuz : roles.insectoBrillo,
         });
       } else if (ev.tipo === 'reflejo') {
+        render.destello(x + ev.ux * 3, y + ev.uy * 3, 12, roles.ambiental, estado.tiempo);
         particulas.rafaga(x, y, 5, { familia: 'reflejo', color: roles.ambiental, ux: ev.ux, uy: ev.uy });
       } else if (ev.tipo === 'esporas') {
+        render.destello(x, y, BALANCE.hongo.alcance * celda, roles.hongoLuz, estado.tiempo);
         particulas.rafaga(x, y, 14, { familia: 'espora', color: roles.hongoLuz, radio: BALANCE.hongo.alcance * celda });
+      } else if (ev.tipo === 'aterrizaje') {
+        particulas.rafaga(x, y + 4, 2, { familia: 'gesto', color: roles.tierra });
       } else if (ev.tipo === 'atraccion') {
         particulas.rafaga(x, y, 2, { familia: 'control', color: roles.ambiental });
       } else if (ev.tipo === 'control') {
@@ -251,9 +293,16 @@ function crearPartida(dom, roles, frames, reducido, alDerrota) {
       } else if (ev.tipo === 'mordida') {
         particulas.rafaga(x, y, 3, { familia: 'restos', color: roles.hojaLuz });
       } else if (ev.tipo === 'disparo') {
+        render.destello(x + ev.ux * 5, y + ev.uy * 5, 11, roles.bocaBrillo, estado.tiempo);
         particulas.rafaga(x + ev.ux * 4, y + ev.uy * 4, 3, { familia: 'disparo', color: roles.bocaBrillo, ux: ev.ux, uy: ev.uy });
       }
     }
+  }
+
+  function emisorDePolen(fraccion) {
+    const vivas = jardin.plantas.filter((planta) => !planta.muerta);
+    const planta = vivas[Math.floor(fraccion * vivas.length)];
+    return { ...planta.nucleo, color: roles[planta.tipo.resplandor?.color ?? 'petalo'] };
   }
 
   function simular(dt) {
@@ -264,7 +313,8 @@ function crearPartida(dom, roles, frames, reducido, alDerrota) {
     } else if (avanzar(estado, dt)) {
       actualizarEnergia();
       if (dom.energia.dataset.pulso !== 'compra') pulso(dom.energia, 'latido', FEEDBACK.gesto);
-      if (!reduce) particulas.rafaga(jardin.central.nucleo.x, jardin.central.nucleo.y, PARTICULAS.rafaga, { familia: 'energia', color: roles.energiaUI });
+      ultimoBrote = estado.tiempo;
+      trayecto = null;
     }
     for (const [elemento, hasta] of pulsos) {
       if (estado.tiempo < hasta) continue;
@@ -283,7 +333,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota) {
     procesarEventos();
 
     const central = jardin.central;
-    particulas.actualizar(dt, central.nucleo.x, central.nucleo.y, !reduce && !caida, reduce);
+    particulas.actualizar(dt, !central.muerta, reduce, emisorDePolen);
     seleccion.actualizar(dt);
     colocacion.actualizar(dt);
     for (const animador of Object.values(animadores)) animador.actualizar(dt, reduce);
@@ -296,7 +346,15 @@ function crearPartida(dom, roles, frames, reducido, alDerrota) {
 
   function dibujar() {
     actualizarEnergia();
+    dibujarMotas();
     const vista = colocacion.vista();
+    const puntero = !tactil.matches && vista?.valido ? vista.puntero : null;
+    const casilla = puntero ? puntero.y * tablero.columnas + puntero.x : null;
+    if (casilla !== null && casilla !== casillaPreview && estado.tiempo - ultimoPreview >= 0.16) {
+      motasDeCasilla(puntero, 2, roles.marcaSuave);
+      ultimoPreview = estado.tiempo;
+    }
+    casillaPreview = casilla;
     const marcas = seleccion.marcas().filter((marca) => !(vista && marca.tipo === 'sobrevuelo'));
     const seleccionada = seleccion.seleccionada();
     const planta = seleccionada && tablero.ocupante(seleccionada.x, seleccionada.y);
@@ -322,7 +380,6 @@ function crearPartida(dom, roles, frames, reducido, alDerrota) {
 
     render.dibujar({
       alcance,
-      aviso: caido ? null : director.aviso(),
       gesto: gesto && { ...gesto, intensidad: (gesto.hasta - estado.tiempo) / FEEDBACK.gesto },
       pulsoCentro: pulsoCentro / FEEDBACK.oleada,
       t: estado.tiempo,
@@ -361,12 +418,16 @@ function crearPartida(dom, roles, frames, reducido, alDerrota) {
   return {
     simular,
     dibujar,
-    ajustarCatalogo: () => catalogo.ajustar(),
+    ajustarCatalogo() {
+      trayecto = null;
+      catalogo.ajustar();
+    },
     derrota: () => combate.derrota(),
     seleccion,
     destruir() {
       for (const elemento of pulsos.keys()) delete elemento.dataset.pulso;
       texto(dom.anuncio, '');
+      dom.motas.hidden = true;
       seleccion.destruir();
       colocacion.destruir();
       catalogo.destruir();
@@ -380,7 +441,7 @@ export function montarHerbario(contenedor) {
   const dom = construirDom(contenedor);
   const frames = construirFrames(roles);
   const reducido = matchMedia('(prefers-reduced-motion: reduce)');
-  const derrota = crearDerrota(dom.escenario, () => reiniciar());
+  const derrota = crearDerrota(dom.escenario, frames.central[0][0], rgb(roles.petaloSombra), () => reiniciar());
 
   let raf = 0;
   let ultimo = 0;
