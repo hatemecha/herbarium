@@ -99,7 +99,11 @@ export function crearCombate({
       enemigo.destello = visual.destello;
       enemigo.colorImpacto = 'ambiental';
       enemigo.golpe = { x: 0, y: 0 };
-      evento({ tipo: 'reflejo', x: enemigo.x, y: enemigo.y, dano: Math.min(reflejo, enemigo.vida + reflejo) });
+      const dx = enemigo.x - objetivo.celda.x - 0.5;
+      const dy = enemigo.y - objetivo.celda.y - 0.5;
+      const d = Math.hypot(dx, dy) || 1;
+      objetivo.reflejoDir = { x: dx / d, y: dy / d };
+      evento({ tipo: 'reflejo', x: enemigo.x, y: enemigo.y, ux: dx / d, uy: dy / d, dano: Math.min(reflejo, enemigo.vida + reflejo) });
       if (enemigo.vida <= 0) matar(enemigo);
     }
     if (objetivo.vida <= 0) destruirPlanta(objetivo);
@@ -117,6 +121,7 @@ export function crearCombate({
       enemigo.objetivo = null;
       enemigo.despegue = visual.despegue;
     }
+    const antesRalentizado = enemigo.ralentizado;
     enemigo.ralentizado = false;
     enemigo.vx = 0;
     enemigo.vy = 0;
@@ -150,6 +155,7 @@ export function crearCombate({
         const velocidad = enemigo.tipo.velocidad * enemigo.factorMarcha * (1 - reduccion);
         tiempoRalentizado += reduccion > 0 ? dt : 0;
         enemigo.ralentizado = reduccion > 0;
+        if (enemigo.ralentizado && !antesRalentizado) evento({ tipo: 'control', x: enemigo.x, y: enemigo.y });
         const paso = Math.min(velocidad * dt, d);
         enemigo.x += ux * paso;
         enemigo.y += uy * paso;
@@ -248,7 +254,7 @@ export function crearCombate({
     enemigo.destello = visual.destello;
     enemigo.golpe = { x: proyectil.ux, y: proyectil.uy };
     enemigo.colorImpacto = proyectil.planta === 'hongo' ? 'hongoLuz' : null;
-    evento({ tipo: 'impacto', x: enemigo.x, y: enemigo.y, aplicado, sobra, planta: proyectil.planta });
+    evento({ tipo: 'impacto', x: enemigo.x, y: enemigo.y, aplicado, sobra, ux: proyectil.ux, uy: proyectil.uy, planta: proyectil.planta });
     if (enemigo.vida <= 0) matar(enemigo);
   }
 

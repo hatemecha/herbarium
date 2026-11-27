@@ -1,0 +1,42 @@
+/* Variantes del juego real, sin duplicar arte ni inventar estados. */
+.lab-nav { height: 44px; display: flex; gap: 8px; align-items: center; justify-content: center; font: 14px MonoMEK, monospace; color: var(--muted); }
+.lab-nav button { background: var(--bg); color: var(--ink); border: 1px solid var(--line); padding: 5px; font: inherit; cursor: pointer; }
+.lab-nav button[aria-pressed=true] { color: var(--spark); border-color: var(--spark); }
+.herbario { height: calc(100dvh - 44px); }
+body[data-modo=horizonte] .herbario { width: min(100%, 860px); }
+body[data-modo=horizonte] .herbario-escenario { padding: 24px 0 158px; }
+body[data-modo=horizonte] .catalogo { top: auto; bottom: 8px; inset-inline: 0; transform: none; display: flex; }
+body[data-modo=horizonte] .escenario-evento { left: 0; right: 0; }
+body[data-modo=horizonte] .herbario-barra { order: 2; border-bottom: 0; border-top: 1px solid var(--line); padding-top: 8px; }
+body[data-modo=horizonte] .ficha { order: 3; border-top: 0; }
+body[data-modo=gabinete] .herbario { width: min(100%, 1200px); display: grid; grid-template-columns: 190px minmax(0,1fr); grid-template-rows: minmax(0,1fr) 65px; gap: 12px; }
+body[data-modo=gabinete] .herbario-barra { display: flex; flex-direction: column; justify-content: center; align-items: stretch; border: 0; border-right: 1px solid var(--line); padding: 0 14px 0 0; gap: 24px; }
+body[data-modo=gabinete] .herbario-escenario { padding: 24px 142px 0 0; }
+body[data-modo=gabinete] .catalogo { top: 50%; bottom: auto; inset-inline: auto 0; transform: translateY(-50%); display: grid; grid-template-columns: repeat(2,auto); --escala-carta: 1; }
+body[data-modo=gabinete] .escenario-evento { left: 0; right: 142px; }
+body[data-modo=gabinete] .ficha { grid-column: 1/-1; }
+@media(max-width: 600px) {
+ .lab-nav { font-size: 11px; gap: 3px; } .lab-nav strong { display:none; }
+ body[data-modo=horizonte] .herbario-escenario { padding-bottom: 100px; }
+ body[data-modo=gabinete] .herbario { grid-template-columns: 94px minmax(0,1fr); grid-template-rows: minmax(0,1fr) 76px; gap: 5px; }
+ body[data-modo=gabinete] .herbario-barra { padding-right: 6px; gap: 15px; }
+ body[data-modo=gabinete] .herbario-escenario { padding: 24px 0 152px; }
+ body[data-modo=gabinete] .catalogo { top: auto; bottom: 4px; inset-inline: 0; transform: none; justify-content:center; }
+ body[data-modo=gabinete] .escenario-evento { right: 0; }
+}
+
+body[data-modo=horizonte] .ficha, body[data-modo=gabinete] .ficha { position: static; width: auto; transform: none; border-left: 0; padding: 8px 0 0; min-height: 65px; }
+body[data-modo=horizonte] .derrota { left: 0; right: 0; }
+body[data-modo=gabinete] .derrota { left: 0; right: 142px; }
+body[data-modo=gabinete] .herbario-barra { width: auto; align-self: stretch; }
+@media(max-width:600px) {
+ body[data-modo=horizonte] .herbario-escenario { padding-bottom: 112px; }
+ body[data-modo=gabinete] .derrota { right: 0; }
+ body[data-modo=gabinete] .herbario-barra { font-size: 12px; }
+ body[data-modo=gabinete] .energia-objetivo, body[data-modo=gabinete] .fase-enemigos { font-size: 12px; }
+}
+
+/* B/C mantienen el contraste de organización respecto de A ya refinada. */
+body[data-modo=horizonte] .ficha, body[data-modo=gabinete] .ficha { position: static; width: auto; transform: none; border-left: 0; padding: 9px 0 0; min-height: 0; height: auto; }
+body[data-modo=horizonte] .herbario-barra, body[data-modo=gabinete] .herbario-barra { width: 100%; }
+body[data-modo=gabinete] .corazon { padding-bottom: 0; }

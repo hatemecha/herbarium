@@ -46,7 +46,7 @@ function fotogramaEscarabajo(enemigo, reducido) {
   switch (estadoVisual(enemigo)) {
     case 'vuelo':
       if (reducido) return FOTOGRAMA.vueloMedio;
-      return SECUENCIA_VUELO[Math.floor(enemigo.reloj / DURACION_ALETEO) % SECUENCIA_VUELO.length];
+      return SECUENCIA_VUELO[Math.floor(enemigo.reloj / (DURACION_ALETEO * (enemigo.ralentizado ? 1.7 : 1))) % SECUENCIA_VUELO.length];
     case 'despegue':
       return FOTOGRAMA.vueloAlto;
     case 'aterrizaje':
@@ -65,7 +65,7 @@ function fotogramaPulgon(enemigo, reducido) {
     case 'vuelo':
     case 'despegue':
       if (reducido || estadoVisual(enemigo) === 'despegue') return FOTOGRAMA_PULGON.vueloAlto;
-      return Math.floor(enemigo.reloj / PULGON.aleteo) % 2 === 0 ? FOTOGRAMA_PULGON.vueloAlto : FOTOGRAMA_PULGON.vueloBajo;
+      return Math.floor(enemigo.reloj / (PULGON.aleteo * (enemigo.ralentizado ? 1.7 : 1))) % 2 === 0 ? FOTOGRAMA_PULGON.vueloAlto : FOTOGRAMA_PULGON.vueloBajo;
     case 'aterrizaje':
       return FOTOGRAMA_PULGON.vueloBajo;
     case 'alimentacion':
@@ -80,7 +80,7 @@ function fotogramaOruga(enemigo, reducido) {
   if (estado === 'alimentacion') return enemigo.mordisco > 0 ? FOTOGRAMA_ORUGA.mordida : FOTOGRAMA_ORUGA.contraida;
   if (estado === 'caido' || reducido) return FOTOGRAMA_ORUGA.media;
   const ciclo = [FOTOGRAMA_ORUGA.extendida, FOTOGRAMA_ORUGA.media, FOTOGRAMA_ORUGA.contraida, FOTOGRAMA_ORUGA.media];
-  return ciclo[Math.floor(enemigo.reloj / ORUGA.ciclo) % ciclo.length];
+  return ciclo[Math.floor(enemigo.reloj / (ORUGA.ciclo * (enemigo.ralentizado ? 1.7 : 1))) % ciclo.length];
 }
 
 export function fotogramaEnemigo(enemigo, reducido) {

@@ -1,0 +1,520 @@
+{
+  "pliego-desktop": {
+    "caja": {
+      "viewport": [
+        1280,
+        800
+      ],
+      "scroll": [
+        1280,
+        800
+      ],
+      "tablero": [
+        375.71875,
+        235.875,
+        528,
+        528
+      ],
+      "catalogo": [
+        116,
+        351.4375,
+        248,
+        280
+      ],
+      "solapan": false
+    },
+    "errores": []
+  },
+  "pliego-movil": {
+    "caja": {
+      "viewport": [
+        390,
+        844
+      ],
+      "scroll": [
+        390,
+        844
+      ],
+      "tablero": [
+        19,
+        243,
+        352,
+        352
+      ],
+      "catalogo": [
+        10,
+        635.40625,
+        370,
+        98.59375
+      ],
+      "solapan": false
+    },
+    "errores": []
+  },
+  "horizonte-desktop": {
+    "caja": {
+      "viewport": [
+        1280,
+        800
+      ],
+      "scroll": [
+        1280,
+        800
+      ],
+      "tablero": [
+        467.71875,
+        80,
+        344,
+        344
+      ],
+      "catalogo": [
+        240.71875,
+        437.53125,
+        798.5625,
+        136
+      ],
+      "solapan": false
+    },
+    "errores": []
+  },
+  "horizonte-movil": {
+    "caja": {
+      "viewport": [
+        390,
+        844
+      ],
+      "scroll": [
+        390,
+        844
+      ],
+      "tablero": [
+        19,
+        130,
+        352,
+        352
+      ],
+      "catalogo": [
+        10,
+        538.625,
+        370,
+        98.59375
+      ],
+      "solapan": false
+    },
+    "errores": []
+  },
+  "gabinete-desktop": {
+    "caja": {
+      "viewport": [
+        1280,
+        800
+      ],
+      "scroll": [
+        1280,
+        800
+      ],
+      "tablero": [
+        405.71875,
+        131,
+        528,
+        528
+      ],
+      "catalogo": [
+        1081.28125,
+        311.5,
+        128,
+        144
+      ],
+      "solapan": false
+    },
+    "errores": []
+  },
+  "gabinete-movil": {
+    "caja": {
+      "viewport": [
+        390,
+        844
+      ],
+      "scroll": [
+        390,
+        844
+      ],
+      "tablero": [
+        109,
+        204,
+        271,
+        271
+      ],
+      "catalogo": [
+        109,
+        607,
+        271,
+        140
+      ],
+      "solapan": false
+    },
+    "errores": []
+  },
+  "antes-desktop": {
+    "errores": [],
+    "caja": {
+      "viewport": [
+        1280,
+        800
+      ],
+      "scroll": [
+        1280,
+        800
+      ],
+      "tablero": [
+        299,
+        111.390625,
+        681,
+        681
+      ],
+      "catalogo": [
+        24,
+        173.6875,
+        120,
+        556
+      ],
+      "solapan": false
+    },
+    "escena": {
+      "vivos": 19,
+      "control": 3,
+      "plantas": 12,
+      "vida": 30
+    }
+  },
+  "despues-desktop": {
+    "errores": [],
+    "caja": {
+      "viewport": [
+        1280,
+        800
+      ],
+      "scroll": [
+        1280,
+        800
+      ],
+      "tablero": [
+        375.71875,
+        213.875,
+        528,
+        528
+      ],
+      "catalogo": [
+        116,
+        329.4375,
+        248,
+        280
+      ],
+      "solapan": false
+    },
+    "escena": {
+      "vivos": 19,
+      "control": 3,
+      "plantas": 12,
+      "vida": 30
+    }
+  },
+  "antes-movil": {
+    "errores": [],
+    "caja": {
+      "viewport": [
+        390,
+        844
+      ],
+      "scroll": [
+        390,
+        844
+      ],
+      "tablero": [
+        19,
+        261.390625,
+        352,
+        352
+      ],
+      "catalogo": [
+        8,
+        768,
+        374,
+        68
+      ],
+      "solapan": false
+    },
+    "escena": {
+      "vivos": 19,
+      "control": 3,
+      "plantas": 12,
+      "vida": 30
+    }
+  },
+  "despues-movil": {
+    "errores": [],
+    "caja": {
+      "viewport": [
+        390,
+        844
+      ],
+      "scroll": [
+        390,
+        844
+      ],
+      "tablero": [
+        19,
+        221,
+        352,
+        352
+      ],
+      "catalogo": [
+        10,
+        635.40625,
+        370,
+        98.59375
+      ],
+      "solapan": false
+    },
+    "escena": {
+      "vivos": 19,
+      "control": 3,
+      "plantas": 12,
+      "vida": 30
+    }
+  },
+  "antes-horizontal": {
+    "errores": [],
+    "caja": {
+      "viewport": [
+        844,
+        390
+      ],
+      "scroll": [
+        844,
+        435
+      ],
+      "tablero": [
+        293,
+        125.390625,
+        257,
+        257
+      ],
+      "catalogo": [
+        712,
+        183.6875,
+        124,
+        140
+      ],
+      "solapan": false
+    },
+    "escena": {
+      "vivos": 19,
+      "control": 3,
+      "plantas": 12,
+      "vida": 30
+    }
+  },
+  "despues-horizontal": {
+    "errores": [],
+    "caja": {
+      "viewport": [
+        844,
+        390
+      ],
+      "scroll": [
+        844,
+        390
+      ],
+      "tablero": [
+        262.25,
+        31,
+        296,
+        296
+      ],
+      "catalogo": [
+        643.75,
+        66.40625,
+        180,
+        203.1875
+      ],
+      "solapan": false
+    },
+    "escena": {
+      "vivos": 19,
+      "control": 3,
+      "plantas": 12,
+      "vida": 30
+    }
+  },
+  "movil": {
+    "errores": [],
+    "caja": {
+      "viewport": [
+        390,
+        844
+      ],
+      "scroll": [
+        390,
+        844
+      ],
+      "tablero": [
+        19,
+        221,
+        352,
+        352
+      ],
+      "catalogo": [
+        10,
+        635.40625,
+        370,
+        98.59375
+      ],
+      "solapan": false
+    },
+    "plantas": [
+      1,
+      1,
+      2
+    ],
+    "objetivo_estable": true,
+    "tablero_estable": true
+  },
+  "pequeno": {
+    "errores": [],
+    "caja": {
+      "viewport": [
+        320,
+        568
+      ],
+      "scroll": [
+        320,
+        568
+      ],
+      "tablero": [
+        41,
+        148.34375,
+        238,
+        238
+      ],
+      "catalogo": [
+        10,
+        389.765625,
+        300,
+        80.234375
+      ],
+      "solapan": false
+    },
+    "plantas": [
+      1,
+      1,
+      2
+    ],
+    "objetivo_estable": true,
+    "tablero_estable": true
+  },
+  "horizontal": {
+    "errores": [],
+    "caja": {
+      "viewport": [
+        844,
+        390
+      ],
+      "scroll": [
+        844,
+        390
+      ],
+      "tablero": [
+        262.25,
+        31,
+        296,
+        296
+      ],
+      "catalogo": [
+        643.75,
+        66.40625,
+        180,
+        203.1875
+      ],
+      "solapan": false
+    },
+    "plantas": [
+      1,
+      1,
+      2
+    ],
+    "objetivo_estable": true,
+    "tablero_estable": true
+  },
+  "reducido": {
+    "errores": [],
+    "caja": {
+      "viewport": [
+        1280,
+        800
+      ],
+      "scroll": [
+        1280,
+        800
+      ],
+      "tablero": [
+        375.71875,
+        213.875,
+        528,
+        528
+      ],
+      "catalogo": [
+        116,
+        329.4375,
+        248,
+        280
+      ],
+      "solapan": false
+    },
+    "plantas": [
+      1,
+      2,
+      2
+    ],
+    "objetivo_estable": true,
+    "tablero_estable": true
+  },
+  "cierre": {
+    "errores": [],
+    "fase": {
+      "numero": 2,
+      "fase": "preparacion",
+      "patron": "inicial",
+      "restante": 15,
+      "porSalir": 0,
+      "presupuesto": 12
+    },
+    "evento": "oleada 1 superada"
+  },
+  "carga-alternativa": {
+    "errores": [],
+    "marca": "#a89aff",
+    "chispa": "#f9ca70",
+    "segundos_120_frames": 1.432,
+    "fps_procesamiento": 83.8,
+    "nota": "Chromium headless, 48 enemigos iniciales; reloj controlado, no FPS de teléfono"
+  },
+  "carga-reducida": {
+    "errores": [],
+    "marca": "#a89aff",
+    "chispa": "#f9ca70",
+    "segundos_120_frames": 1.64,
+    "fps_procesamiento": 73.2,
+    "nota": "Chromium headless, 48 enemigos iniciales; reloj controlado, no FPS de teléfono"
+  },
+  "movimiento": {
+    "errores": [],
+    "fotogramas": 48,
+    "fps_captura": 12,
+    "duracion_simulada": 4
+  },
+  "reloj-real": {
+    "errores": [],
+    "energia": "1"
+  }
+}

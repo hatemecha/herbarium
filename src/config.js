@@ -170,8 +170,9 @@ export const COLOCACION = {
 };
 
 export const PARTICULAS = {
-  maximo: 12,
-  tasa: 0.35,
+  maximo: 80,
+  ambienteMaximo: 8,
+  tasa: 0.65,
   vidaMin: 2.6,
   vidaMax: 4.8,
   rafaga: 2,

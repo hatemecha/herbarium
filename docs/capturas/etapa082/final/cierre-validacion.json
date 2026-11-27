@@ -1,0 +1,136 @@
+{
+  "desktop": {
+    "errores": [],
+    "caja": {
+      "viewport": [
+        1280,
+        800
+      ],
+      "scroll": [
+        1280,
+        800
+      ],
+      "tablero": [
+        375.71875,
+        213.875,
+        528,
+        528
+      ],
+      "catalogo": [
+        116,
+        329.4375,
+        248,
+        280
+      ],
+      "solapan": false
+    },
+    "derrota": true,
+    "cartas_cerradas": 4,
+    "reinicio": true
+  },
+  "movil": {
+    "errores": [],
+    "caja": {
+      "viewport": [
+        390,
+        844
+      ],
+      "scroll": [
+        390,
+        844
+      ],
+      "tablero": [
+        19,
+        221,
+        352,
+        352
+      ],
+      "catalogo": [
+        10,
+        635.40625,
+        370,
+        98.59375
+      ],
+      "solapan": false
+    },
+    "derrota": true,
+    "cartas_cerradas": 4,
+    "reinicio": true
+  },
+  "pequeno": {
+    "errores": [],
+    "caja": {
+      "viewport": [
+        320,
+        568
+      ],
+      "scroll": [
+        320,
+        568
+      ],
+      "tablero": [
+        41,
+        148.34375,
+        238,
+        238
+      ],
+      "catalogo": [
+        10,
+        389.765625,
+        300,
+        80.234375
+      ],
+      "solapan": false
+    },
+    "derrota": true,
+    "cartas_cerradas": 4,
+    "reinicio": true
+  },
+  "horizontal": {
+    "errores": [],
+    "caja": {
+      "viewport": [
+        844,
+        390
+      ],
+      "scroll": [
+        844,
+        390
+      ],
+      "tablero": [
+        262.25,
+        31,
+        296,
+        296
+      ],
+      "catalogo": [
+        643.75,
+        66.40625,
+        180,
+        203.1875
+      ],
+      "solapan": false
+    },
+    "derrota": true,
+    "cartas_cerradas": 4,
+    "reinicio": true
+  },
+  "laboratorio": {
+    "errores": [],
+    "alternancia": true
+  },
+  "senales": {
+    "errores": [],
+    "tipos": [
+      "control",
+      "disparo",
+      "esporas",
+      "impacto",
+      "mordida",
+      "muerte-enemigo",
+      "muerte-planta",
+      "reflejo"
+    ],
+    "destruccion": true
+  }
+}

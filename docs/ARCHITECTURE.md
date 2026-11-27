@@ -158,3 +158,8 @@ El director planifica composición, sector, punto de referencia y tiempo. Al emi
 ## Etapa 08
 
 `juego.js` coordina pulsos breves de entrada y de fase usando el reloj de la partida. La compra y la colocación notifican sus señales desde los caminos existentes. `render.js` dibuja marcas, alcance y estados en la capa luminosa, sobre la grilla interna. El combate expone el color semántico del último golpe junto con los temporizadores visuales ya existentes. Los contadores escriben en el DOM al cambiar de texto y la región de anuncio comunica los cambios de fase.
+
+
+## Etapa 08.2
+
+La composición de producción vive en `styles.css`; el laboratorio cambia solo su distribución con `lab082.css`. `juego.js` coordina energía, cartas y estado cerrado del catálogo. `catalogoUI.js` mantiene la interacción con botones y dibujo en canvas; al cerrar se deshabilitan y se reconstruyen al reiniciar. `combate.js` añade metadatos de dirección y entrada al estado de ralentización, sin cambiar las decisiones ni cifras de combate. `render.js` y `entidades/enemigo.js` los traducen a píxeles y cadencia. El presupuesto de partículas se limita en config y usa un generador aleatorio visual separado; no consume la semilla del director. Los scripts de desarrollo instrumentan respuestas HTTP en Chromium, no abren una API de depuración de producción. Ver [dirección artística y validación](ART_DIRECTION.md#etapa-082--composición-movimiento-y-cierre-artístico).

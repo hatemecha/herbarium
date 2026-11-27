@@ -1,5 +1,5 @@
 import { BALANCE, COLOCACION, FEEDBACK, INSECTO, LUZ, MARCADORES, SPRITE } from './config.js';
-import { elevacion, fotogramaEnemigo } from './entidades/enemigo.js';
+import { elevacion, estadoVisual, fotogramaEnemigo } from './entidades/enemigo.js';
 import { crearIluminacion } from './iluminacion.js';
 import { dibujarHormigas, resplandorCelda, resplandorPunto } from './marcadores.js';
 import { rgb } from './paleta.js';
@@ -43,6 +43,8 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
   const ctxFondo = fondo.getContext('2d');
   const ctxEscena = escena.getContext('2d');
   const ctxLuminosa = luminosa.getContext('2d');
+  ctxEscena.imageSmoothingEnabled = false;
+  ctxLuminosa.imageSmoothingEnabled = false;
   const ctxDisolucion = disolucion.getContext('2d');
   const silueta = lienzo(LADO);
   const ctxSilueta = silueta.getContext('2d');
@@ -59,6 +61,16 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
   for (let j = 0; j <= tablero.filas; j++) {
     const y = Math.min(lado - 1, j * celda);
     ctxFondo.fillRect(0, y, lado, 1);
+  }
+
+  // Motas de suelo fijas y de contraste bajo, solo visibles donde llega la luz.
+  ctxFondo.fillStyle = rgb(roles.tierra, 0.22);
+  for (let y = 0; y < tablero.filas; y++) {
+    for (let x = 0; x < tablero.columnas; x++) {
+      const dx = 2 + (x * 7 + y * 11) % (celda - 4);
+      const dy = 2 + (x * 13 + y * 5) % (celda - 4);
+      ctxFondo.fillRect(x * celda + dx, y * celda + dy, 1, 1);
+    }
   }
 
   function resplandorCentral(centro, e, luz, impulso) {
@@ -198,6 +210,97 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
     ctx.globalAlpha = 1;
   }
 
+  // Los gestos se dibujan en píxeles lógicos, con la misma paleta que el organismo.
+  function dibujarPlanta(ctx, planta, x, y, reducido) {
+    const frame = planta.fotograma();
+    // Compresión de un píxel, sin interpolar ni tocar la entidad.
+    const contraccion = !reducido && planta.tipo.area && planta.disparo <= 0 &&
+      planta.enfriamiento > 0 && planta.enfriamiento < .16;
+    if (contraccion) ctx.drawImage(frame, 0, 0, 16, 16, x, y + 1, 16, 15);
+    else ctx.drawImage(frame, x, y);
+  }
+
+  function gestoPlanta(planta, enemigos, t, reducido) {
+    const { x, y } = planta.nucleo;
+    const ctx = ctxLuminosa;
+    const punto = (dx, dy, color, alfa, ancho = 1) => {
+      ctx.fillStyle = rgb(color, alfa);
+      ctx.fillRect(Math.round(x + dx), Math.round(y + dy), ancho, 1);
+    };
+    if (planta.tipo.ataque && planta.disparo <= 0 && planta.enfriamiento > 0 && planta.enfriamiento < .16 &&
+      enemigos.some(e => !e.muerto && Math.hypot(e.x - planta.celda.x - .5, e.y - planta.celda.y - .5) <= planta.tipo.ataque.alcance)) {
+      punto(0, -1, roles.bocaBrillo, .65);
+    }
+    if (planta.tipo.ataque && planta.disparo > 0) {
+      const { x: ux, y: uy } = planta.retrocesoDir;
+      const fuerza = planta.disparo / BALANCE.visual.disparo;
+      // Una chispa direccional breve en la boca; el proyectil continúa su propia trayectoria.
+      const r = reducido ? 5 : 4 + Math.round((1 - fuerza) * 3);
+      punto(ux * r, uy * r, roles.bocaBrillo, fuerza);
+      punto(ux * (r + 2), uy * (r + 2), roles.boca, fuerza * 0.65);
+    }
+    if (planta.tipo.ralentiza && enemigos.some((e) => !e.muerto && e.ralentizado &&
+      Math.hypot(e.x - planta.celda.x - 0.5, e.y - planta.celda.y - 0.5) <= planta.tipo.ralentiza.alcance)) {
+      // Dos arcos abiertos, como ondas de una campana, sin llenar el área de influencia.
+      const fase = reducido ? 0 : Math.floor((t + planta.celda.x * 0.13) * 3) % 3;
+      for (const signo of [-1, 1]) {
+        punto(signo * (5 + fase), -2, roles.campanaLuz, 0.55);
+        punto(signo * (6 + fase), 0, roles.campana, 0.5);
+        punto(signo * (5 + fase), 2, roles.campanaLuz, 0.55);
+      }
+    }
+    if (planta.tipo.area) {
+      const carga = 1 - Math.min(1, planta.enfriamiento / planta.tipo.area.intervalo);
+      // Tres poros del sombrero señalan la carga; las esporas salen en radios discontinuos.
+      for (let i = 0; i < 3; i++) {
+        punto(-2 + i * 2, -1, roles.hongoLuz, carga >= (i + 1) / 3 ? 0.9 : 0.18);
+      }
+      if (planta.disparo > 0) {
+        const progreso = 1 - planta.disparo / BALANCE.visual.disparo;
+        const radio = reducido ? planta.tipo.area.alcance * celda : 5 + Math.min(1, progreso * 1.6) * (planta.tipo.area.alcance * celda - 5);
+        const cx = planta.origen.x + celda / 2;
+        const cy = planta.origen.y + celda / 2;
+        for (let i = 0; i < 12; i++) {
+          const a = i * Math.PI / 6;
+          ctx.fillStyle = rgb(roles.hongoLuz, (1 - progreso) * 0.85);
+          ctx.fillRect(Math.round(cx + Math.cos(a) * radio), Math.round(cy + Math.sin(a) * radio), 1, 1);
+        }
+      }
+    }
+    if (planta.tipo.reflejo && planta.destello > 0) {
+      const fuerza = planta.destello / BALANCE.visual.destello;
+      // Las púas responden al contacto con puntas angulares, no con una onda circular.
+      const { x: ux, y: uy } = planta.reflejoDir ?? { x: 0, y: -1 };
+      for (const signo of [-1, 0, 1]) {
+        punto(ux * 6 - uy * signo * 3, uy * 6 + ux * signo * 3, roles.ambiental, fuerza);
+        punto(ux * 8 - uy * signo * 4, uy * 8 + ux * signo * 4, roles.hojaBrillo, fuerza * 0.8);
+      }
+    }
+  }
+
+  function gestoEnemigo(enemigo, reducido) {
+    const ctx = ctxLuminosa;
+    const x = Math.round(enemigo.x * celda);
+    const y = Math.round(enemigo.y * celda) + SOMBRA_Y;
+    if (enemigo.ralentizado) {
+      const paso = reducido ? 0 : Math.floor(enemigo.reloj / FEEDBACK.pausaCampana) % 2;
+      ctx.fillStyle = rgb(roles.campanaLuz, 0.8);
+      ctx.fillRect(x - 3 - paso, y + 1, 2, 1);
+      ctx.fillRect(x + 2 + paso, y + 1, 2, 1);
+    }
+    const estado = estadoVisual(enemigo);
+    if (estado === 'aterrizaje') {
+      ctx.fillStyle = rgb(roles.insectoBrillo, 0.5 * (1 - enemigo.tiempoEnObjetivo / BALANCE.visual.aterrizaje));
+      ctx.fillRect(x - 4, y, 2, 1);
+      ctx.fillRect(x + 3, y, 2, 1);
+    }
+    if (enemigo.objetivo && enemigo.tipo.preparacionAtaque && enemigo.tiempoEnObjetivo < enemigo.tipo.preparacionAtaque) {
+      // La oruga prepara su primera mordida; la señal se concentra en la cabeza.
+      ctx.fillStyle = rgb(roles.insectoReflejo, 0.35 + 0.55 * enemigo.tiempoEnObjetivo / enemigo.tipo.preparacionAtaque);
+      ctx.fillRect(x + enemigo.mirada * 5, y - 3, 1, 1);
+    }
+  }
+
   function dibujarEnemigo(ctx, enemigo, alfa, reducido) {
     ctx.globalAlpha = alfa;
     if (!enemigo.muerto) {
@@ -228,7 +331,7 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
       if (planta.fuente) iluminacion.quitarFuente(planta.fuente);
       planta.fuente = null;
     },
-    dibujar({ t, impulso, reducido, central, plantas, enemigos, proyectiles, particulas, marcas, vista, alcance, gesto, pulsoCentro = 0 }) {
+    dibujar({ t, impulso, reducido, central, plantas, enemigos, proyectiles, particulas, marcas, vista, alcance, gesto, pulsoCentro = 0, hoverCelda = null, tactil = false }) {
       const luz = iluminacion.actualizar(t, reducido ? impulso : Math.max(impulso, pulsoCentro * 0.65), reducido, central.nucleo, central.opacidad);
 
       for (const planta of plantas) {
@@ -241,7 +344,7 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
         const { x, y } = planta.origen;
         const d = reducido ? { x: 0, y: 0 } : planta.desplazamiento();
         ctxEscena.globalAlpha = planta.opacidad;
-        ctxEscena.drawImage(planta.fotograma(), x + d.x, y + d.y);
+        dibujarPlanta(ctxEscena, planta, x + d.x, y + d.y, reducido);
       }
       for (const enemigo of enemigos) {
         if (!enemigo.muerto) dibujarSombra(ctxEscena, enemigo, reducido);
@@ -255,22 +358,30 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
         const d = reducido ? { x: 0, y: 0 } : planta.desplazamiento();
         ctxLuminosa.globalAlpha = planta.tipo.propia * planta.opacidad;
         const frame = planta.fotograma();
-        ctxLuminosa.drawImage(frame, x + d.x, y + d.y);
+        dibujarPlanta(ctxLuminosa, planta, x + d.x, y + d.y, reducido);
         if (planta.destello > 0) {
           ctxLuminosa.globalAlpha = planta.opacidad * 0.65 * planta.destello / BALANCE.visual.destello;
           ctxLuminosa.drawImage(siluetaDe(frame, planta.tipo.reflejo ? roles.ambiental : roles.marca), x + d.x, y + d.y);
         }
         ctxLuminosa.globalAlpha = 1;
         if (planta.muerta) continue;
-        if (planta.vida <= planta.vidaMax * FEEDBACK.critico) {
-          ctxLuminosa.fillStyle = rgb(roles.marca, 0.8);
-          ctxLuminosa.fillRect(x + 6, y + 15, 4, 1);
+        const atacada = enemigos.some((e) => !e.muerto && e.objetivo === planta);
+        const bajoPuntero = hoverCelda && hoverCelda.x === planta.celda.x && hoverCelda.y === planta.celda.y;
+        const mostrarVida = tactil ? atacada : bajoPuntero;
+        if (mostrarVida) {
+          const ancho = 10;
+          const px = x + 3;
+          const py = y + 15;
+          const lleno = Math.max(0, Math.ceil(ancho * Math.max(0, planta.vida) / planta.vidaMax));
+          const critica = planta.vida <= planta.vidaMax * FEEDBACK.critico;
+          ctxLuminosa.fillStyle = rgb(roles.cuadricula);
+          ctxLuminosa.fillRect(px, py, ancho, 1);
+          if (lleno > 0) {
+            ctxLuminosa.fillStyle = rgb(critica ? roles.marca : roles.energiaUI, 0.9);
+            ctxLuminosa.fillRect(px, py, lleno, 1);
+          }
         }
-        if (planta.tipo.area) {
-          const recarga = planta.enfriamiento / planta.tipo.area.intervalo;
-          ctxLuminosa.fillStyle = rgb(roles.hongoLuz, 0.35 + 0.55 * (1 - recarga));
-          ctxLuminosa.fillRect(planta.nucleo.x - 1, planta.nucleo.y - 1, planta.disparo > 0 ? 3 : 1, 1);
-        }
+        gestoPlanta(planta, enemigos, t, reducido);
       }
       for (const enemigo of enemigos) {
         if (enemigo.muerto) {
@@ -280,15 +391,7 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
         dibujarContorno(ctxLuminosa, enemigo, reducido);
         dibujarEnemigo(ctxLuminosa, enemigo, AUTOLUZ_ENEMIGO, reducido);
         const posicion = posicionEnemigo(enemigo, reducido);
-        if (enemigo.ralentizado) {
-          const x = Math.round(enemigo.x * celda);
-          const y = Math.round(enemigo.y * celda) + SOMBRA_Y + 1;
-          const paso = reducido ? 0 : Math.floor(enemigo.reloj / FEEDBACK.pausaCampana) % 2;
-          ctxLuminosa.fillStyle = rgb(roles.campanaLuz, 0.75);
-          ctxLuminosa.fillRect(x - 2 - paso, y, 2, 1);
-          ctxLuminosa.fillStyle = rgb(roles.campana, 0.52);
-          ctxLuminosa.fillRect(x + 2 + paso, y, 1, 1);
-        }
+        gestoEnemigo(enemigo, reducido);
         dibujarDestello(ctxLuminosa, enemigo, posicion);
       }
       ctxLuminosa.globalAlpha = 1;
@@ -357,9 +460,9 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
         const destello = intensidadGolpe(enemigo);
         resplandorPunto(ctxSalida, { x: enemigo.x * celda, y: enemigo.y * celda - altura }, {
           escala: e,
-          radio: INSECTO.resplandor.radio,
-          alfa: INSECTO.resplandor.alfa * (1 + destello),
-          color: roles.insectoBrillo,
+          radio: INSECTO.resplandor.radio * (enemigo.tipo.id === 'pulgon' ? 0.65 : enemigo.tipo.id === 'oruga' ? 0.8 : 1),
+          alfa: INSECTO.resplandor.alfa * (enemigo.tipo.id === 'pulgon' ? 0.65 : 1) * (1 + destello),
+          color: roles[enemigo.colorImpacto && destello > 0 ? enemigo.colorImpacto : enemigo.ralentizado ? 'campana' : 'insectoBrillo'],
         });
       }
       for (const marca of marcas) {
