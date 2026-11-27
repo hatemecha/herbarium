@@ -1,3 +1,5 @@
+import { PLANTAS } from './catalogo.js';
+
 export function textoFicha(planta) {
   if (!planta || planta.muerta) return '';
   const vida = `${Math.max(0, Math.ceil(planta.vida))}/${planta.vidaMax}`;
@@ -9,14 +11,8 @@ export function textoFicha(planta) {
   return `${planta.tipo.nombre}  ${vida}`;
 }
 
-const FUNCIONES = {
-  central: { consejo: 'Genera energía. Si cae, termina la partida.' },
-  cerbatana: { corta: 'Disparo', consejo: 'Dispara a los insectos cercanos.' },
-  espino: { corta: 'Atracción', consejo: 'Atrae insectos y devuelve sus mordidas.' },
-  campanilla: { corta: 'Freno', consejo: 'Frena a los insectos cercanos.' },
-  hongo: { corta: 'Área', consejo: 'Daña a todos los insectos cercanos.' },
-};
-
 export function funcionDe(id) {
-  return FUNCIONES[id];
+  const tipo = PLANTAS[id];
+  if (!tipo) return undefined;
+  return { corta: tipo.funcion, consejo: tipo.descripcion };
 }

@@ -33,6 +33,8 @@ El resplandor radial se dibuja después, con suavizado activado, en la resoluci�
 
 ## Paleta
 
+El menú de pausa y el catálogo usan la casilla lógica para ordenar espacios y filas. Los marcos y controles tienen cantos escalonados. Los retratos reutilizan los cuadros y ritmos del juego, se dibujan a escala entera y quedan quietos con movimiento reducido. Su animación tiene un reloj independiente del tablero pausado.
+
 `src/paleta.js` repite las claves y los hex de `nicotinalex-web/src/styles/paleta.ts`:
 
 | Clave | Hex |

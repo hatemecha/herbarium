@@ -38,7 +38,8 @@ No hay recompensas por baja, tarot, sonido ni progresión entre partidas. Entre 
 | Derrota | La planta central queda con vida ≤ 0. `src/combate.js` lo expone como `derrota()`. Desde ese paso el combate no dispara, no muerde y no mueve, y los proyectiles en vuelo desaparecen. |
 | Final visual | Al terminar la marchitez de la central (1,2 s), `src/derrota.js` muestra el aviso con un fundido de 1,8 s. La luz de la central baja con su opacidad: halo y ambiente se apagan de forma continua. |
 | Victoria | No existe. La partida sigue hasta que cae la central. No se promete que toda oleada sea superable. |
-| Pausa | Ocultar la pestaña cancela el `requestAnimationFrame` y, al volver, el acumulador arranca de cero. No hay botón de pausa. Verificado solo con `visibilitychange` forzado. |
+| Pausa | El botón abre un menú para reanudar, reiniciar con confirmación o consultar el catálogo. Ocultar la pestaña también detiene el reloj. Al volver, el acumulador arranca de cero y la pausa manual sigue activa si el menú está abierto. |
+| Catálogo de especies | La planta central y las cartas disponibles se registran al comenzar. Los enemigos se registran al entrar al tablero. Los descubrimientos se conservan en el navegador entre partidas. |
 | Reinicio | Derriba la partida y crea otra: energía a 0, solo la central, sin el escarabajo anterior. Probado en dos rondas seguidas: los tiempos de aparición coinciden y la energía vuelve a 0. |
 
 La derrota no congela la escena: se apaga. Las plantas que siguen en pie no se marchitan; el escarabajo vivo queda en su último cuadro. Ver la pendiente en [ROADMAP.md](ROADMAP.md).

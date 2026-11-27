@@ -30,7 +30,9 @@ src/paleta.js           lectura de variables y roles
 src/escala.js           DPR, escala, puntero → casilla
 src/seleccion.js        hover y selección
 src/colocacion.js       modo de plantado
-src/catalogoUI.js       tarjetas en canvas
+src/catalogoUI.js       tarjetas de compra en canvas
+src/pausa.js            diálogo de pausa y fichas de especies
+src/descubrimientos.js  registro persistente de especies
 src/marcadores.js       hormigas y halos
 src/particulas.js       pool visual, tope 12
 src/animacion.js        secuencia temporal

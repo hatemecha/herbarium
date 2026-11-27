@@ -26,6 +26,7 @@ export function crearCombate({
   tipoEnemigo,
   catalogoEnemigos = null,
   director = null,
+  alAparecer,
   visual = BALANCE.visual,
   aparicion = BALANCE.aparicionEscarabajo,
   aleatorio = Math.random,
@@ -53,6 +54,7 @@ export function crearCombate({
   function crear(x, y, tipo = tipoEnemigo) {
     const enemigo = crearEnemigo({ x, y, tipo, desfase: aleatorio() * 0.5 });
     enemigos.push(enemigo);
+    alAparecer?.(tipo.id);
     return enemigo;
   }
 

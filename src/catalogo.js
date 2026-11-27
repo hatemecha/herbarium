@@ -13,6 +13,7 @@ export const PLANTAS = {
   central: {
     id: 'central',
     nombre: 'Planta central',
+    descripcion: 'Genera energía. Si cae, termina la partida.',
     comprable: false,
     coste: 0,
     vida: BALANCE.central.vida,
@@ -30,6 +31,8 @@ export const PLANTAS = {
   cerbatana: {
     id: 'cerbatana',
     nombre: 'Cerbatana',
+    funcion: 'Disparo',
+    descripcion: 'Dispara al insecto más cercano dentro de su alcance.',
     comprable: true,
     coste: BALANCE.cerbatana.coste,
     vida: BALANCE.cerbatana.vida,
@@ -53,6 +56,8 @@ export const PLANTAS = {
   espino: {
     id: 'espino',
     nombre: 'Espino',
+    funcion: 'Atracción',
+    descripcion: 'Atrae a los insectos cercanos y les devuelve daño al recibir mordidas.',
     comprable: true,
     coste: BALANCE.espino.coste,
     vida: BALANCE.espino.vida,
@@ -76,6 +81,8 @@ export const PLANTAS = {
   campanilla: {
     id: 'campanilla',
     nombre: 'Campanilla',
+    funcion: 'Freno',
+    descripcion: 'Reduce la velocidad de los insectos cercanos.',
     comprable: true,
     coste: BALANCE.campanilla.coste,
     vida: BALANCE.campanilla.vida,
@@ -88,6 +95,8 @@ export const PLANTAS = {
   hongo: {
     id: 'hongo',
     nombre: 'Hongo',
+    funcion: 'Área',
+    descripcion: 'Daña a todos los insectos dentro de su alcance.',
     comprable: true,
     coste: BALANCE.hongo.coste,
     vida: BALANCE.hongo.vida,
@@ -105,6 +114,7 @@ export const ENEMIGOS = {
   escarabajo: {
     id: 'escarabajo',
     nombre: 'Escarabajo',
+    descripcion: 'Vuela hacia la planta central y muerde las plantas que lo bloquean. Su coraza reduce el daño mientras vuela.',
     vida: BALANCE.escarabajo.vida,
     velocidad: BALANCE.escarabajo.velocidad,
     dano: BALANCE.escarabajo.dano,
@@ -123,6 +133,7 @@ export const ENEMIGOS = {
   pulgon: {
     id: 'pulgon',
     nombre: 'Pulgón alado',
+    descripcion: 'Sobrevuela las plantas para llegar a la central. Se detiene a morder si un espino lo intercepta.',
     vida: BALANCE.pulgon.vida,
     velocidad: BALANCE.pulgon.velocidad,
     dano: BALANCE.pulgon.dano,
@@ -141,6 +152,7 @@ export const ENEMIGOS = {
   oruga: {
     id: 'oruga',
     nombre: 'Oruga',
+    descripcion: 'Su coraza reduce el daño de frente. Si sigue mordiendo a la misma planta, aumenta el daño de sus mordidas.',
     vida: BALANCE.oruga.vida,
     velocidad: BALANCE.oruga.velocidad,
     preparacionAtaque: BALANCE.oruga.preparacionAtaque,

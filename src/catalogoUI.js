@@ -92,7 +92,7 @@ export function crearCatalogoUI({ contenedor, tipos, animadores, roles, alElegir
     boton.className = 'carta';
     boton.dataset.interfaz = '';
     boton.dataset.tipo = tipo.id;
-    boton.setAttribute('aria-description', funcionDe(tipo.id).consejo);
+    boton.setAttribute('aria-description', tipo.descripcion);
     boton.setAttribute('aria-label', `${tipo.nombre}, coste ${tipo.coste} de energía`);
 
     const lienzo = document.createElement('canvas');
@@ -159,7 +159,7 @@ export function crearCatalogoUI({ contenedor, tipos, animadores, roles, alElegir
     elemento: raiz,
     ajustar,
     actualizar({ energia, activa, costes, t, reducido, panel, bloqueado = false }) {
-      const consejo = panel && !bloqueado ? funcionDe(panel).consejo : '';
+      const consejo = bloqueado ? '' : funcionDe(panel)?.consejo ?? '';
       if (descripcion.textContent !== consejo) descripcion.textContent = consejo;
       for (const carta of cartas) {
         carta.ultimoT = t;
@@ -179,7 +179,8 @@ export function crearCatalogoUI({ contenedor, tipos, animadores, roles, alElegir
           carta.boton.disabled = bloqueado;
           carta.boton.setAttribute('aria-pressed', String(seleccionada));
           const disponibilidad = bloqueado ? 'jardín caído' : alcanzable ? 'disponible' : faltan === 1 ? 'falta 1 de energía, consultar' : `faltan ${faltan} de energía, consultar`;
-          carta.boton.setAttribute('aria-label', `${carta.tipo.nombre}, ${funcionDe(carta.tipo.id).corta}, coste ${coste} de energía, ${disponibilidad}`);
+          const funcion = carta.tipo.funcion ? `${carta.tipo.funcion}, ` : '';
+          carta.boton.setAttribute('aria-label', `${carta.tipo.nombre}, ${funcion}coste ${coste} de energía, ${disponibilidad}`);
         }
         if (!alcanzable) carta.pulsoHasta = 0;
         carta.alcanzable = alcanzable;

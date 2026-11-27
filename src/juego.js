@@ -6,6 +6,8 @@ import { crearCatalogoUI } from './catalogoUI.js';
 import { crearColocacion } from './colocacion.js';
 import { crearCombate } from './combate.js';
 import { crearDerrota } from './derrota.js';
+import { crearDescubrimientos } from './descubrimientos.js';
+import { crearPausa } from './pausa.js';
 import { calcularEscala, celdaDeCliente, pantallaAMundo } from './escala.js';
 import { apagar, crearEstado, avanzar } from './estado.js';
 import { crearJardin } from './jardin.js';
@@ -54,6 +56,7 @@ function construirDom(contenedor) {
         <canvas class="energia-lienzo" aria-hidden="true"></canvas>
       </div>
       <span class="solo-lector" role="status"></span>
+      <button type="button" class="pausa-boton" aria-haspopup="dialog">Pausa</button>
     </header>
     <div class="herbario-campo">
       <div class="herbario-escenario">
@@ -63,6 +66,7 @@ function construirDom(contenedor) {
     </div>
     <div class="motas-energia" aria-hidden="true"><i></i><i></i></div>`;
   return {
+    pausa: contenedor.querySelector('.pausa-boton'),
     motas: contenedor.querySelector('.motas-energia'),
     campo: contenedor.querySelector('.herbario-campo'),
     escenario: contenedor.querySelector('.herbario-escenario'),
@@ -82,7 +86,7 @@ function construirFrames(roles) {
   return frames;
 }
 
-function crearPartida(dom, roles, frames, reducido, alDerrota) {
+function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos) {
   const tablero = crearTablero();
   const semilla = semillaNueva();
   const director = crearDirector({
@@ -175,6 +179,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota) {
     jardin,
     tipoEnemigo: ENEMIGOS.escarabajo,
     catalogoEnemigos: ENEMIGOS,
+    alAparecer: (id) => descubrimientos.registrar('enemigos', id),
     director,
     aleatorio: aleatorioVisual,
   });
@@ -447,9 +452,30 @@ export function montarHerbario(contenedor) {
   let ultimo = 0;
   const reloj = crearReloj();
   let partida = null;
+  const descubrimientos = crearDescubrimientos();
+  descubrimientos.registrar('plantas', PLANTAS.central.id, ...COMPRABLES.map(({ id }) => id));
+  const pausa = crearPausa({
+    contenedor,
+    boton: dom.pausa,
+    frames,
+    roles,
+    reducido,
+    descubrimientos,
+    caido: () => partida.derrota(),
+    alAbrir() {
+      detener();
+      reloj.cortar();
+      contenedor.classList.add('herbario-en-pausa');
+    },
+    alCerrar() {
+      contenedor.classList.remove('herbario-en-pausa');
+      iniciar();
+    },
+    alReiniciar: reiniciar,
+  });
 
   function iniciarPartida() {
-    partida = crearPartida(dom, roles, frames, reducido, () => derrota.mostrar());
+    partida = crearPartida(dom, roles, frames, reducido, () => derrota.mostrar(), descubrimientos);
   }
 
   function reiniciar() {
@@ -469,7 +495,7 @@ export function montarHerbario(contenedor) {
   }
 
   function iniciar() {
-    if (raf || document.hidden) return;
+    if (raf || document.hidden || pausa.abierta()) return;
     ultimo = performance.now();
     reloj.cortar();
     raf = requestAnimationFrame(bucle);
@@ -534,12 +560,13 @@ export function montarHerbario(contenedor) {
     seleccionada: () => partida.seleccion.seleccionada(),
     destruir() {
       detener();
+      pausa.destruir();
       partida.destruir();
       observador.disconnect();
       window.removeEventListener('resize', alCambiarVentana);
       document.removeEventListener('visibilitychange', alVisibilidad);
       contenedor.replaceChildren();
-      contenedor.classList.remove('herbario');
+      contenedor.classList.remove('herbario', 'herbario-en-pausa');
     },
   };
 }
