@@ -1,3 +1,4 @@
+import { frenteVivo } from './frontera.js';
 import { BALANCE, OLEADAS } from './config.js';
 import { crearRecompensas } from './recompensas.js';
 import { perimetro } from './perimetro.js';
@@ -49,7 +50,11 @@ export function generarOleada({ numero, rng, tablero, oleadas = OLEADAS }) {
   const presupuesto = presupuestoDe(numero, oleadas);
   const { unidades, conteo, sobrante } = componer(numero, presupuesto, rng, oleadas);
   const ventana = ventanaDe(numero, oleadas) * (0.94 + rng() * 0.12);
-  const borde = perimetro(tablero);
+  const borde = tablero.infinito
+    ? LADOS.flatMap((lado, sector) => Array.from({ length: 12 }, (_, i) => ({
+      lado, angulo: (sector - 1) * Math.PI / 2 + (i - 5.5) * Math.PI / 24,
+    })))
+    : perimetro(tablero);
   const sectores = LADOS.map(lado => borde.filter(celda => celda.lado === lado));
   const segmentos = Math.max(2, Math.round(ventana / oleadas.cambioFrente));
   const focos = Array.from({ length: segmentos }, () => ({
@@ -98,6 +103,7 @@ export function generarOleada({ numero, rng, tablero, oleadas = OLEADAS }) {
 
 export function puntoDeEntrada(celda, ocupada, tablero, rng) {
   const j = (rng() - 0.5) * 0.56;
+  if (tablero.infinito) return frenteVivo(tablero, celda.angulo + j * Math.PI / 24);
   const horizontal = celda.lado === 'norte' || celda.lado === 'sur';
   if (!ocupada) return { x: celda.x + 0.5 + (horizontal ? j : 0), y: celda.y + 0.5 + (horizontal ? 0 : j) };
   if (horizontal) return { x: celda.x + 0.5 + j, y: celda.lado === 'norte' ? -0.2 : tablero.filas + 0.2 };
@@ -155,7 +161,7 @@ export function crearDirector({ tablero, aleatorio, semilla = 0, ocupante, olead
         resumen.mayorIntervalo = Math.max(resumen.mayorIntervalo, tiempo - (resumen.ultimoIngreso ?? 0));
         resumen.ultimoIngreso = tiempo;
         resumen.amenazaPorLado[celda.lado] += AMENAZA[id];
-        nacen.push({ id, lado: celda.lado, ...puntoDeEntrada(celda, Boolean(ocupante?.(celda.x, celda.y)), tablero, aleatorio) });
+        nacen.push({ id, lado: celda.lado, ...puntoDeEntrada(celda, !tablero.infinito && Boolean(ocupante?.(celda.x, celda.y)), tablero, aleatorio) });
       }
       if (!vivos && !nacen.length) resumen.sinAmenazas += dt;
       resumen.maxVivos = Math.max(resumen.maxVivos, vivos + nacen.length);

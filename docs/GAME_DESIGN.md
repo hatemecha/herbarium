@@ -21,9 +21,9 @@ Sin monetización, publicidad ni compras.
 
 Implementado:
 
-1. Hay una planta central en el centro del tablero. Genera energía e ilumina.
+1. Hay una planta central en el origen del jardín. Genera energía e ilumina.
 2. Con esa energía se compran las cuatro plantas del catálogo. El coste sube con las plantas vivas de ese mismo tipo.
-3. Solo se planta en una casilla libre, dentro del tablero, vecina en alguna de las ocho direcciones a una planta ya viva, y si la energía alcanza. Vale en la preparación y en el combate.
+3. Solo se planta en una casilla libre, en terreno descubierto, vecina en alguna de las ocho direcciones a una planta ya viva, y si la energía alcanza. Vale en la preparación y en el combate. La superficie inicial mide 9×9. Al plantar en el borde se descubren las regiones vecinas tocadas por las ocho adyacencias de la casilla. Las regiones descubiertas persisten si sus plantas desaparecen.
 4. El jardín crece desde las plantas existentes. La central no se compra ni se duplica.
 5. Tras 20 s de preparación entra la primera invasión procedural. Cualquier lado puede recibir enemigos durante el combate y las concentraciones cambian mientras avanza.
 6. La cerbatana dispara sola al enemigo más cercano dentro de su alcance circular. El espino atrae insectos y devuelve 2 de daño a quien lo muerde.
@@ -46,7 +46,7 @@ La derrota no congela la escena: se apaga. Las plantas que siguen en pie no se m
 
 ## Planta central
 
-Implementado. No es comprable. Ocupa la casilla `(5, 5)` de un tablero 11×11. Vida 30. No ataca. Su luz es dinámica (pulso, impulso al generar energía, ondulación). Ver `PLANTAS.central` en `src/catalogo.js` y `LUZ` en `src/config.js`.
+Implementado. No es comprable. Ocupa la casilla `(0, 0)`. Vida 30. No ataca. Su luz es dinámica (pulso, impulso al generar energía, ondulación). Ver `PLANTAS.central` en `src/catalogo.js` y `LUZ` en `src/config.js`.
 
 ## Economía
 
@@ -64,7 +64,7 @@ La colocación (`src/colocacion.js`, `src/jardin.js`):
 - Volver a pulsarla, pulsar fuera del tablero y del catálogo, o Escape, cancela.
 - El clic en una casilla válida confirma. Con dedo, el primer toque muestra la posición y el alcance y el segundo en esa casilla confirma.
 - Arrastrar una carta y soltarla sobre una casilla válida confirma la plantación en un solo gesto. Un gesto cancelado no consume energía.
-- La rueda, el pellizco y las teclas `+` y `−` amplían el tablero. Una vez ampliado se puede desplazar arrastrándolo. `0` devuelve la vista completa.
+- La rueda, el pellizco y las teclas `+` y `−` amplían el tablero. Arrastrá el campo a cualquier escala para desplazarte. `0` y el botón Centrar restauran la vista inicial.
 - Una casilla inválida no gasta nada.
 - En modo colocación se marcan las casillas válidas y, con puntero fino, se previsualiza el sprite.
 - La pala se desbloquea en la oleada 3. Activa la retirada voluntaria y muestra el reembolso. Un clic confirma en escritorio y dos toques sobre la misma planta confirman en táctil. Escape cancela. La central queda excluida y las plantas vecinas siguen en su lugar, aunque se corte la conexión.
@@ -91,7 +91,7 @@ Durante los últimos cuatro segundos de preparación aparece «Se acerca una ole
 Tres enemigos comparten `src/combate.js`. El escarabajo conserva vida 12, velocidad 0,5, daño 2 e intervalo 1. El pulgón alado: vida 4, velocidad 1,05, daño 1, intervalo 0,65. La oruga: vida 28, velocidad 0,28, daño 3, intervalo 1,25. Camina, se toma un momento al fijar una planta y sostiene la presión con mordidas sucesivas. Los pulgones comparten puntos de salida por grupo y varían ligeramente su marcha. Esas cifras son el punto de partida medido en [BALANCE.md](BALANCE.md), no un cierre.
 
 - Las invasiones las arma `src/oleadas.js` con una semilla y distribuciones variables de tiempo, sector y tamaño de grupo. Desde la tercera puede salir la oruga.
-- Si el perímetro está ocupado, el insecto aparece justo afuera y decide con sus reglas habituales de avance y bloqueo.
+- Cada insecto aparece en la intersección exterior más lejana de su rayo de entrada con los discos de exclusión de radio 4,5 alrededor de cada planta viva. El punto se calcula al emitirlo, según el jardín de ese momento.
 - Posición continua, en unidades de casilla. La casilla `i` es el intervalo `[i, i+1)`.
 - El escarabajo vuela a 3 px y el pulgón a 2 px. La oruga queda en el suelo. Solo el pulgón sobrevuela bloqueos comunes.
 - Al fijar objetivo, el volador aterriza y se alimenta. La oruga contrae el cuerpo y baja la cabeza al morder. Al perder la planta, el volador despega. El estado de vuelo determina si la coraza protege al escarabajo. Ver [ART_DIRECTION.md](ART_DIRECTION.md).

@@ -1,0 +1,91 @@
+{
+  "escala": {
+    "scale": 3,
+    "w": 1608,
+    "h": 663
+  },
+  "pausa": true,
+  "recompensa": true,
+  "reinicio": true,
+  "arrastre": true,
+  "zoom": true,
+  "escenarios": [
+    {
+      "plantas": 25,
+      "descubiertas": 81,
+      "descubiertasExtra": 81081,
+      "renderTerrenoExtraMS": 5.96875,
+      "w": 642,
+      "h": 251,
+      "heap": -11973,
+      "luz": 24304,
+      "renderMS": 5.3025000000139695,
+      "simMS": 0.06583333333643775,
+      "simP95": 0.2000000011175871
+    },
+    {
+      "plantas": 100,
+      "descubiertas": 729,
+      "descubiertasExtra": 81729,
+      "renderTerrenoExtraMS": 7.575,
+      "w": 642,
+      "h": 251,
+      "heap": 53027,
+      "luz": 24304,
+      "renderMS": 7.014999999990687,
+      "simMS": 0.18166666667287548,
+      "simP95": 0.40000000037252903
+    },
+    {
+      "plantas": 250,
+      "descubiertas": 1215,
+      "descubiertasExtra": 82215,
+      "renderTerrenoExtraMS": 10.846249999990686,
+      "w": 642,
+      "h": 251,
+      "heap": 149151,
+      "luz": 24304,
+      "renderMS": 8.65625,
+      "simMS": 0.1375,
+      "simP95": 0.3999999985098839
+    },
+    {
+      "plantas": 500,
+      "descubiertas": 1944,
+      "descubiertasExtra": 82944,
+      "renderTerrenoExtraMS": 9.082499999995344,
+      "w": 642,
+      "h": 251,
+      "heap": 303079,
+      "luz": 24304,
+      "renderMS": 8.747500000009314,
+      "simMS": 0.13833333334575096,
+      "simP95": 0.2000000011175871
+    }
+  ],
+  "moviles": [
+    {
+      "w": 390,
+      "h": 844,
+      "dpr": 3,
+      "compra": true,
+      "pellizco": true,
+      "movimientoReducido": true
+    },
+    {
+      "w": 844,
+      "h": 390,
+      "dpr": 2,
+      "compra": true,
+      "pellizco": true,
+      "movimientoReducido": true
+    }
+  ],
+  "errores": [],
+  "mundo": {
+    "pixelesComparadosTrasDesplazar": 14784,
+    "pixelesDistintos": 0,
+    "danoFueraDePantalla": 4,
+    "fuenteRetirada": true
+  }
+}

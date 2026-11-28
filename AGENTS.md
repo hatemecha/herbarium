@@ -38,7 +38,7 @@ Los valores de balance viven en `src/config.js`. No duplicarlos. La simulación 
 
 La estética actual es parte del juego. Nadie está autorizado a rediseñarla en general.
 
-Conservar pixel art auténtico, grilla interna, oscuridad como composición, luz ambiental corta, glow medido, espacio negativo, paleta semántica, MonoMEK, animación orgánica, interfaz mínima integrada y píxeles nítidos. La referencia de identidad es el propio juego y, por detrás, `nicotinalex-web`.
+Conservar pixel art auténtico, grilla interna, oscuridad como composición, luz ambiental corta, glow medido, espacio negativo, paleta semántica, Terminus, animación orgánica, interfaz mínima integrada y píxeles nítidos. La referencia de identidad es el propio juego y, por detrás, `nicotinalex-web`.
 
 Antes de un sprite nuevo, estudiar `src/sprites/`. Nada de emojis, iconos de librería, vectores genéricos ni fotos como sustituto del pixel art. El glow no tapa un sprite flojo. Sin suavizado, rotación interpolada ni colores sueltos donde corresponda un rol de `src/paleta.js`. El pixel art original sigue nítido aunque un resplandor se dibuje en otra capa. No subir tamaño, brillo o densidad sin una razón artística o funcional.
 

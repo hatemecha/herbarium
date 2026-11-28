@@ -27,7 +27,7 @@ export function pintarEstrella(ctx, x, y, color) {
 /** Estrella centrada en la tinta del texto (no en la caja tipográfica). */
 export function pintarEstrellaYTexto(ctx, x, yBase, texto, colorEstrella, colorTexto, gap = 2) {
   const cx = Math.round(x);
-  pintarEstrella(ctx, cx, yBase - 6, colorEstrella);
+  pintarEstrella(ctx, cx, yBase - 8, colorEstrella);
   pintarTexto(ctx, texto, cx + LADO_ESTRELLA + gap, yBase, colorTexto);
   return cx + LADO_ESTRELLA + gap + medirTexto(texto);
 }

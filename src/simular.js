@@ -6,11 +6,11 @@ import { crearEstado, avanzar } from './estado.js';
 import { crearJardin } from './jardin.js';
 import { cobertura, crearRegistro, dpsTeorico } from './metricas.js';
 import { crearDirector } from './oleadas.js';
-import { crearTablero } from './tablero.js';
+import { crearMundo } from './tablero.js';
 
 // La semilla de las oleadas no se mezcla con la del jugador ni con el azar visual.
 export function simularPartida({ semilla, estrategia, horizonte = 20 * 60, cada = 0.5, ajustes = {} }) {
-  const tablero = crearTablero();
+  const tablero = crearMundo();
   const estado = crearEstado();
   const registro = crearRegistro();
   const director = crearDirector({
@@ -19,7 +19,6 @@ export function simularPartida({ semilla, estrategia, horizonte = 20 * 60, cada 
     aleatorio: crearAleatorio(semilla >>> 0),
     semilla,
     recompensas: ajustes.recompensas,
-    ocupante: (x, y) => tablero.ocupante(x, y),
   });
   const jardin = crearJardin({
     tablero,
@@ -144,7 +143,7 @@ export function simularPartida({ semilla, estrategia, horizonte = 20 * 60, cada 
     vidaCentral: Math.max(0, jardin.central?.vida ?? 0),
     ofensivas: vivas.filter((planta) => (planta.tipo.ataque || planta.tipo.area)).length,
     defensivas: vivas.filter((planta) => planta.tipo.reflejo).length,
-    ocupacion: vivas.length / (tablero.columnas * tablero.filas),
+    ocupacion: vivas.length / tablero.superficie(),
     energiaFinal: estado.energia,
     dpsFinal: dpsTeorico(jardin),
     coberturaFinal: cobertura(jardin, tablero),

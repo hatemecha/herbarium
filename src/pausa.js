@@ -227,11 +227,7 @@ export function crearPausa({ contenedor, boton, frames, roles, reducido, descubr
     principal.actualizar(0, reducido.matches);
     ficha.replaceChildren(principal.lienzo, titulo, descripcion, datos);
     ficha.hidden = false;
-    fichas = [rotular(titulo, { escala: 2.25, ancho: () => titulo.clientWidth }),
-      rotular(descripcion, { ancho: () => descripcion.clientWidth, interlineado: INTERLINEADO_LECTURA })];
-    for (const el of datos.children) {
-      fichas.push(rotular(el, { ancho: () => el.clientWidth }));
-    }
+    fichas = [];
     ajustar();
   }
 

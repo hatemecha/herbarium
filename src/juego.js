@@ -9,10 +9,10 @@ import { crearCombate } from './combate.js';
 import { crearDerrota } from './derrota.js';
 import { crearDescubrimientos } from './descubrimientos.js';
 import { crearPausa } from './pausa.js';
-import { alinearPixel, celdaDeCliente, pantallaAMundo } from './escala.js';
+import { alinearPixel } from './escala.js';
 import { crearGestos } from './gestos.js';
 import { crearRecompensaUI } from './interfazOleadas.js';
-import { alinearSalida, altoLectura, cargarFuentePixel, colocarSalida, crearRotulo, INTERLINEADO_LECTURA, medirTexto, prepararSalida, presentar, superficie } from './interfazPixel.js';
+import { alinearSalida, cargarFuentePixel, colocarSalida, crearRotulo, INTERLINEADO_LECTURA, medirTexto, prepararSalida, presentar, superficie } from './interfazPixel.js';
 import { apagar, crearEstado, avanzar } from './estado.js';
 import { crearJardin } from './jardin.js';
 import { asegurarVariables, crearRoles, leerPaleta, rgb } from './paleta.js';
@@ -21,30 +21,35 @@ import { crearParticulas } from './particulas.js';
 import { crearReloj } from './reloj.js';
 import { crearRenderer } from './render.js';
 import { crearSeleccion } from './seleccion.js';
-import { crearTablero } from './tablero.js';
+import { crearMundo } from './tablero.js';
 import { construirFotogramas } from './sprites/dibujo.js';
 import { LADO_ESTRELLA, pintarEstrellaYTexto } from './sprites/estrella.js';
 
 const ALTO_ENERGIA = 14;
 const AVISOS_COLOCACION = {
   ocupada: 'Casilla ocupada.',
+  oculta: 'Terreno sin descubrir.',
   aislada: 'Junto a una planta viva.',
 };
 const PAUSA_ENERGIA = 'La central descansa.';
 
 function pintarEnergia(canvas, botonPausa, roles, valor) {
   const texto = String(valor);
-  const ancho = LADO_ESTRELLA + 2 + medirTexto(texto);
+  // La última columna del avance de las cifras queda vacía.
+  const ancho = LADO_ESTRELLA + 2 + medirTexto(texto) - 1;
   const css = parseFloat(getComputedStyle(canvas.parentElement).fontSize) || 40;
   const dpr = window.devicePixelRatio || 1;
   const zoomNormal = Math.max(2, Math.round((css / 12) * dpr));
   const barra = botonPausa.parentElement.clientWidth;
-  const libre = barra - 2 * botonPausa.offsetWidth - 16;
+  const anchoControl = Math.max(botonPausa.offsetWidth, botonPausa.previousElementSibling.offsetWidth);
+  const libre = barra - 2 * anchoControl - 16;
   const zoom = Math.max(1, Math.min(zoomNormal, Math.floor(libre * dpr / ancho)));
   canvas.parentElement.style.minHeight = `${ALTO_ENERGIA * zoomNormal / dpr}px`;
   const origen = superficie(ancho, ALTO_ENERGIA);
   pintarEstrellaYTexto(origen.getContext('2d'), 0, 10, texto, rgb(roles.energiaUI), rgb(roles.energiaUI));
   prepararSalida(canvas, ancho, ALTO_ENERGIA, zoom, dpr);
+  // Compensa la diferencia de escala con los rótulos de los botones de la barra.
+  canvas.parentElement.style.top = `${(zoom - Math.round(2 * dpr)) / dpr}px`;
   presentar(origen, canvas);
   alinearSalida(canvas, dpr);
 }
@@ -57,16 +62,18 @@ function construirDom(contenedor) {
         <canvas class="energia-lienzo" aria-hidden="true"></canvas>
       </div>
       <span class="solo-lector" role="status"></span>
+      <button type="button" class="centro-boton" aria-label="Centrar jardín"></button>
       <button type="button" class="pausa-boton" aria-haspopup="dialog"></button>
     </header>
     <div class="herbario-campo">
       <div class="herbario-escenario">
-        <canvas class="tablero" tabindex="0" role="img" aria-label="Jardín en penumbra. Más y menos para acercar o alejar. Cero para volver a la vista completa."></canvas>
+        <canvas class="tablero" tabindex="0" role="img" aria-label="Jardín en penumbra. Más y menos para acercar o alejar. Cero para volver a la planta central."></canvas>
         <div class="escenario-evento" aria-hidden="true"></div>
       </div>
     </div>
     <div class="motas-energia" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>`;
   return {
+    centro: contenedor.querySelector('.centro-boton'),
     pausa: contenedor.querySelector('.pausa-boton'),
     motas: contenedor.querySelector('.motas-energia'),
     campo: contenedor.querySelector('.herbario-campo'),
@@ -89,14 +96,13 @@ function construirFrames(roles) {
 
 function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, camara, alMoverVista, habilitado,
   { recompensas, alTarot } = {}) {
-  const tablero = crearTablero();
+  const tablero = crearMundo();
   const semilla = semillaNueva();
   const director = crearDirector({
     tablero,
     aleatorio: crearAleatorio(semilla),
     semilla,
     recompensas,
-    ocupante: (x, y) => tablero.ocupante(x, y),
   });
   const aleatorioVisual = crearAleatorio((semilla + 1) >>> 0);
   const estado = crearEstado();
@@ -127,9 +133,10 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
     gesto = { tipo, celda, hasta: estado.tiempo + FEEDBACK.gesto };
     if (tipo === 'seleccion' || tipo === 'preview') motasDeCasilla(celda, 3, roles.marca);
     if (tipo === 'invalida') {
-      avisar(tablero.ocupante(celda.x, celda.y)
-        ? AVISOS_COLOCACION.ocupada
-        : AVISOS_COLOCACION.aislada);
+      const { x, y } = celda;
+      const motivo = !tablero.contiene(x, y) ? 'oculta'
+        : tablero.ocupante(x, y) ? 'ocupada' : 'aislada';
+      avisar(AVISOS_COLOCACION[motivo]);
     }
   }
 
@@ -199,8 +206,12 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
     director,
     aleatorio: aleatorioVisual,
   });
+  function desdePantalla(x, y) {
+    const mundo = camara.mundo({ x, y });
+    return tablero.celdaEnMundo(mundo.x, mundo.y);
+  }
   const celdaDe = ({ clientX, clientY }) => camara.contiene(clientX, clientY)
-    ? celdaDeCliente(dom.canvas, clientX, clientY, tablero)
+    ? desdePantalla(clientX, clientY)
     : null;
   const seleccion = crearSeleccion({
     tablero,
@@ -378,14 +389,14 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
     if (!visibles) return;
     if (!trayecto) {
       const capa = dom.motas.getBoundingClientRect();
-      const tableroRect = dom.canvas.getBoundingClientRect();
+      const centro = camara.pantalla(jardin.central.nucleo);
       const destino = dom.energiaLienzo.getBoundingClientRect();
-      const escala = tableroRect.width / tablero.ancho;
+
       trayecto = {
-        x: tableroRect.left - capa.left + jardin.central.nucleo.x * escala,
-        y: tableroRect.top - capa.top + jardin.central.nucleo.y * escala,
+        x: centro.x - capa.left,
+        y: centro.y - capa.top,
         finX: destino.left - capa.left + destino.height * LADO_ESTRELLA / ALTO_ENERGIA / 2,
-        finY: destino.top - capa.top + destino.height * 7 / ALTO_ENERGIA,
+        finY: destino.top - capa.top + destino.height * 5.5 / ALTO_ENERGIA,
       };
     }
     const { x, y, finX, finY } = trayecto;
@@ -553,6 +564,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
     const panelId = caido ? null : activa ?? consulta ?? inspeccion;
 
     render.dibujar({
+      region: camara.region(),
       alcance,
       gesto: gesto && { ...gesto, intensidad: (gesto.hasta - estado.tiempo) / FEEDBACK.gesto },
       pulsoCentro: pulsoCentro / FEEDBACK.oleada,
@@ -613,6 +625,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
     derrota: () => combate.derrota(),
     cancelarGestos() { gestos.cancelar(); cancelarPala(); },
     seleccion,
+    desdePantalla,
     destruir() {
       gestos.destruir();
       eventosUI.abort();
@@ -631,14 +644,15 @@ export function montarHerbario(contenedor, opciones = {}) {
   asegurarVariables();
   const roles = crearRoles(leerPaleta());
   const dom = construirDom(contenedor);
+  const rotuloCentro = crearRotulo(dom.centro, 'Centrar', { escala: 2 });
   const rotuloPausa = crearRotulo(dom.pausa, 'Pausa', { escala: 2, pausa: true });
   dom.rotuloEvento = crearRotulo(dom.evento, '', {
     ancho: () => dom.evento.clientWidth, centro: true, interlineado: INTERLINEADO_LECTURA,
   });
   const frames = construirFrames(roles);
   const reducido = matchMedia('(prefers-reduced-motion: reduce)');
-  const lado = TABLERO.columnas * TABLERO.celda;
-  const camara = crearCamara(lado);
+  const medio = TABLERO.celda / 2;
+  const camara = crearCamara(TABLERO.celda, { centroMundo: { x: medio, y: medio } });
   const derrota = crearDerrota(dom.escenario, () => reiniciar());
 
   let raf = 0;
@@ -704,17 +718,14 @@ export function montarHerbario(contenedor, opciones = {}) {
 
   function ajustar() {
     const dpr = window.devicePixelRatio || 1;
-    dom.escenario.style.minWidth = `${TABLERO.columnas * TABLERO.celda / dpr}px`;
+    rotuloCentro.actualizar();
     rotuloPausa.actualizar();
     partida.ajustarCatalogo();
-    const altoAviso = altoLectura([...Object.values(AVISOS_COLOCACION), PAUSA_ENERGIA], dom.evento.clientWidth, dpr);
-    dom.escenario.style.setProperty('--alto-aviso', `${altoAviso}px`);
     const cs = getComputedStyle(dom.escenario);
     const izquierda = parseFloat(cs.paddingLeft);
     const derecha = parseFloat(cs.paddingRight);
     const arriba = parseFloat(cs.paddingTop);
     const abajo = parseFloat(cs.paddingBottom);
-    dom.escenario.style.minHeight = `${TABLERO.filas * TABLERO.celda / dpr + arriba + abajo}px`;
     const rect = dom.escenario.getBoundingClientRect();
     const ancho = rect.width - izquierda - derecha;
     const alto = rect.height - arriba - abajo;
@@ -731,12 +742,12 @@ export function montarHerbario(contenedor, opciones = {}) {
 
   function proyectarTablero() {
     const dpr = window.devicePixelRatio || 1;
-    const { origen, area, escala } = camara.vista();
+    const { escala } = camara.vista();
+    const { left, top, ancho, alto } = camara.region();
     const rect = dom.escenario.getBoundingClientRect();
-    prepararSalida(dom.canvas, lado, lado, escala, dpr);
-    colocarSalida(dom.canvas, origen.x - rect.left, origen.y - rect.top);
-    alinearSalida(dom.canvas, dpr, camara.ampliada() ? area : undefined);
-    contenedor.style.setProperty('--ancho-jardin', `${lado * escala / dpr}px`);
+    prepararSalida(dom.canvas, ancho, alto, escala, dpr);
+    colocarSalida(dom.canvas, left - rect.left, top - rect.top);
+    alinearSalida(dom.canvas, dpr, camara.vista().area);
   }
 
   const observador = new ResizeObserver(() => partida && ajustar());
@@ -760,6 +771,12 @@ export function montarHerbario(contenedor, opciones = {}) {
   window.addEventListener('scroll', alCambiarVentana, { passive: true });
   document.addEventListener('visibilitychange', alVisibilidad);
 
+  dom.centro.addEventListener('click', () => {
+    if (pausa.abierta()) return;
+    camara.restablecer();
+    proyectarTablero();
+    partida.dibujar();
+  });
   iniciarPartida();
   observarDpr();
   cargarFuentePixel().then(alCambiarVentana, () => {});
@@ -767,9 +784,9 @@ export function montarHerbario(contenedor, opciones = {}) {
 
   return {
     pantallaAMundo: (clientX, clientY) =>
-      pantallaAMundo(dom.canvas.getBoundingClientRect(), clientX, clientY, TABLERO.columnas * TABLERO.celda),
+      camara.mundo({ x: clientX, y: clientY }),
     celdaEnPantalla: (clientX, clientY) => camara.contiene(clientX, clientY)
-      ? celdaDeCliente(dom.canvas, clientX, clientY, crearTablero())
+      ? partida.desdePantalla(clientX, clientY)
       : null,
     seleccionada: () => partida.seleccion.seleccionada(),
     destruir() {

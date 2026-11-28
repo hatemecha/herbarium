@@ -1,3 +1,4 @@
+import { muestrearFrente } from './frontera.js';
 import { perimetro } from './perimetro.js';
 
 export function dpsTeorico(jardin) {
@@ -11,7 +12,9 @@ export function dpsTeorico(jardin) {
 }
 
 export function cobertura(jardin, tablero) {
-  const borde = perimetro(tablero);
+  const borde = tablero.infinito
+      ? muestrearFrente(tablero)
+      : perimetro(tablero);
   const armas = jardin.plantas.filter((planta) => !planta.muerta && (planta.tipo.ataque || planta.tipo.area));
   if (!borde.length) return 0;
   let cubiertas = 0;

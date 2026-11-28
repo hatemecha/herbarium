@@ -1,7 +1,7 @@
 import { alinearPixel } from './escala.js';
 
-// MonoMEK tiene 1200 UPM, contornos en pasos de 100 y avance de 600.
-export const FUENTE_PIXEL = '12px MonoMEK';
+// Terminus usa una celda de 6 × 12 a su tamaño nativo de 12 px.
+export const FUENTE_PIXEL = '12px Terminus';
 export const AVANCE = 6;
 export const BASE_TEXTO = 9;
 export const ALTO_TEXTO = 12;
@@ -37,7 +37,7 @@ function glifo(letra, color) {
   ctx.fillText(letra, 0, BASE_TEXTO);
   const mascara = ctx.getImageData(0, 0, AVANCE, ALTO_TEXTO);
   for (let i = 3; i < mascara.data.length; i += 4) {
-    mascara.data[i] = mascara.data[i] >= 128 ? 255 : 0;
+    mascara.data[i] = mascara.data[i] >= 56 ? 255 : 0;
   }
   ctx.putImageData(mascara, 0, 0);
   ctx.globalCompositeOperation = 'source-in';

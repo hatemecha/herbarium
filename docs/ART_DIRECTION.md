@@ -21,20 +21,19 @@ Capturas del combate real (partida reproducible con reloj falso y semilla fija, 
 
 ## Escena
 
-Un organismo chico en mucha oscuridad. El tablero lógico mide 11×11 casillas de 16 px: 176×176. El sprite cabe en una casilla. Esos dos 16 están separados a propósito (`TABLERO.celda` y `SPRITE.lado` en `src/config.js`) y hoy coinciden.
-
-La cámara no se mueve. La grilla lógica (casillas) y la grilla de píxeles (el canvas de 176) son distintas. El enemigo y el proyectil se mueven en continuo y se dibujan con `Math.round`, sin quedar trabados a la casilla.
+Un organismo chico en mucha oscuridad. Los sprites y las casillas siguen usando 16 píxeles lógicos. El campo cubre su área disponible y la cámara recorre coordenadas positivas y negativas. La grilla tenue aparece sobre tierra descubierta y comparte fase con el mundo. La oscuridad alrededor continúa hasta el borde de la vista. La expansión no dibuja un marco alrededor de cada región.
 
 ## Escalado
 
-`src/escala.js` elige el mayor múltiplo entero que cabe en ambos ejes físicos como vista inicial. El zoom permite hasta el doble de ese múltiplo y recorta el excedente en el área del jardín. En un espacio menor que la resolución lógica, el campo conserva un mínimo físico de 176 × 176 y puede desbordar hacia el área desplazable. La posición de entrada se sigue resolviendo desde el rectángulo real del tablero y excluye los píxeles recortados.
+La cámara parte del menor múltiplo físico entero que alcanza 2 píxeles CSS por píxel lógico y permite ampliarlo hasta el doble. Los sprites, el moteado, el Bayer y la bruma conservan sus coordenadas al mover la cámara. Los enemigos y proyectiles avanzan en continuo y solo se redondean al dibujarlos. Una pequeña punta de cinco píxeles en tinta de insecto indica un ataque activo fuera de vista o un enemigo fuera de vista a tres casillas de la central.
 
 La luz ambiente se compone en una capa de 2 × 2 píxeles lógicos por muestra. La escena, la sombra y los sprites conservan sus capas lógicas y se amplían sin interpolación. La cerbatana tiene ocho dibujos y el escarabajo se espeja.
 
 ## Interfaz rasterizada
 
-- `src/interfazPixel.js` concentra texto, marcos y presentación. Energía, cartas, avisos, descripciones, pausa, fichas y derrota dibujan en un lienzo lógico. Los botones y el diálogo conservan sus hitboxes, nombres, foco y teclado en HTML. La estrella de energía y de coste sigue siendo la misma matriz de 7 × 7.
-- MonoMEK declara 1200 unidades por em, contornos en pasos de 100 y avance de 600. A 12 px lógicos el avance es de 6 px y el contorno cae sobre la grilla. Las máscaras usan una línea base lógica común, normalización NFC y alfa binaria con umbral 128. Se reutilizan por glifo y tinta. Los párrafos saltan por palabras y las cadenas más largas que su columna pueden partirse por carácter. No se usa `fillText(maxWidth)`.
+- `src/interfazPixel.js` concentra texto, marcos y presentación. Energía, cartas, avisos, ayudas, pausa y derrota dibujan en un lienzo lógico. Los botones y el diálogo conservan sus hitboxes, nombres, foco y teclado en HTML. La estrella de energía y de coste sigue siendo la misma matriz de 7 × 7.
+- El título, la descripción y los datos de las fichas del herbario usan texto HTML en Terminus a 18 px para equilibrar legibilidad y espacio. El resto de la interfaz utiliza la misma fuente rasterizada.
+- Terminus se rasteriza a 12 px lógicos, con un avance monoespaciado de 6 px. Las máscaras usan una línea base lógica común, normalización NFC y alfa binaria con umbral 56. Se reutilizan por glifo y tinta. Los párrafos saltan por palabras y las cadenas más largas que su columna pueden partirse por carácter. No se usa `fillText(maxWidth)`.
 - Las descripciones, datos y ayudas apuntan a 2× antes de ajustar al múltiplo físico. Los párrafos suman dos píxeles lógicos entre líneas. Los avisos tienen una franja propia sobre el tablero y la bandeja reserva el alto de su ayuda más larga al ancho disponible para que el texto aparezca sin mover las cartas.
 - Cada salida tiene `ancho lógico × k` y `alto lógico × k` píxeles físicos. El DOM reserva su espacio en CSS. La salida se proyecta 1:1 sobre un origen físico entero y se recorta al área desplazable del diálogo. Esto evita el remuestreo que puede introducir Chromium al pintar el mismo backing store en una caja CSS fraccionaria. Se recalcula al cambiar tamaño, DPR o posición por scroll.
 - La pausa usa el marco rasterizado de la familia de cartas y un cursor en píxeles. El herbario tiene una caja fija de referencia de 39 × 34 casillas, limitada por el área disponible, con marco raster de dos píxeles lógicos. Las categorías y fichas comparten esa caja. La cabecera queda fija mientras el contenido se desplaza y en móvil la lista también admite desplazamiento horizontal. Las miniaturas quedan quietas para identificar las especies. El retrato seleccionado reutiliza los cuadros y la cadencia del juego con su propio reloj, que solo corre con el diálogo abierto y respeta movimiento reducido.
@@ -109,9 +108,9 @@ Un sprite nuevo mapea caracteres a estos roles, o añade un rol en `crearRoles` 
 
 ## Tipografía
 
-MonoMEK Text 1.204, © 2023 Michael Alexander (MEK.txt), dedicada al dominio público con CC0 1.0. Archivos: `assets/fonts/MonoMEK-Text.otf` y `assets/fonts/MonoMEK-LICENSE.txt`. Enlace del autor en los metadatos de la fuente: <https://linktr.ee/michaelmicasso>.
+Terminus TTF 4.49.3 se distribuye bajo SIL Open Font License 1.1. Los archivos son `assets/fonts/Terminus.ttf` y `assets/fonts/Terminus-LICENSE.txt`. [Fuente y descarga](https://files.ax86.net/terminus-ttf/).
 
-`styles.css` declara `@font-face` con `font-display: block`. El cuerpo de la interfaz usa 12 px, que en MonoMEK cae en su cuadrícula (el em interno es 15). La pila es `"MonoMEK", ui-monospace, "DejaVu Sans Mono", monospace`, inyectada como `--mono` solo si el documento todavía no tiene esa variable. En la web de referencia `--mono` existe y no nombra a MonoMEK: al embeber el juego hay que decidir cuál gana.
+`styles.css` declara Terminus con `@font-face` y `font-display: block`. La interfaz usa Terminus tanto en sus rótulos rasterizados como en el texto HTML de las fichas.
 
 ## Sprites
 
@@ -127,8 +126,6 @@ Dibujados a mano como matrices de 16 caracteres. `.` es transparente. `src/sprit
 | Campanilla | `src/sprites/campanilla.js` | 1 | Tallo arqueado, flor colgante fría y pulso breve. |
 | Hongo | `src/sprites/hongo.js` | 1 | Sombrero ancho, franja en la superficie y destello breve al esporar. |
 | Espino | `src/sprites/espino.js` | 1 | Mata baja con púas. Luz más tenue que la cerbatana, definida en el catálogo. |
-
-La comparación a escala 1 y 4 está en `galeria.html`. No se enlaza desde la partida.
 
 La variante de disparo de la cerbatana es el índice 3 (`VARIANTE_DISPARO` en `src/entidades/planta.js`): la usa el disparo, no el ciclo idle. El retroceso es un desplazamiento de como mucho 1 px, redondeado, en contra del tiro (`BALANCE.visual.retroceso` = 0,12 s).
 
@@ -186,7 +183,7 @@ Derrota: la luz de la central se atenúa con su opacidad. Su halo y el ambiente 
 
 ## Interfaz
 
-La energía está centrada, con un hexagrama de 7 × 7 (`src/sprites/estrella.js`) alineado a la cifra. La misma estrella marca el coste de cada carta. Pausa queda al extremo derecho. Las cuatro cartas forman un grupo bajo el jardín o a un lado en horizontal bajo. La pala comparte la grilla y el marco 72 × 80 de las cartas (sprite diagonal 16 × 16 al doble, madera y metal de la paleta). Sin coste. Se desbloquea en la oleada 3 con el mismo destello verde que una carta alcanzable. Tocar una carta sin energía tintea toda la tarjeta de rojo, igual que el destello verde al desbloquear. La vida de cada planta se muestra en una barra bajo el sprite. El escenario muestra los avisos breves y el lector de pantalla recibe los mensajes semánticos. Las cartas de 72 × 80 muestran espécimen, nombre y coste. Foco, selección, desbloqueo, compra e insuficiencia tienen señales diferenciadas con el botón quieto.
+La energía está centrada, con un hexagrama de 7 × 7 (`src/sprites/estrella.js`) alineado a la cifra. La misma estrella marca el coste de cada carta. Pausa queda al extremo derecho. Las cuatro cartas forman un grupo bajo el jardín o a un lado en horizontal bajo. La pala aparece junto a la ayuda del catálogo al desbloquearse en la oleada 3, con el mismo destello verde que una carta alcanzable. Usa un botón compacto con una superficie táctil de al menos 44 × 44 px y un sprite vertical de 16 × 16, con empuñadura de madera en D y hoja ancha de metal. Tocar una carta sin energía tintea toda la tarjeta de rojo, igual que el destello verde al desbloquear. La vida de cada planta se muestra en una barra bajo el sprite. El escenario muestra los avisos breves y el lector de pantalla recibe los mensajes semánticos. Las cartas de 72 × 80 muestran espécimen, nombre y coste. Foco, selección, desbloqueo, compra e insuficiencia tienen señales diferenciadas con el botón quieto.
 
 Tras la marchitez, una capa oscura entra en seis pasos durante 1,2 s. El texto y Reiniciar comparten ese fondo. La bandeja de compra queda cerrada. El herbario sigue disponible desde Pausa.
 
@@ -232,7 +229,7 @@ Cada carta muestra su papel incluso antes de que se pueda comprar. Pasar el punt
 
 ## Etapa 08.2 · composición, movimiento y cierre artístico
 
-El laboratorio [lab082.html](../lab082.html) monta el juego real: mismos fotogramas, tipografía, paleta, reloj, tablero y cartas. Las alternativas no tienen lógica de juego propia. Las capturas del laboratorio incluyen cinco estados (reposo, selección con alcance, compra, preparación y combate) para cada composición en escritorio y móvil.
+Las capturas de la etapa 08.2 salieron de un laboratorio temporal sobre el juego real. Incluyen cinco estados (reposo, selección con alcance, compra, preparación y combate) para cada composición en escritorio y móvil.
 
 | Propuesta | Jerarquía y legibilidad | Atmósfera y expresividad | Ergonomía y equilibrio |
 | --- | --- | --- | --- |
@@ -240,7 +237,7 @@ El laboratorio [lab082.html](../lab082.html) monta el juego real: mismos fotogra
 | B · Horizonte | Los datos quedan debajo de las cartas, más lejos del combate | Centro despejado, pero la fila de cartas adquiere demasiado peso | Cómodo al pulgar, aunque comprime el jardín a 344 px en escritorio; 352 px en móvil |
 | C · Gabinete | Columna de lectura vertical; datos más fragmentados en móvil | Disposición de observatorio; especímenes demasiado pequeños en escritorio | 528 px en escritorio, solo 271 px en móvil; la columna resta espacio al dedo |
 
-**Dirección elegida:** Pliego corregido. El primer pliego desplazaba la flor a la derecha; ahora el tablero queda centrado, las cartas se acercan a su borde izquierdo y la ficha ocupa el flanco derecho. Se amplió MonoMEK, se reservó altura para las líneas variables y se aumentó el tamaño del catálogo y la energía en móvil. En horizontal bajo se toma la organización de Gabinete: HUD izquierdo, jardín, catálogo 2×2 derecho y ficha inferior. La pérdida de tamaño del tablero de escritorio frente a la etapa 08 (681 → 528 px a 1280×800) es un compromiso deliberado para incorporar los cuatro objetos y la ficha sin superposición. En horizontal se recupera superficie (257 → 296 px) y desaparece el desbordamiento vertical anterior.
+**Dirección elegida:** Pliego corregido. El primer pliego desplazaba la flor a la derecha; ahora el tablero queda centrado, las cartas se acercan a su borde izquierdo y la ficha ocupa el flanco derecho. Se amplió la tipografía, se reservó altura para las líneas variables y se aumentó el tamaño del catálogo y la energía en móvil. En horizontal bajo se toma la organización de Gabinete: HUD izquierdo, jardín, catálogo 2×2 derecho y ficha inferior. La pérdida de tamaño del tablero de escritorio frente a la etapa 08 (681 → 528 px a 1280×800) es un compromiso deliberado para incorporar los cuatro objetos y la ficha sin superposición. En horizontal se recupera superficie (257 → 296 px) y desaparece el desbordamiento vertical anterior.
 
 Referencias de principios: Balatro (jerarquía numérica y señal de compra); Hyper Light Drifter (contraste, composición y espacio negativo); Noita (partículas que pertenecen al acontecimiento); Dome Keeper (interfaz al servicio del mundo). No se incorporaron sus imágenes, música ni diseños de interfaz.
 
@@ -290,7 +287,7 @@ Tres puntos del perímetro anuncian la primera entrada. Dos puntos delante del i
 
 La luz del terreno conserva su grilla escalonada. La flor y las plantas de apoyo proyectan rebotes cortos en sus propios tonos. Los insectos llevan los acentos en sus siluetas y ya no tienen halos suaves. El aviso de tres puntos del perímetro se retiró.
 
-Al generar energía, cinco motas tenues suben desde la flor a la estrella. El polen tiene un máximo global de doce motas. Ambos efectos se omiten con movimiento reducido y salen de escena al caer la flor. El cierre atenúa el tablero, muestra la silueta marchita de la central y da foco a Reiniciar en MonoMEK.
+Al generar energía, cinco motas tenues suben desde la flor a la estrella. El polen tiene un máximo global de doce motas. Ambos efectos se omiten con movimiento reducido y salen de escena al caer la flor. El cierre atenúa el tablero, muestra la silueta marchita de la central y da foco a Reiniciar en Terminus.
 
 Las motas de interacción aparecen al seleccionar, previsualizar una casilla o aterrizar un insecto. El mouse solo las activa al pasar a otra posición válida mientras se coloca una planta. Las cartas sin energía muestran un candado y se pueden consultar. Al alcanzar el precio vigente, la carta titila en verde y conserva el precio iluminado. Con movimiento reducido, el aviso es un breve realce fijo.
 

@@ -6,7 +6,7 @@ Juego estático. Módulos ES nativos, Canvas 2D, sin bundler y sin dependencias.
 
 ```
 index.html              monta #herbario y carga src/main.js
-styles.css              página, energía, catálogo, derrota, MonoMEK
+styles.css              página, energía, catálogo, derrota, Terminus
 servidor.mjs            estático, puerto 4173 o PORT
 package.json            start y test
 src/main.js             llama a montarHerbario
@@ -41,7 +41,7 @@ src/particulas.js       pool visual, tope 12
 src/animacion.js        secuencia temporal
 src/derrota.js          aviso y reinicio
 tests/                  node:test, importa src/ directo
-assets/fonts/           MonoMEK y su CC0
+assets/fonts/           Terminus y su OFL
 ```
 
 ## Arranque
@@ -73,26 +73,27 @@ El dibujo corre una vez por frame, después de los pasos, y no empuja la simulac
 
 ## Render
 
-Cuatro lienzos lógicos de 176 y el canvas visible:
+La cámara calcula un rectángulo visible en píxeles lógicos y lo amplía al múltiplo físico entero. El origen se alinea a dos píxeles lógicos para que las muestras de luz ambiental de 2×2 conserven su fase. Los buffers tienen tamaño de vista y se reutilizan durante el arrastre.
 
-1. Fondo: terreno y grilla de 1 px, pintados una vez.
-2. Escena: plantas (con opacidad y retroceso) y, antes que el insecto, la sombra de cada escarabajo vivo en el suelo. Luego el insecto con el cuadro que pide su estado.
-3. Capa luminosa: los mismos sprites atenuados o a plena luz propia, destellos, proyectil de 2 px, partículas, hormigas y fantasma de colocación.
-4. Oscuridad: `ImageData` con alfa Bayer, encima de la escena.
-5. Salida: escena, oscuridad y capa luminosa, nearest-neighbor, a `pixeles` físicos. Luego, con suavizado, los gradientes.
+1. Escena con terreno, grilla en las celdas descubiertas, plantas, sombras e insectos.
+2. Luz ambiental de media resolución, con bruma y destellos anclados al mundo.
+3. Oscuridad mediante un `ImageData` con alfa Bayer en coordenadas absolutas. Los perfiles estáticos son compartidos por especie y fase subpíxel. Se recorta cada fuente contra la vista.
+4. Capa luminosa con sprites, proyectiles, partículas, colocación y avisos de amenazas activas. Las tres capas principales se componen sin interpolación.
 
-`registrarPlanta` / `retirarPlanta` conectan la luz estática. La central no usa ese mapa: su luz es la dinámica de `iluminacion.actualizar`, que recibe la opacidad de la central para apagarse con su marchitez.
+El terreno se consulta por casilla visible, sin recorrer las regiones descubiertas completas. Se descartan sprites fuera de vista antes de dibujarlos. Las fuentes se verifican por radio, incluso si el sprite queda fuera. El renderer todavía filtra listas de organismos y fuentes vivas. La simulación conserva todas las entidades y desconoce la cámara.
 
 Un escarabajo se dibuja en la capa luminosa con alfa `AUTOLUZ_ENEMIGO` (0,8). Esa capa va encima de la oscuridad, así que el insecto se lee en lo oscuro sin pasar por el halo.
 
 `fotogramaEnemigo` y `elevacion` (`src/entidades/enemigo.js`) son funciones puras de estado y tiempo visual. Ninguna de ellas escribe en `x`, `y` ni en los contadores de combate.
 
-## Coordenadas
+## Mundo y coordenadas
+
+`crearMundo` conserva ocupantes en un `Map` con clave `x,y` y regiones descubiertas en un `Set`. Una región de 9×9 se descubre cuando alguna de sus casillas está entre las ocho vecinas de una planta recién colocada. La región inicial abarca −4 a 4 en ambos ejes. Las compras candidatas se deduplican desde las vecinas de las plantas vivas. La pala elimina el ocupante y conserva el rearme por coordenada hasta que vence. Las regiones descubiertas sobreviven a la pérdida de sus plantas. El tablero fijo sigue disponible para las pruebas históricas de combate y del director.
 
 - Casilla entera `(x, y)`. Centro de juego: `(x + 0,5, y + 0,5)`.
 - Píxel lógico de una casilla: `tablero.origen`.
 - El escarabajo guarda `x, y` en casillas. Se dibuja en `round(x * celda - 8)`.
-- El puntero: rectángulo real del canvas en CSS → 176 px lógicos (`pantallaAMundo`) → `floor` de casilla (`celdaEnMundo`). La salida usa un múltiplo físico entero, incluso si la caja CSS es fraccionaria.
+- El puntero: coordenada CSS → transformación inversa de cámara → piso de casilla (`celdaEnMundo`). La salida usa un múltiplo físico entero, incluso si la caja CSS es fraccionaria.
 
 El bloqueo del escarabajo mira media casilla por delante de su centro (`ALCANCE_DE_BLOQUEO`).
 
@@ -122,7 +123,7 @@ npm start
 npm test
 ```
 
-`npm start` publica el directorio en <http://localhost:4173/> con `Cache-Control: no-cache` y rechaza rutas que salgan de la raíz. No envía cabeceras CORS. El mapa de tipos incluye `.otf` para MonoMEK. `galeria.html` es una hoja de sprites y no está enlazada desde `index.html`.
+`npm start` publica el directorio en <http://localhost:4173/> con `Cache-Control: no-cache` y rechaza rutas que salgan de la raíz. No envía cabeceras CORS. El mapa de tipos incluye `.ttf` para Terminus.
 
 ## Cómo añadir contenido
 
@@ -148,7 +149,7 @@ La web es Astro y ya define las mismas variables de color. `asegurarVariables` n
 
 Choques a resolver cuando toque, no antes:
 
-- `--mono` de la web no incluye MonoMEK. Hay que cargar el `@font-face` y decidir la pila.
+- `--mono` de la web no incluye Terminus. Hay que cargar el `@font-face` y decidir la pila.
 - `touch-action: none` está en el canvas. El resto de la página debe poder hacer scroll.
 - El juego ocupa la altura de la vista (`100dvh`) cuando es la página entera. Embebido, el contenedor tiene que darle alto.
 - No hay build. Copiar los estáticos o servirlos como están evita meter un bundler solo para el juego.
@@ -167,8 +168,8 @@ El director planifica composición, sector, punto de referencia y tiempo. Al emi
 
 ## Etapa 08.2
 
-La composición de producción vive en `styles.css`; el laboratorio cambia solo su distribución con `lab082.css`. `juego.js` coordina energía, cartas y estado cerrado del catálogo. `catalogoUI.js` mantiene la interacción con botones y dibujo en canvas; al cerrar se deshabilitan y se reconstruyen al reiniciar. `combate.js` añade metadatos de dirección y entrada al estado de ralentización, sin cambiar las decisiones ni cifras de combate. `render.js` y `entidades/enemigo.js` los traducen a píxeles y cadencia. El presupuesto de partículas se limita en config y usa un generador aleatorio visual separado; no consume la semilla del director. Los scripts de desarrollo instrumentan respuestas HTTP en Chromium, no abren una API de depuración de producción. Ver [dirección artística y validación](ART_DIRECTION.md#etapa-082--composición-movimiento-y-cierre-artístico).
+La composición de producción vive en `styles.css`. `juego.js` coordina energía, cartas y estado cerrado del catálogo. `catalogoUI.js` mantiene la interacción con botones y dibujo en canvas; al cerrar se deshabilitan y se reconstruyen al reiniciar. `combate.js` añade metadatos de dirección y entrada al estado de ralentización, sin cambiar las decisiones ni cifras de combate. `render.js` y `entidades/enemigo.js` los traducen a píxeles y cadencia. El presupuesto de partículas se limita en config y usa un generador aleatorio visual separado; no consume la semilla del director. Los scripts de desarrollo instrumentan respuestas HTTP en Chromium, no abren una API de depuración de producción. Ver [dirección artística y validación](ART_DIRECTION.md#etapa-082--composición-movimiento-y-cierre-artístico).
 
 ## Etapa 08.3
 
-`combate.js` fija el señuelo al entrar en su radio y reinicia el contador de mordidas al fijar el siguiente objetivo. Las reglas dependen del estado del enemigo. El director planifica al comienzo de la preparación y expone en `aviso()` solo la primera entrada durante los últimos cuatro segundos de esa fase. La simulación entrega a las políticas el jardín, el saldo y los insectos presentes. El catálogo dibuja una descripción DOM vinculada a la carta consultada. Los avisos de perímetro y de desvío consumen estado del juego en el renderer.
+`combate.js` fija el señuelo al entrar en su radio y reinicia el contador de mordidas al fijar el siguiente objetivo. Las reglas dependen del estado del enemigo. El director planifica especies, sectores y tiempos al comenzar la preparación. El aviso anuncia la oleada durante los últimos cuatro segundos. Cada ángulo se resuelve contra el jardín vivo en el momento de emitir al enemigo. La simulación entrega a las políticas el jardín, el saldo y los insectos presentes. El catálogo dibuja una descripción DOM vinculada a la carta consultada. Los indicadores fuera de pantalla consumen el estado actual del combate.

@@ -1,3 +1,5 @@
+export const DISTANCIA_ENTRADA = 4.5;
+
 export const TABLERO = {
   columnas: 11,
   filas: 11,

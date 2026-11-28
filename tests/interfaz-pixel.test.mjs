@@ -19,7 +19,7 @@ test('el tablero usa el mayor múltiplo entero que cabe en ambos ejes físicos',
   assert.equal(alinearPixel(-12.42, 1.5) * 1.5, -19);
 });
 
-test('la caja de MonoMEK mide acentos compuestos y reparte líneas sin comprimir', () => {
+test('la caja de Terminus mide acentos compuestos y reparte líneas sin comprimir', () => {
   assert.equal(medirTexto('nin\u0303o 10'), medirTexto('niño 10'));
   assert.equal(medirTexto('Árbol'), 30);
   assert.deepEqual(repartirTexto('Daño en área', 36), ['Daño', 'en', 'área']);

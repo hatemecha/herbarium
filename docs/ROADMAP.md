@@ -15,7 +15,7 @@ Ninguna etapa está aceptada formalmente por el propietario en esta consolidaci�
 | 5 | Consolidación artística y jugable del combate | Implementada en código y verificada en navegador (ver abajo). Pendiente de aceptación del propietario. |
 | 6 | Oleadas, especies, espino y director | Implementada en código. Valores experimentales, medidos en [BALANCE.md](BALANCE.md). Pendiente de aceptación. |
 | 7 | Profundidad estratégica, diversidad y balance | Campanilla, Hongo, Espino revisado, director y políticas de evaluación implementados. Configuración experimental para evaluación del propietario. |
-| 8 | Game feel, HUD y claridad de estados | Implementados pulsos de interfaz y tablero, lectura de ralentización, alcance diferenciado y destellos por fuente. Ver la revisión visual en [ART_DIRECTION.md](ART_DIRECTION.md). |
+| 8 | Game feel, HUD y claridad de estados | Implementados pulsos de interfaz y tablero, lectura de ralentización, alcance diferenciado y destellos por fuente. Ver la revisión visual en [ART_DIRECTION.md](ART_DIRECTION.md). [Etapa 08.5](ETAPA_085.md) incorpora mundo expansible y entradas según el jardín vivo. |
 | 8.2 | Dirección artística, composición y game feel | Implementada: Pliego refinado, cartas, partículas y señales; evaluación comparativa y regresiones en [ART_DIRECTION.md](ART_DIRECTION.md). Aceptación subjetiva del propietario pendiente. |
 | 8.3 | Consolidación estratégica y beta jugable | Implementada en el juego principal y medida con 100 semillas por política. Ver [ETAPA_083.md](ETAPA_083.md). |
 | 9 | Preguntas de personalidad | No empezada. No hay preguntas escritas. |
@@ -43,7 +43,7 @@ Queda pendiente una partida completa de la beta con jugadores en escritorio y te
 - **Escarabajo que sobrevive a la derrota.** Si la central cae con un escarabajo vivo, queda congelado en su último cuadro debajo del aviso. Es una decisión visual, no un error: el combate se detiene. Confirmar con el propietario si debe posarse, irse o desaparecer.
 - **Derrota y el primer encuentro.** El balance del primer escarabajo está medido, no ajustado. Una cerbatana bien colocada basta. Ver [BALANCE.md](BALANCE.md).
 - **Movimiento reducido.** Cubierto para pulso, idle, hormigas, emisión ambiente, ráfaga de energía, ráfagas de combate, retroceso de la cerbatana y aleteo del escarabajo. Los fundidos (muerte y marchitez) se mantienen porque son opacidad, no desplazamiento.
-- **Compatibilidad con la web personal.** `--mono` de `nicotinalex-web` no incluye MonoMEK; hay que decidir la pila al integrar. `touch-action: none` en el canvas; hay que revisar el scroll al embeberlo.
+- **Compatibilidad con la web personal.** `--mono` de `nicotinalex-web` no incluye Terminus; hay que decidir la pila al integrar. `touch-action: none` en el canvas; hay que revisar el scroll al embeberlo.
 - **Git.** No hay commit de esta etapa. Ver el estado en la respuesta de consolidación.
 
 ## Etapa 06: lo hecho
@@ -53,7 +53,6 @@ Queda pendiente una partida completa de la beta con jugadores en escritorio y te
 - Espino: no dispara, devuelve 1 de daño por mordida.
 - Coste `base + 2 × floor(vivas / 4)`, desactivable con `ECONOMIA.creciente`.
 - Indicadores de oleada, preparación y enemigos, y ficha al seleccionar una planta.
-- Galería de desarrollo en `galeria.html`, fuera de la partida.
 - Simulador sin interfaz en `src/simular.js`. Resultados de 100 semillas en [BALANCE.md](BALANCE.md) y `docs/simulacion.json`.
 
 ## Fuera de alcance hasta nuevo pedido

@@ -1,5 +1,6 @@
 import { BALANCE } from './config.js';
 import { crearEnemigo } from './entidades/enemigo.js';
+import { frenteVivo } from './frontera.js';
 
 // Índice de sector (k = ángulo / 45°, con k=0 en E y crecimiento horario) a índice en DIRECCIONES.
 const SECTOR_A_DIRECCION = [2, 3, 4, 5, 6, 7, 0, 1];
@@ -68,6 +69,10 @@ export function crearCombate({
   }
 
   function aparecer() {
+    if (tablero.infinito) {
+      const { x, y } = frenteVivo(tablero, aleatorio() * 2 * Math.PI);
+      return crear(x, y);
+    }
     const { columnas, filas } = tablero;
     for (let intento = 0; intento < 60; intento++) {
       const lado = Math.floor(aleatorio() * 4);

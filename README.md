@@ -2,7 +2,7 @@
 
 Un jardín chico que crece en la oscuridad. Una planta en el centro genera energía y luz. Con esa energía podés extender el jardín con Cerbatanas, Espinos, Campanillas y Hongos. Escarabajos, pulgones y orugas intentan llegar al centro. Si la planta central muere, el jardín cae.
 
-El proyecto es independiente. Más adelante va a vivir dentro de la web personal del autor. Ahora es una partida continua: tablero, cuatro plantas comprables, tres insectos y oleadas procedurales. No hay tarot, sonido ni progresión entre partidas.
+El proyecto es independiente. Más adelante va a vivir dentro de la web personal del autor. Ahora es una partida continua: jardín expansible, cuatro plantas comprables, tres insectos y oleadas procedurales. No hay tarot, sonido ni progresión entre partidas.
 
 ![Primera oleada, catálogo y contador de energía](docs/capturas/etapa083/primer-combate.png)
 
@@ -12,7 +12,7 @@ Etapa 08.3 integrada. El Espino desvía insectos cercanos, la Campanilla prolong
 
 Elegí o tocá una carta para leer su función, incluso si todavía te falta energía. Para plantar, elegí una casilla libre junto al jardín. En pantalla táctil, el primer toque en una casilla previsualiza y el segundo confirma.
 
-También podés arrastrar la carta y soltarla en una casilla válida. Acercá el jardín con la rueda o con dos dedos. Cuando esté ampliado, arrastrá el tablero para moverte. Con el tablero enfocado, usá `+` y `−` para el zoom y `0` para volver a la vista completa.
+También podés arrastrar la carta y soltarla en una casilla válida. Acercá el jardín con la rueda o con dos dedos. Arrastrá el jardín a cualquier escala para moverte. Con el jardín enfocado, usá `+` y `−` para el zoom y `0` para volver al centro. También podés usar el botón Centrar.
 
 La pala permite retirar plantas por la mitad del coste que pagaste. En táctil, el primer toque muestra el reembolso y el segundo confirma. Al superar una invasión, el jardín se detiene brevemente para revelar el resultado antes de la preparación siguiente.
 
@@ -57,10 +57,10 @@ Corre las pruebas de colocación, combate, escenarios e insecto. No abren el nav
 
 ## Créditos
 
-MonoMEK Text, de Michael Alexander (MEK.txt), 2023. Dominio público, [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/). Archivos en `assets/fonts/`. El texto legal está en `assets/fonts/MonoMEK-LICENSE.txt`.
+Terminus TTF 4.49.3, bajo [SIL Open Font License 1.1](https://scripts.sil.org/OFL). Archivos en `assets/fonts/Terminus.ttf` y `assets/fonts/Terminus-LICENSE.txt`. [Fuente](https://files.ax86.net/terminus-ttf/).
 
 La paleta de color sigue la de la web personal (`nicotinalex-web`).
 
 ## Licencia del juego
 
-No definida. Publicar este repositorio no lo pone bajo una licencia open source. Los archivos de MonoMEK conservan su CC0.
+No definida. Publicar este repositorio no lo pone bajo una licencia open source. Terminus conserva su OFL.

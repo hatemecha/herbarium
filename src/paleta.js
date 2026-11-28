@@ -13,7 +13,7 @@ const BASE = {
   spark: '#c2ff3d',
 };
 
-const MONO = '"MonoMEK", ui-monospace, "DejaVu Sans Mono", monospace';
+const MONO = '"Terminus", ui-monospace, "DejaVu Sans Mono", monospace';
 const HEX = /^#([0-9a-f]{6})$/i;
 
 function aRgb(valor) {

@@ -1,3 +1,4 @@
+import { claveCelda } from './tablero.js';
 import { BALANCE, COLOCACION, FEEDBACK, INSECTO, LUZ, MARCADORES, SPRITE } from './config.js';
 import { elevacion, estadoVisual, fotogramaEnemigo } from './entidades/enemigo.js';
 import { crearIluminacion } from './iluminacion.js';
@@ -34,51 +35,67 @@ function dibujarFrame(ctx, frame, x, y, mirada) {
 }
 
 export function crearRenderer({ tablero, salida, roles, frames }) {
-  const lado = tablero.ancho;
   const celda = tablero.celda;
-  const fondo = lienzo(lado);
-  const escena = lienzo(lado);
-  const luminosa = lienzo(lado);
+  const escena = lienzo(1);
+  const luminosa = lienzo(1);
   const disolucion = lienzo(LADO);
-  const ctxFondo = fondo.getContext('2d');
   const ctxEscena = escena.getContext('2d');
   const ctxLuminosa = luminosa.getContext('2d');
-  ctxEscena.imageSmoothingEnabled = false;
-  ctxLuminosa.imageSmoothingEnabled = false;
   const ctxDisolucion = disolucion.getContext('2d');
   const silueta = lienzo(LADO);
   const ctxSilueta = silueta.getContext('2d');
   const ctxSalida = salida.getContext('2d');
-  const iluminacion = crearIluminacion({ lado, fondo: roles.fondo });
+  const iluminacion = crearIluminacion({ fondo: roles.fondo });
+  const colorLuz = lienzo(1);
+  const ctxColor = colorLuz.getContext('2d');
+  let mapa, intensidad, cruces;
+  let ox, oy, anchoLuz, altoLuz;
+  const modulo = (n, divisor) => ((n % divisor) + divisor) % divisor;
 
-  ctxFondo.fillStyle = rgb(roles.terreno);
-  ctxFondo.fillRect(0, 0, lado, lado);
-  ctxFondo.fillStyle = rgb(roles.cuadricula);
-  for (let i = 0; i <= tablero.columnas; i++) {
-    const x = Math.min(lado - 1, i * celda);
-    ctxFondo.fillRect(x, 0, 1, lado);
-  }
-  for (let j = 0; j <= tablero.filas; j++) {
-    const y = Math.min(lado - 1, j * celda);
-    ctxFondo.fillRect(0, y, lado, 1);
-  }
-
-  // Motas de suelo fijas y de contraste bajo, solo visibles donde llega la luz.
-  ctxFondo.fillStyle = rgb(roles.tierra, 0.22);
-  for (let y = 0; y < tablero.filas; y++) {
-    for (let x = 0; x < tablero.columnas; x++) {
-      const dx = 2 + (x * 7 + y * 11) % (celda - 4);
-      const dy = 2 + (x * 13 + y * 5) % (celda - 4);
-      ctxFondo.fillRect(x * celda + dx, y * celda + dy, 1, 1);
+  function prepararRegion({ x, y, ancho, alto }) {
+    ox = x;
+    oy = y;
+    if (escena.width !== ancho || escena.height !== alto || !mapa) {
+      for (const capa of [escena, luminosa]) {
+        capa.width = ancho;
+        capa.height = alto;
+      }
+      anchoLuz = Math.ceil(ancho / 2);
+      altoLuz = Math.ceil(alto / 2);
+      colorLuz.width = anchoLuz;
+      colorLuz.height = altoLuz;
+      mapa = ctxColor.createImageData(anchoLuz, altoLuz);
+      intensidad = new Uint8Array(anchoLuz * altoLuz);
+      cruces = new Uint8Array(anchoLuz * altoLuz);
+    }
+    for (const ctx of [ctxEscena, ctxLuminosa]) {
+      ctx.setTransform(1, 0, 0, 1, -ox, -oy);
+      ctx.imageSmoothingEnabled = false;
+      ctx.clearRect(ox, oy, ancho, alto);
     }
   }
 
-  const ladoLuz = Math.ceil(lado / 2);
-  const colorLuz = lienzo(ladoLuz);
-  const ctxColor = colorLuz.getContext('2d');
-  const mapa = ctxColor.createImageData(ladoLuz, ladoLuz);
-  const intensidad = new Uint8Array(ladoLuz ** 2);
-  const cruces = new Uint8Array(ladoLuz ** 2);
+  function dibujarTerreno(ancho, alto) {
+    ctxEscena.fillStyle = rgb(roles.terreno);
+    ctxEscena.fillRect(ox, oy, ancho, alto);
+    const desdeX = Math.floor(ox / celda);
+    const desdeY = Math.floor(oy / celda);
+    for (let y = desdeY; y * celda < oy + alto; y++) {
+      for (let x = desdeX; x * celda < ox + ancho; x++) {
+        if (!tablero.contiene(x, y)) continue;
+        const px = x * celda;
+        const py = y * celda;
+        ctxEscena.fillStyle = rgb(roles.cuadricula);
+        ctxEscena.fillRect(px, py, celda, 1);
+        ctxEscena.fillRect(px, py + 1, 1, celda - 1);
+        ctxEscena.fillStyle = rgb(roles.tierra, 0.22);
+        const dx = 2 + modulo(x * 7 + y * 11, celda - 4);
+        const dy = 2 + modulo(x * 13 + y * 5, celda - 4);
+        ctxEscena.fillRect(px + dx, py + dy, 1, 1);
+      }
+    }
+  }
+
   const destellos = new Map();
   const luciernagas = [
     { fase: 0.3, velocidad: 0.19, radio: 2.1 },
@@ -87,15 +104,15 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
   ];
 
   function foco(x, y, radio, color, opacidad, ambiental) {
-    const cx = x / 2, cy = y / 2, r = radio / 2;
-    for (let fila = Math.max(0, Math.floor(cy - r)); fila < Math.min(ladoLuz, Math.ceil(cy + r)); fila++) {
-      for (let col = Math.max(0, Math.floor(cx - r)); col < Math.min(ladoLuz, Math.ceil(cx + r)); col++) {
+    const cx = (x - ox) / 2, cy = (y - oy) / 2, r = radio / 2;
+    for (let fila = Math.max(0, Math.floor(cy - r)); fila < Math.min(altoLuz, Math.ceil(cy + r)); fila++) {
+      for (let col = Math.max(0, Math.floor(cx - r)); col < Math.min(anchoLuz, Math.ceil(cx + r)); col++) {
         const dx = (col + 0.5 - cx) / r;
         const dy = (fila + 0.5 - cy) / (r * 0.75);
-        const textura = ((col * 5 + fila * 3) % 7 - 3) * 0.016;
+        const textura = (modulo((col + ox / 2) * 5 + (fila + oy / 2) * 3, 7) - 3) * 0.016;
         const d2 = dx * dx + dy * dy + textura;
         if (d2 >= 1) continue;
-        const i = fila * ladoLuz + col;
+        const i = fila * anchoLuz + col;
         if (ambiental && cruces[i] < 2) cruces[i]++;
         const alfa = Math.round(opacidad * (d2 < 0.1 ? 42 : d2 < 0.42 ? 24 : 10));
         if (alfa <= intensidad[i]) continue;
@@ -127,15 +144,15 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
     for (const luz of luciernagas) {
       const angulo = luz.fase + t * luz.velocidad;
       const radio = celda * (luz.radio + 0.38 * Math.sin(t * 0.41 + luz.fase));
-      luz.x = Math.round(lado / 2 + Math.cos(angulo) * radio);
-      luz.y = Math.round(lado / 2 + Math.sin(angulo) * radio * 0.76 + 4 * Math.sin(t * 0.73 + luz.fase));
+      luz.x = Math.round((central.celda.x + 0.5) * celda + Math.cos(angulo) * radio);
+      luz.y = Math.round((central.celda.y + 0.5) * celda + Math.sin(angulo) * radio * 0.76 + 4 * Math.sin(t * 0.73 + luz.fase));
       const pulso = (1 + Math.sin(t * (1.45 + luz.velocidad) + luz.fase)) / 2;
       luz.brillo = reducido || central.muerta ? 0 : (0.14 + 0.86 * pulso ** 2) * central.opacidad;
       if (luz.brillo > 0) foco(luz.x, luz.y, 14, roles.luciernaga, 0.58 * luz.brillo, false);
     }
     const deriva = reducido ? 0 : Math.floor(t * 2);
     for (let i = 0; i < intensidad.length; i++) {
-      const bruma = intensidad[i] > 0 && cruces[i] === 2 && (i % ladoLuz + 2 * Math.floor(i / ladoLuz) + deriva) % 5 === 0;
+      const bruma = intensidad[i] > 0 && cruces[i] === 2 && modulo(i % anchoLuz + ox / 2 + 2 * Math.floor(i / anchoLuz) + oy + deriva, 5) === 0;
       mapa.data[i * 4 + 3] = Math.min(48, intensidad[i] + (bruma ? 5 * central.opacidad : 0));
     }
     ctxColor.putImageData(mapa, 0, 0);
@@ -367,9 +384,40 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
     if (ctx === ctxLuminosa) dibujarDestello(ctx, enemigo, { x, y, frame: disolucion });
   }
 
+  function indicarAmenaza(enemigos, central, ancho, alto, visible) {
+    if (central.muerta || ancho < 24 || alto < 24) return;
+    const cx = ox + ancho / 2;
+    const cy = oy + alto / 2;
+    const criticos = new Map();
+    for (const enemigo of enemigos) {
+      if (enemigo.muerto || visible(enemigo.x * celda, enemigo.y * celda, 4)) continue;
+      const distancia = Math.hypot(enemigo.x - central.celda.x - 0.5, enemigo.y - central.celda.y - 0.5);
+      if (!enemigo.objetivo && distancia > 3) continue;
+      const dx = enemigo.x * celda - cx;
+      const dy = enemigo.y * celda - cy;
+      const tx = Math.abs(dx) / (ancho / 2 - 9);
+      const ty = Math.abs(dy) / (alto / 2 - 9);
+      const horizontal = tx >= ty;
+      const signo = Math.sign(horizontal ? dx : dy);
+      const clave = horizontal ? signo : 2 * signo;
+      const prioridad = enemigo.objetivo === central ? 0 : enemigo.objetivo ? 1 : 2;
+      if (criticos.get(clave)?.prioridad <= prioridad) continue;
+      const escala = Math.max(tx, ty);
+      criticos.set(clave, { x: Math.round(cx + dx / escala), y: Math.round(cy + dy / escala),
+        horizontal, signo, prioridad });
+    }
+    ctxLuminosa.fillStyle = rgb(roles.insectoReflejo, 0.72);
+    for (const { x, y, horizontal, signo } of criticos.values()) {
+      for (let i = -2; i <= 2; i++) {
+        const offset = -Math.abs(i) * signo;
+        ctxLuminosa.fillRect(x + (horizontal ? offset : i), y + (horizontal ? i : offset), 1, 1);
+      }
+    }
+  }
+
   return {
     destello(x, y, radio, color, t) {
-      const casilla = Math.floor(y / celda) * tablero.columnas + Math.floor(x / celda);
+      const casilla = claveCelda(Math.floor(x / celda), Math.floor(y / celda));
       destellos.set(casilla, { x, y, radio, color, t });
     },
     registrarPlanta(planta) {
@@ -379,17 +427,25 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
       if (planta.fuente) iluminacion.quitarFuente(planta.fuente);
       planta.fuente = null;
     },
-    dibujar({ t, impulso, reducido, central, plantas, enemigos, proyectiles, particulas, marcas, vista, retiro, alcance, gesto, pulsoCentro = 0, hoverCelda = null, tactil = false }) {
-      dibujarAmbiente(t, reducido, central, plantas);
+    dibujar({ region, t, impulso, reducido, central, plantas, enemigos, proyectiles, particulas, marcas, vista, retiro, alcance, gesto, pulsoCentro = 0, hoverCelda = null, tactil = false }) {
+      prepararRegion(region);
+      const { ancho, alto } = region;
+      const visible = (x, y, margen) => x + margen >= ox && x - margen < ox + ancho &&
+        y + margen >= oy && y - margen < oy + alto;
+      const plantasCercanas = plantas.filter(({ nucleo }) => visible(nucleo.x, nucleo.y, 48));
+      dibujarAmbiente(t, reducido, central, plantasCercanas);
       for (const planta of plantas) {
         if (planta.fuente) planta.fuente.factor = planta.opacidad * central.opacidad;
       }
 
-      iluminacion.actualizar(t, reducido ? impulso : Math.max(impulso, pulsoCentro * 0.65), reducido, central.nucleo, central.opacidad);
+      iluminacion.actualizar(t, reducido ? impulso : Math.max(impulso, pulsoCentro * 0.65), reducido, central.nucleo, central.opacidad, region);
 
-      ctxEscena.clearRect(0, 0, lado, lado);
-      ctxEscena.drawImage(fondo, 0, 0);
-      ctxEscena.drawImage(colorLuz, 0, 0, lado, lado);
+      plantas = plantasCercanas;
+      const amenazas = enemigos;
+      const enemigosCercanos = enemigos.filter(({ x, y }) => visible(x * celda, y * celda, 64));
+      enemigos = enemigosCercanos.filter(({ x, y }) => visible(x * celda, y * celda, 20));
+      dibujarTerreno(ancho, alto);
+      ctxEscena.drawImage(colorLuz, ox, oy, anchoLuz * 2, altoLuz * 2);
       for (const planta of plantas) {
         const { x, y } = planta.origen;
         const d = reducido ? { x: 0, y: 0 } : planta.desplazamiento();
@@ -402,7 +458,6 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
       for (const enemigo of enemigos) dibujarEnemigo(ctxEscena, enemigo, 1, reducido);
       ctxEscena.globalAlpha = 1;
 
-      ctxLuminosa.clearRect(0, 0, lado, lado);
       for (const planta of plantas) {
         const { x, y } = planta.origen;
         const d = reducido ? { x: 0, y: 0 } : planta.desplazamiento();
@@ -431,7 +486,7 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
             ctxLuminosa.fillRect(px, py, lleno, 1);
           }
         }
-        gestoPlanta(planta, enemigos, t, reducido);
+        gestoPlanta(planta, enemigosCercanos, t, reducido);
       }
       for (const enemigo of enemigos) {
         if (enemigo.muerto) {
@@ -447,6 +502,7 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
       ctxLuminosa.globalAlpha = 1;
 
       for (const proyectil of proyectiles) {
+        if (!visible(proyectil.x * celda, proyectil.y * celda, 8)) continue;
         const x = Math.round(proyectil.x * celda);
         const y = Math.round(proyectil.y * celda);
         const cola = Math.round((proyectil.x - proyectil.ux * 0.15) * celda);
@@ -474,7 +530,10 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
         esquinas(central.celda, roles.marcaSuave, reducido ? 0.4 : pulsoCentro * 0.65,
           reducido ? 0 : Math.floor((1 - pulsoCentro) * 3));
       }
-      if (vista) dibujarColocacion(vista, t, reducido);
+      if (vista) {
+        const candidatas = vista.candidatas.filter(({ x, y }) => visible(x * celda, y * celda, celda));
+        dibujarColocacion({ ...vista, candidatas }, t, reducido);
+      }
       if (retiro) {
         for (const planta of plantas) {
           if (!planta.muerta && planta !== central) esquinas(planta.celda, roles.marcaSuave, 0.38);
@@ -493,12 +552,12 @@ export function crearRenderer({ tablero, salida, roles, frames }) {
         });
       }
 
-      const B = salida.width;
+      indicarAmenaza(amenazas, central, ancho, alto, visible);
       ctxSalida.globalCompositeOperation = 'source-over';
       ctxSalida.imageSmoothingEnabled = false;
-      ctxSalida.drawImage(escena, 0, 0, lado, lado, 0, 0, B, B);
-      ctxSalida.drawImage(iluminacion.canvas, 0, 0, lado, lado, 0, 0, B, B);
-      ctxSalida.drawImage(luminosa, 0, 0, lado, lado, 0, 0, B, B);
+      ctxSalida.drawImage(escena, 0, 0, salida.width, salida.height);
+      ctxSalida.drawImage(iluminacion.canvas, 0, 0, salida.width, salida.height);
+      ctxSalida.drawImage(luminosa, 0, 0, salida.width, salida.height);
     },
   };
 }

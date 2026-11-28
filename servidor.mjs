@@ -14,6 +14,7 @@ const tipos = {
   '.png': 'image/png',
   '.svg': 'image/svg+xml',
   '.otf': 'font/otf',
+  '.ttf': 'font/ttf',
 };
 
 createServer(async (req, res) => {

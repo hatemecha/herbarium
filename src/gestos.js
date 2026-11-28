@@ -71,7 +71,7 @@ export function crearGestos({ campo, canvas, catalogo, camara, habilitado, alMov
       if (gesto.carta) {
         omitirClic = true;
         gesto.modo = alArrastrar(gesto.carta.dataset.tipo) ? 'semilla' : 'agotado';
-      } else if (camara.ampliada()) {
+      } else if (camara.puedeArrastrar()) {
         gesto.ancla = camara.mundo(gesto.inicio);
         gesto.modo = 'desplazar';
       } else gesto.modo = 'agotado';

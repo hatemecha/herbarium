@@ -6,7 +6,7 @@ Fuente de verdad: `src/config.js`, leído por `src/catalogo.js` y `src/combate.j
 
 La configuración beta y su validación están en [Etapa 08.3](ETAPA_083.md). Las cifras de esta nota corresponden a etapas anteriores y se conservan como referencia.
 
-Unidades: vida y daño en puntos, tiempo en segundos, distancia en casillas, velocidad en casillas/segundo. El tablero es 11×11 y la central está en `(5, 5)`.
+Unidades: vida y daño en puntos, tiempo en segundos, distancia en casillas, velocidad en casillas/segundo. Desde 08.5 la central está en `(0, 0)` y el jardín crece a partir de una región inicial de 9×9. Las mediciones históricas de este documento corresponden al tablero fijo. Ver [Etapa 08.5](ETAPA_085.md) para las mediciones actuales.
 
 ## Valores de la primera configuración
 

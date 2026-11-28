@@ -1,3 +1,4 @@
+import { claveCelda } from './tablero.js';
 import { BALANCE, ECONOMIA, PALA } from './config.js';
 import { costeDe } from './economia.js';
 import { crearPlanta } from './entidades/planta.js';
@@ -38,7 +39,7 @@ export function crearJardin({ tablero, estado, catalogo, frames, alPlantar, alRe
     return estado.energia >= coste(id);
   }
 
-  const clave = ({ x, y }) => y * tablero.columnas + x;
+  const clave = ({ x, y }) => claveCelda(x, y);
 
   function nacer(id, celda, desfase = 0, costePagado = 0) {
     const planta = crearPlanta({ tablero, celda, tipo: catalogo[id], frames: frames[id], desfase });
@@ -88,13 +89,19 @@ export function crearJardin({ tablero, estado, catalogo, frames, alPlantar, alRe
       return nacer(id, celda, Math.random() * 4, precio);
     },
     candidatas(id) {
-      const lista = [];
-      for (let y = 0; y < tablero.filas; y++) {
-        for (let x = 0; x < tablero.columnas; x++) {
-          if (colocable(id, { x, y })) lista.push({ x, y });
+      if (!catalogo[id]?.comprable || central?.muerta || !permitido() || estado.energia < coste(id)) return [];
+      const lista = new Map();
+      for (const planta of plantas) {
+        if (planta.muerta) continue;
+        for (let dy = -1; dy <= 1; dy++) {
+          for (let dx = -1; dx <= 1; dx++) {
+            const x = planta.celda.x + dx;
+            const y = planta.celda.y + dy;
+            if (tablero.contiene(x, y) && !tablero.ocupante(x, y)) lista.set(claveCelda(x, y), { x, y });
+          }
         }
       }
-      return lista;
+      return [...lista.values()].sort((a, b) => a.y - b.y || a.x - b.x);
     },
     destruir(planta) {
       if (planta.muerta) return;
@@ -103,6 +110,9 @@ export function crearJardin({ tablero, estado, catalogo, frames, alPlantar, alRe
       tablero.liberar(planta.celda.x, planta.celda.y);
     },
     actualizar(dt, reducido) {
+      for (const [casilla, hasta] of rearme) {
+        if (hasta <= (estado.tiempo ?? 0)) rearme.delete(casilla);
+      }
       for (const planta of [...plantas]) {
         planta.actualizar(dt, reducido);
         if (!planta.muerta) continue;

@@ -1,7 +1,8 @@
+import { muestrearFrente } from './frontera.js';
 import { PLANTAS } from './catalogo.js';
 import { perimetro } from './perimetro.js';
 
-const dist = (celda) => Math.hypot(celda.x - 5, celda.y - 5);
+const dist = (celda) => Math.hypot(celda.x, celda.y);
 
 function cubreBorde(celda, alcance, borde) {
   let cantidad = 0;
@@ -37,7 +38,9 @@ function politica(ids, reactiva = false, compacta = false) {
     const vivas = jardin.plantas.filter((planta) => !planta.muerta);
     const ofensivas = vivas.filter((planta) => planta.tipo.ataque || planta.tipo.area);
     const preferidas = ids.filter((id) => id === ids[0] || ofensivas.length > 0);
-    const borde = perimetro(tablero);
+    const borde = tablero.infinito
+      ? muestrearFrente(tablero)
+      : perimetro(tablero);
     const defensas = vivas.filter((planta) => planta.tipo.reflejo).length;
     const tiradoras = ofensivas.filter((planta) => planta.tipo.ataque).length;
     let mejorAccion = null;
