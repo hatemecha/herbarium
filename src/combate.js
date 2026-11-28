@@ -85,7 +85,7 @@ export function crearCombate({
   }
 
   function destruirPlanta(planta) {
-    jardin.destruir(planta);
+    jardin.destruir(planta, true);
     evento({ tipo: 'muerte-planta', ...posicionDe(planta), central: planta === jardin.central, planta: planta.id });
   }
 
@@ -99,7 +99,7 @@ export function crearCombate({
     enemigo.mordisco = visual.mordisco;
     const extra = enemigo.mordidas >= tipo.trasMordidas ? tipo.danoSostenido : 0;
     enemigo.mordidas += 1;
-    const aplicado = Math.min(objetivo.vida, tipo.dano + extra);
+    const aplicado = Math.min(objetivo.vida, (tipo.dano + extra) * jardin.multiplicadorMordida(objetivo));
     objetivo.vida -= aplicado;
     objetivo.destello = visual.destello;
     evento({ tipo: 'mordida', ...posicionDe(objetivo), central: objetivo === jardin.central,
@@ -225,16 +225,17 @@ export function crearCombate({
 
   function atacarConPlantas(dt) {
     for (const planta of jardin.plantas) {
-      const ataque = planta.tipo.ataque ?? planta.tipo.area;
-      if (!ataque || planta.muerta) continue;
+      const base = planta.tipo.ataque ?? planta.tipo.area;
+      if (!base || planta.muerta) continue;
       planta.enfriamiento = Math.max(0, planta.enfriamiento - dt);
 
       const origen = centroDe(planta);
-      const objetivo = masCercano(origen, ataque.alcance);
+      const objetivo = masCercano(origen, base.alcance);
       if (!objetivo) continue;
 
       if (planta.tipo.area) {
         if (planta.enfriamiento > 0) continue;
+        const ataque = jardin.ataque(planta);
         planta.enfriamiento = ataque.intervalo;
         planta.disparar(0, 0, visual.disparo, 0);
         evento({ tipo: 'esporas', ...origen });
@@ -246,7 +247,7 @@ export function crearCombate({
         continue;
       }
 
-      const punto = interceptar(origen, objetivo, ataque.velocidadProyectil);
+      const punto = interceptar(origen, objetivo, base.velocidadProyectil);
       const dx = punto.x - origen.x;
       const dy = punto.y - origen.y;
       const d = Math.hypot(dx, dy) || 1;
@@ -255,6 +256,7 @@ export function crearCombate({
       planta.direccion = indiceDireccion(ux, uy);
 
       if (planta.enfriamiento > 0) continue;
+      const ataque = jardin.ataque(planta);
       planta.enfriamiento += ataque.intervalo;
       proyectiles.push({
         x: origen.x + ux * 0.35,
@@ -347,7 +349,10 @@ export function crearCombate({
         for (const orden of director.avanzar(dt, vivos)) {
           crear(orden.x, orden.y, catalogoEnemigos[orden.id]).ladoEntrada = orden.lado;
         }
-        if (director.enRecompensa()) return;
+        if (director.enRecompensa()) {
+          jardin.cerrarInvasion();
+          return;
+        }
       } else if (!aparecio && tiempo >= aparicion) {
         aparecio = true;
         aparecer();

@@ -269,3 +269,67 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .energia[data-pulso="latido"] .energia-lienzo { animation: none; }
 }
+
+.tarot-dialogo {
+  position: fixed;
+  inset: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  color: #e4dec9;
+  background: transparent;
+  inline-size: min(36rem, calc(100% - 2rem - env(safe-area-inset-left) - env(safe-area-inset-right)));
+  max-block-size: calc(100dvh - 2rem - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  overflow: auto;
+  overscroll-behavior: contain;
+  text-align: center;
+}
+
+.tarot-dialogo::backdrop {
+  background: #070807;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tarot-dialogo[open]::backdrop { animation: tarot-negro 360ms ease-out both; }
+  .tarot-dialogo [data-fase] { animation: tarot-negro 240ms ease-out both; }
+  .tarot-dialogo [data-fase="pregunta"] { animation-delay: 180ms; }
+}
+
+@keyframes tarot-negro {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.tarot-dialogo section { padding: 1rem; }
+.tarot-dialogo h2 { margin: 0 0 1rem; }
+.tarot-dialogo h2:focus { outline: none; }
+.tarot-dialogo p { margin: .5rem 0; color: #c3bba5; }
+.tarot-dialogo .pixel-posicion { margin-inline: auto; }
+.tarot-dialogo button,
+.tarot-mazo {
+  cursor: pointer;
+  background: #131511;
+  border: 1px solid #4c5144;
+  color: #e4dec9;
+  min-block-size: 44px;
+  padding: .5rem .75rem;
+  line-height: 1;
+}
+
+.tarot-dialogo button:focus-visible,
+.tarot-mazo:focus-visible { outline: 2px solid #d19a53; outline-offset: 2px; }
+.tarot-dialogo button:hover,
+.tarot-mazo:hover { border-color: #b8a989; }
+.tarot-opciones { display: grid; gap: .5rem; }
+.tarot-opciones button { width: 100%; text-align: start; }
+.tarot-opciones .pixel-posicion { margin-inline: 0; }
+.tarot-dialogo .tarot-navegacion { display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap; }
+.tarot-dialogo > section > button, .tarot-navegacion { margin-top: 1rem; }
+.tarot-mazo { position: absolute; z-index: 4; inset: auto max(.75rem, env(safe-area-inset-right)) max(.75rem, env(safe-area-inset-bottom)) auto; display: flex; align-items: center; gap: .375rem; }
+.tarot-mazo[hidden] { display: none; }
+.registro-grupos:has([data-grupo="tarot"]) { flex-wrap: wrap; }
+.registro-lista [data-arcano] { padding-block: .35rem; }
+
+.derrota details { color: var(--ink); text-align: center; background: var(--panel); padding: .25rem .5rem; max-inline-size: calc(100% - 2rem); max-block-size: min(12rem, 52%); overflow: auto; }
+.derrota summary { cursor: pointer; }
+.derrota details p { margin: .5rem 0; white-space: pre-line; }

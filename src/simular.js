@@ -1,4 +1,6 @@
-import { OLEADAS, SIMULACION } from './config.js';
+import { crearTarot, PREGUNTAS_TAROT } from './tarot.js';
+import { ARCANOS, crearEfectosTarot } from './efectosTarot.js';
+import { OLEADAS, PALA, SIMULACION } from './config.js';
 import { crearAleatorio } from './aleatorio.js';
 import { ENEMIGOS, PLANTAS } from './catalogo.js';
 import { crearCombate } from './combate.js';
@@ -13,6 +15,11 @@ export function simularPartida({ semilla, estrategia, horizonte = 20 * 60, cada 
   const tablero = crearMundo();
   const estado = crearEstado();
   const registro = crearRegistro();
+  const efectos = crearEfectosTarot(estado);
+  const tarot = crearTarot(semilla, Object.keys(ARCANOS).map(Number));
+  const decidir = crearAleatorio(semilla ^ 0x388efa72);
+  const arcanos = [];
+  const nivelesExperimentales = new Map();
   const director = crearDirector({
     tablero,
     oleadas: { ...OLEADAS, ...ajustes.oleadas },
@@ -23,6 +30,7 @@ export function simularPartida({ semilla, estrategia, horizonte = 20 * 60, cada 
   const jardin = crearJardin({
     tablero,
     estado,
+    efectos,
     catalogo: {
       ...PLANTAS,
       espino: { ...PLANTAS.espino, ...ajustes.espino },
@@ -70,12 +78,29 @@ export function simularPartida({ semilla, estrategia, horizonte = 20 * 60, cada 
       if (premio) {
         premios[premio.tipo]++;
         energiaPremios += premio.energia;
-        if (premio.tipo === 'tarot') director.finalizarTarot();
+        if (premio.tipo === 'tarot') {
+          const vista = tarot.abrir();
+          const pregunta = PREGUNTAS_TAROT.find(({ id }) => id === vista.id);
+          const opcion = ajustes.responderTarot?.({ pregunta, aleatorio: decidir, ritual: arcanos.length })
+            ?? pregunta.respuestas[Math.floor(decidir() * pregunta.respuestas.length)].id;
+          const obtenida = tarot.responder(vista, opcion);
+          if (!obtenida) throw new Error('Respuesta de simulación inválida');
+          let carta = obtenida;
+          if (typeof ajustes.invertirTarot === 'boolean') {
+            const nivel = (nivelesExperimentales.get(obtenida.id) ?? 0) + 1;
+            nivelesExperimentales.set(obtenida.id, nivel);
+            carta = { ...obtenida, invertida: ajustes.invertirTarot, nivel };
+          }
+          jardin.adquirirArcano(carta);
+          arcanos.push({ pregunta: vista.id, ...carta });
+          tarot.cerrar(vista);
+          director.finalizarTarot(premio);
+        }
       }
     } else {
-      const antes = estado.energia;
-      avanzar(estado, dt, director.generaEnergia() ? ajustes.energia : 0);
-      registro.generada(estado.energia - antes);
+      const genera = director.generaEnergia();
+      avanzar(estado, dt, efectos.energia(dt, genera, director.enCombate(), ajustes.energia));
+      registro.generada(efectos.generacion(genera, ajustes.energia) * dt);
       espera += dt;
       if (espera >= cada) {
         espera = 0;
@@ -88,7 +113,8 @@ export function simularPartida({ semilla, estrategia, horizonte = 20 * 60, cada 
           enemigos: combate.enemigos,
         });
         if (accion?.retirar) {
-          const retirada = jardin.retirar(accion.retirar);
+          const desbloqueada = director.vista().numero >= (ajustes.pala?.desdeOleada ?? PALA.desdeOleada);
+          const retirada = desbloqueada && jardin.retirar(accion.retirar);
           if (retirada) {
             retiradas++;
             energiaRecuperada += retirada.energia;
@@ -158,6 +184,7 @@ export function simularPartida({ semilla, estrategia, horizonte = 20 * 60, cada 
     energiaRecuperada,
     energiaPremios,
     premios,
+    arcanos,
     ...registro.datos,
   };
 }

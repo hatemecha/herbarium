@@ -29,7 +29,7 @@ Implementado:
 6. La cerbatana dispara sola al enemigo más cercano dentro de su alcance circular. El espino atrae insectos y devuelve 2 de daño a quien lo muerde.
 7. Si la central muere, la partida se detiene: no sube energía, no se compra y no se combate. Las animaciones pendientes terminan y, al apagarse la central, aparece el aviso «el jardín cayó».
 
-Cuando termina el combate y no quedan enemigos vivos, aparece la recompensa. Durante su presentación se detienen el combate, la energía y las compras. Después empiezan los 17 s de preparación. Los resultados de producción son energía o sin bonificación.
+Cuando termina el combate y no quedan enemigos vivos, aparece la recompensa. Durante su presentación se detienen el combate, la energía y las compras. Los resultados son energía, acceso al tarot o sin bonificación. La preparación de 17 s empieza después de resolver el premio, incluida la confirmación del arcano si hubo ritual.
 
 ## Condiciones
 
@@ -52,7 +52,7 @@ Implementado. No es comprable. Ocupa la casilla `(0, 0)`. Vida 30. No ataca. Su 
 
 Implementado y experimental. La energía empieza en 0 y sube 1 por segundo en preparación y en combate. El indicador muestra el entero. El coste de cada compra es `costeBase + 2t + 6t(t − 1)`, con `t = floor(vivasDelMismoTipo / 4)`. Lo desactiva `ECONOMIA.creciente` en `src/config.js`. La tarjeta, la validación y el descuento leen esa misma función.
 
-La energía pasiva se suspende durante los premios y tras la ventana nominal de apariciones más 24 s de combate. La pala devuelve la mitad redondeada hacia abajo del coste pagado, sin depender del precio de catálogo ni de la vida restante. La recompensa de energía se aplica una vez por invasión. No hay regeneración ni recompensa por matar. El detalle está en [ETAPA_084.md](ETAPA_084.md).
+La energía pasiva se suspende durante los premios y tras la ventana nominal de apariciones más 24 s de combate. La pala devuelve la mitad redondeada hacia abajo del coste pagado, sin depender del precio de catálogo ni de la vida restante. La recompensa de energía se aplica una vez por invasión. La Estrella puede recuperar una fracción de la vida faltante al cerrar una invasión. El resto del combate sigue sin regeneración ni recompensa por matar. El detalle está en [ETAPA_084.md](ETAPA_084.md).
 
 ## Plantas, catálogo y expansión
 
@@ -102,15 +102,12 @@ Tres enemigos comparten `src/combate.js`. El escarabajo conserva vida 12, veloci
 - El escarabajo muerto se desintegra píxel a píxel y luego sale de la lista.
 - Una planta destruida libera la casilla al momento, se marchita por opacidad y al terminar se retira junto con su luz.
 
-## Intención futura, todavía no diseñada
-
-No hay cartas ni preguntas. No inventarlas.
+## Alcance y evolución prevista
 
 - **Oleadas.** Implementadas como director procedural. El presupuesto y el ritmo son experimentales.
 - **Más plantas y enemigos.** Hay cuatro plantas comprables y tres insectos. No hay una cuarta especie.
 - **Economía.** Preparación y combate mantienen el goteo dentro de sus límites. El coste crece con las vivas.
-- **Preguntas de personalidad.** El resultado de tarot está deshabilitado en producción. La fase puede esperar una integración externa antes de devolver el control.
-- **Tarot.** La respuesta entrega una carta. El símbolo, la respuesta y la modificación de una o varias plantas tienen que relacionarse de verdad. No hay lista de arcanos ni de efectos.
+- **Tarot.** El primer corte interpreta simbólicamente decisiones de la partida a partir de una pregunta por ritual. Cada arcano modifica el jardín hasta el final de esa partida. La ampliación a 22 arcanos y la calibración completa siguen pendientes. [Etapa 09](tarot/ETAPA_09.md).
 - **Sonido, pulido visual e integración** en la web personal. Ver [ROADMAP.md](ROADMAP.md).
 
 ## Pendiente de diseño

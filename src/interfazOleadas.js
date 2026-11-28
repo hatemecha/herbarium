@@ -63,7 +63,7 @@ export function crearRecompensaUI({ escenario, roles, reducido, alRevelar, alCon
     destruir: () => raiz.remove(),
     teniaFoco: () => raiz.contains(document.activeElement),
     actualizar(vista, anunciar) {
-      if (vista.fase !== 'recompensa') {
+      if (vista.fase !== 'recompensa' || vista.aplicado) {
         raiz.hidden = true;
         pose = '';
         revelado = false;

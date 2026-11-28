@@ -1,3 +1,4 @@
+import { RECOMPENSAS } from '../src/config.js';
 import { simularPartida } from '../src/simular.js';
 
 const radio = ({ x, y }) => Math.hypot(x, y);
@@ -21,7 +22,10 @@ function politica(puntuar) {
 
 for (const [forma, puntuar] of Object.entries(geometria)) {
   for (const semilla of [7, 19, 42]) {
-    const r = simularPartida({ semilla, estrategia: politica(puntuar), horizonte: 900 });
+    const r = simularPartida({
+      semilla, estrategia: politica(puntuar), horizonte: 900,
+      ajustes: { recompensas: { ...RECOMPENSAS, tarot: false } },
+    });
     const duraciones = r.historial.map(oleada => oleada.duracion);
     console.log(JSON.stringify({
       forma, semilla, derrota: r.derrota, segundos: Math.round(r.tiempo), completas: r.oleadasCompletas,

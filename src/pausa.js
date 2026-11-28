@@ -1,3 +1,4 @@
+import { mostrarTarotCatalogo } from './interfazTarot.js';
 import { ENERGIA, TABLERO } from './config.js';
 import { crearAnimacion } from './animacion.js';
 import { PLANTAS } from './catalogo.js';
@@ -103,9 +104,10 @@ export function crearPausa({ contenedor, boton, frames, roles, reducido, descubr
         <h2>Catálogo</h2>
         <button type="button" data-accion="volver">Volver</button>
       </header>
-      <div class="registro-grupos" role="group" aria-label="Especies">
+      <div class="registro-grupos" role="group" aria-label="Colecciones">
         <button type="button" data-grupo="plantas">Plantas</button>
         <button type="button" data-grupo="enemigos">Enemigos</button>
+        <button type="button" data-grupo="tarot">Tarot</button>
       </div>
       <div class="registro-contenido" data-recorte-pixel tabindex="0" role="region" aria-label="Fichas de especies">
         <div class="registro-lista" role="group" aria-label="Especies descubiertas"></div>
@@ -145,6 +147,7 @@ export function crearPausa({ contenedor, boton, frames, roles, reducido, descubr
   let raf = 0;
   let ultimo = 0;
   let tamañoMarco;
+  let ajustarTarot;
 
   function ajustarMarco(dpr) {
     const clave = `${window.innerWidth}/${window.innerHeight}/${dpr}`;
@@ -185,6 +188,7 @@ export function crearPausa({ contenedor, boton, frames, roles, reducido, descubr
     else vestirMarco(dialogo, rgb(roles.cuadricula), dpr);
     central.ajustar(zoomMenu);
     principal?.ajustar(zoom);
+    ajustarTarot?.();
     for (const miniatura of miniaturas) miniatura.ajustar(2);
     actualizarRotulos();
     // Las cajas de texto pueden cambiar el alto de las filas y centrar de nuevo el diálogo.
@@ -242,7 +246,13 @@ export function crearPausa({ contenedor, boton, frames, roles, reducido, descubr
     nombres = [];
     fichas = [];
     principal = null;
+    ajustarTarot = undefined;
     const especies = descubrimientos.listar(grupo);
+    if (grupo === 'tarot') {
+      ajustarTarot = mostrarTarotCatalogo(lista, ficha, especies);
+      ajustar();
+      return;
+    }
     if (!especies.length) {
       nombres.push(crearRotulo(lista, 'Todavía no encontraste enemigos', {
         ancho: () => lista.clientWidth, interlineado: INTERLINEADO_LECTURA,

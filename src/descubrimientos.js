@@ -1,10 +1,15 @@
 import { ENEMIGOS, PLANTAS } from './catalogo.js';
 
+import { ARCANOS } from './efectosTarot.js';
+
 const CLAVE = 'herbarium:descubrimientos';
-const TIPOS = { plantas: PLANTAS, enemigos: ENEMIGOS };
+const TIPOS = { plantas: PLANTAS, enemigos: ENEMIGOS, tarot: Object.fromEntries(Object.keys(ARCANOS).flatMap(id => [false, true].map(invertida => {
+  const clave = id + ':' + Number(invertida);
+  return [clave, { id: Number(id), invertida, nivel: 1, clave }];
+}))) };
 
 export function crearDescubrimientos(obtenerAlmacen = () => localStorage) {
-  const vistos = { plantas: new Set(), enemigos: new Set() };
+  const vistos = { plantas: new Set(), enemigos: new Set(), tarot: new Set() };
   let almacen;
   try {
     almacen = obtenerAlmacen();
@@ -21,7 +26,7 @@ export function crearDescubrimientos(obtenerAlmacen = () => localStorage) {
 
   return {
     listar(grupo) {
-      return Object.values(TIPOS[grupo]).filter(({ id }) => vistos[grupo].has(id));
+      return Object.values(TIPOS[grupo]).filter(({ id, clave }) => vistos[grupo].has(clave ?? id));
     },
     registrar(grupo, ...ids) {
       const lista = vistos[grupo];
@@ -34,6 +39,7 @@ export function crearDescubrimientos(obtenerAlmacen = () => localStorage) {
         almacen?.setItem(CLAVE, JSON.stringify({
           plantas: [...vistos.plantas],
           enemigos: [...vistos.enemigos],
+          tarot: [...vistos.tarot],
         }));
       } catch {
         // Los descubrimientos siguen disponibles durante esta sesión.

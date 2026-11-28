@@ -4,7 +4,7 @@ import { perimetro } from './perimetro.js';
 export function dpsTeorico(jardin) {
   let dps = 0;
   for (const planta of jardin.plantas) {
-    const ataque = planta.tipo.ataque ?? planta.tipo.area;
+    const ataque = jardin.ataque(planta);
     if (planta.muerta || !ataque) continue;
     dps += ataque.dano / ataque.intervalo;
   }
@@ -44,6 +44,7 @@ export function crearRegistro() {
     perdidasPorPlanta: { cerbatana: 0, espino: 0, campanilla: 0, hongo: 0 },
     danoCentral: 0,
     plantasPerdidas: 0,
+    insectosEliminados: 0,
     disparos: 0,
     impactosCerbatana: 0,
     disparosPerdidos: 0,
@@ -66,6 +67,7 @@ export function crearRegistro() {
     },
     eventos(lista) {
       for (const evento of lista) {
+        if (evento.tipo === 'muerte-enemigo') datos.insectosEliminados++;
         if (evento.tipo === 'mordida' && evento.central) datos.danoCentral += evento.dano;
         if (evento.tipo === 'muerte-planta' && !evento.central) {
           datos.plantasPerdidas += 1;

@@ -1,0 +1,3568 @@
+{
+  "version": 1,
+  "idioma": "es-AR",
+  "ejes": {
+    "control": {
+      "negativo": "Planificación",
+      "positivo": "Improvisación"
+    },
+    "incertidumbre": {
+      "negativo": "Buscar certezas",
+      "positivo": "Aceptar lo desconocido"
+    },
+    "riesgo": {
+      "negativo": "Prudencia",
+      "positivo": "Exploración"
+    },
+    "perdida": {
+      "negativo": "Conservar",
+      "positivo": "Soltar"
+    },
+    "cambio": {
+      "negativo": "Continuidad",
+      "positivo": "Transformación"
+    },
+    "persistencia": {
+      "negativo": "Insistir",
+      "positivo": "Redirigir esfuerzos"
+    },
+    "autonomia": {
+      "negativo": "Criterio propio",
+      "positivo": "Consulta"
+    },
+    "cooperacion": {
+      "negativo": "Trabajo independiente",
+      "positivo": "Interdependencia"
+    },
+    "recursos": {
+      "negativo": "Reserva",
+      "positivo": "Inversión"
+    },
+    "responsabilidad": {
+      "negativo": "Agencia individual",
+      "positivo": "Responsabilidad distribuida"
+    },
+    "decision": {
+      "negativo": "Análisis",
+      "positivo": "Intuición"
+    },
+    "ambicion": {
+      "negativo": "Suficiencia",
+      "positivo": "Superación"
+    }
+  },
+  "preguntas": [
+    {
+      "id": "control-01",
+      "familia": "control",
+      "contextoComparable": "rutina",
+      "texto": "Tenés una tarde libre y varias cosas que querés hacer. ¿Cómo la organizás?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Armo un orden antes de empezar.",
+          "pesos": {
+            "control": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Elijo una cosa y veo cómo sigue el día.",
+          "pesos": {
+            "control": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Dejo la tarde abierta y decido en el momento.",
+          "pesos": {
+            "control": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "control-02",
+      "familia": "control",
+      "contextoComparable": "rutina",
+      "texto": "Si mañana tenés un día ocupado, ¿qué preferís hacer hoy?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Dejar listo lo importante.",
+          "pesos": {
+            "control": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Anotar lo imprescindible y resolver el resto mañana.",
+          "pesos": {
+            "control": -1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Organizarme cuando llegue el momento.",
+          "pesos": {
+            "control": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "control-03",
+      "familia": "control",
+      "contextoComparable": null,
+      "texto": "Al cocinar algo que nunca hiciste, ¿qué te resulta más cómodo?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Seguir la receta.",
+          "pesos": {
+            "control": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Usarla como referencia y hacer cambios.",
+          "pesos": {
+            "control": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Experimentar con lo que tengo.",
+          "pesos": {
+            "control": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "control-04",
+      "familia": "control",
+      "contextoComparable": null,
+      "texto": "Un viaje cambia de horario a último momento. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Reorganizo todo el recorrido.",
+          "pesos": {
+            "control": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Ajusto solo lo urgente.",
+          "pesos": {
+            "control": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Aprovecho el cambio para hacer algo distinto.",
+          "pesos": {
+            "control": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "control-05",
+      "familia": "control",
+      "contextoComparable": null,
+      "texto": "Antes de empezar un proyecto, ¿qué te sirve más?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Un plan con etapas claras.",
+          "pesos": {
+            "control": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Una idea general y objetivos pequeños.",
+          "pesos": {
+            "control": -1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Empezar para descubrir qué hace falta.",
+          "pesos": {
+            "control": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "control-06",
+      "familia": "control",
+      "contextoComparable": null,
+      "texto": "Un grupo se reúne sin haber decidido qué hacer. ¿Qué preferís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Proponer un orden de actividades.",
+          "pesos": {
+            "control": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Tirar algunas ideas y elegir entre todos.",
+          "pesos": {
+            "control": 1,
+            "cooperacion": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Dejar que surja algo espontáneamente.",
+          "pesos": {
+            "control": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "control-07",
+      "familia": "control",
+      "contextoComparable": null,
+      "texto": "¿Qué te molesta más en un trabajo compartido?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Que no estén claras las tareas.",
+          "pesos": {
+            "control": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Que no haya margen para cambiar el plan.",
+          "pesos": {
+            "control": 2
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Que no se sepa cuándo termina.",
+          "pesos": {
+            "control": -1,
+            "incertidumbre": -1
+          }
+        }
+      ]
+    },
+    {
+      "id": "control-08",
+      "familia": "control",
+      "contextoComparable": null,
+      "texto": "Si una herramienta tiene muchas opciones, ¿cómo empezás?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Leo cómo funciona.",
+          "pesos": {
+            "control": -2,
+            "decision": -1
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Pruebo unas pocas funciones.",
+          "pesos": {
+            "control": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Exploro libremente hasta entenderla.",
+          "pesos": {
+            "control": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "control-09",
+      "familia": "control",
+      "contextoComparable": null,
+      "texto": "Cuando comprás algo que vas a usar seguido, ¿qué preferís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Elegirlo después de comparar alternativas.",
+          "pesos": {
+            "control": -2,
+            "decision": -1
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Decidir por lo que necesito hoy.",
+          "pesos": {
+            "control": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Elegir una opción que me permita experimentar.",
+          "pesos": {
+            "control": 2,
+            "cambio": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "control-10",
+      "familia": "control",
+      "contextoComparable": null,
+      "texto": "¿Cómo te llevás con las listas de tareas?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Me ayudan a pensar.",
+          "pesos": {
+            "control": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Me sirven si son cortas.",
+          "pesos": {
+            "control": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Prefiero recordar lo importante y actuar.",
+          "pesos": {
+            "control": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "incertidumbre-01",
+      "familia": "incertidumbre",
+      "contextoComparable": "espera-noticia",
+      "texto": "Estás esperando una respuesta que puede cambiar tus planes. ¿Qué hacés mientras tanto?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Busco información para anticiparme.",
+          "pesos": {
+            "incertidumbre": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Preparo alternativas sin decidir todavía.",
+          "pesos": {
+            "incertidumbre": 0,
+            "control": -1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Sigo con mi día y espero la respuesta.",
+          "pesos": {
+            "incertidumbre": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "incertidumbre-02",
+      "familia": "incertidumbre",
+      "contextoComparable": "espera-noticia",
+      "texto": "No sabés si un compromiso de mañana se va a confirmar. ¿Qué preferís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Pedir confirmación cuanto antes.",
+          "pesos": {
+            "incertidumbre": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Reservar un margen para ambas posibilidades.",
+          "pesos": {
+            "incertidumbre": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Decidir mañana con lo que sepa entonces.",
+          "pesos": {
+            "incertidumbre": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "incertidumbre-03",
+      "familia": "incertidumbre",
+      "contextoComparable": null,
+      "texto": "Un libro tiene un final abierto. ¿Qué te interesa más?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Encontrar una interpretación que lo explique.",
+          "pesos": {
+            "incertidumbre": -2,
+            "decision": -1
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Comparar varias interpretaciones.",
+          "pesos": {
+            "incertidumbre": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Dejar algunas cosas sin resolver.",
+          "pesos": {
+            "incertidumbre": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "incertidumbre-04",
+      "familia": "incertidumbre",
+      "contextoComparable": null,
+      "texto": "Alguien te recomienda una película sin contarte nada. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Averiguo de qué trata antes de verla.",
+          "pesos": {
+            "incertidumbre": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Miro solo el género o la duración.",
+          "pesos": {
+            "incertidumbre": -1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "La veo sin buscar información.",
+          "pesos": {
+            "incertidumbre": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "incertidumbre-05",
+      "familia": "incertidumbre",
+      "contextoComparable": null,
+      "texto": "Una noticia tiene versiones diferentes. ¿Qué preferís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Contrastar las versiones antes de opinar.",
+          "pesos": {
+            "incertidumbre": -2,
+            "decision": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Aceptar una conclusión provisional.",
+          "pesos": {
+            "incertidumbre": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Dejar el tema abierto por ahora.",
+          "pesos": {
+            "incertidumbre": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "incertidumbre-06",
+      "familia": "incertidumbre",
+      "contextoComparable": null,
+      "texto": "¿Qué te resulta más difícil al aprender algo nuevo?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "No saber si lo estoy haciendo bien.",
+          "pesos": {
+            "incertidumbre": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "No saber cuánto tiempo llevará.",
+          "pesos": {
+            "incertidumbre": -1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "No tener espacio para experimentar.",
+          "pesos": {
+            "incertidumbre": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "incertidumbre-07",
+      "familia": "incertidumbre",
+      "contextoComparable": null,
+      "texto": "Si pudieras saber cómo saldrá una decisión antes de tomarla, ¿qué elegirías?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Conocer el resultado.",
+          "pesos": {
+            "incertidumbre": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Conocer los riesgos principales.",
+          "pesos": {
+            "incertidumbre": -1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Descubrirlo después de decidir.",
+          "pesos": {
+            "incertidumbre": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "incertidumbre-08",
+      "familia": "incertidumbre",
+      "contextoComparable": null,
+      "texto": "Un amigo te invita a una actividad que no conocés. ¿Qué necesitás saber?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Bastante para decidir si me interesa.",
+          "pesos": {
+            "incertidumbre": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Lo básico para poder ir preparado.",
+          "pesos": {
+            "incertidumbre": -1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Me alcanza con saber cuándo y dónde.",
+          "pesos": {
+            "incertidumbre": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "incertidumbre-09",
+      "familia": "incertidumbre",
+      "contextoComparable": null,
+      "texto": "Una situación admite varias explicaciones razonables. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Busco la más sólida.",
+          "pesos": {
+            "incertidumbre": -2,
+            "decision": -1
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Mantengo dos o tres posibilidades.",
+          "pesos": {
+            "incertidumbre": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "No necesito resolverla si no cambia nada.",
+          "pesos": {
+            "incertidumbre": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "incertidumbre-10",
+      "familia": "incertidumbre",
+      "contextoComparable": null,
+      "texto": "¿Qué preferís en un juego que recién empezás?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Entender sus reglas de antemano.",
+          "pesos": {
+            "incertidumbre": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Aprender con algunas pistas.",
+          "pesos": {
+            "incertidumbre": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Descubrir las reglas jugando.",
+          "pesos": {
+            "incertidumbre": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "riesgo-01",
+      "familia": "riesgo",
+      "contextoComparable": "ahorro-no-esencial",
+      "texto": "Tenés dinero reservado para un gusto personal. ¿Qué preferís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Algo que sé que voy a disfrutar.",
+          "pesos": {
+            "riesgo": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Probar algo nuevo con una parte.",
+          "pesos": {
+            "riesgo": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Algo completamente distinto a lo habitual.",
+          "pesos": {
+            "riesgo": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "riesgo-02",
+      "familia": "riesgo",
+      "contextoComparable": "ahorro-no-esencial",
+      "texto": "Recibís un regalo que podés cambiar por cualquiera de tres cosas. ¿Cuál elegís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Una que ya conozco y me gusta.",
+          "pesos": {
+            "riesgo": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Una útil que nunca tuve.",
+          "pesos": {
+            "riesgo": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Una que me da curiosidad aunque no sepa si me servirá.",
+          "pesos": {
+            "riesgo": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "riesgo-03",
+      "familia": "riesgo",
+      "contextoComparable": null,
+      "texto": "Un proyecto pequeño puede salir bien o no, pero aprenderías bastante. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Espero hasta tener más garantías.",
+          "pesos": {
+            "riesgo": -2,
+            "incertidumbre": -1
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Hago una prueba de bajo coste.",
+          "pesos": {
+            "riesgo": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Lo intento y acepto el resultado.",
+          "pesos": {
+            "riesgo": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "riesgo-04",
+      "familia": "riesgo",
+      "contextoComparable": null,
+      "texto": "En un juego tenés ventaja. ¿Qué preferís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Mantenerla con una estrategia segura.",
+          "pesos": {
+            "riesgo": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Arriesgar una parte para ampliarla.",
+          "pesos": {
+            "riesgo": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Buscar una jugada que pueda cambiar todo.",
+          "pesos": {
+            "riesgo": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "riesgo-05",
+      "familia": "riesgo",
+      "contextoComparable": null,
+      "texto": "Podés elegir un recorrido conocido o uno nuevo que quizá demore más. ¿Cuál tomás?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "El conocido.",
+          "pesos": {
+            "riesgo": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "El nuevo si tengo margen de tiempo.",
+          "pesos": {
+            "riesgo": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "El nuevo por curiosidad.",
+          "pesos": {
+            "riesgo": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "riesgo-06",
+      "familia": "riesgo",
+      "contextoComparable": null,
+      "texto": "¿Qué te pesa más al mirar una oportunidad pasada?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Haber arriesgado sin necesidad.",
+          "pesos": {
+            "riesgo": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "No haber calculado mejor el riesgo.",
+          "pesos": {
+            "riesgo": -1,
+            "decision": -1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "No haberlo intentado.",
+          "pesos": {
+            "riesgo": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "riesgo-07",
+      "familia": "riesgo",
+      "contextoComparable": null,
+      "texto": "Hay dos métodos para hacer algo: uno lento y seguro, otro rápido e incierto. ¿Cuál probás?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "El seguro.",
+          "pesos": {
+            "riesgo": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "El rápido en una prueba pequeña.",
+          "pesos": {
+            "riesgo": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "El rápido desde el comienzo.",
+          "pesos": {
+            "riesgo": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "riesgo-08",
+      "familia": "riesgo",
+      "contextoComparable": null,
+      "texto": "Una compra opcional tiene una devolución difícil. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "La descarto si no estoy seguro.",
+          "pesos": {
+            "riesgo": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Investigo si vale la pena.",
+          "pesos": {
+            "riesgo": -1,
+            "decision": -1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "La hago si me entusiasma lo suficiente.",
+          "pesos": {
+            "riesgo": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "riesgo-09",
+      "familia": "riesgo",
+      "contextoComparable": null,
+      "texto": "¿Qué preferís aprender primero en una actividad nueva?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Las bases que reducen errores.",
+          "pesos": {
+            "riesgo": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Un desafío que pueda resolver de a poco.",
+          "pesos": {
+            "riesgo": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Algo difícil que me obligue a experimentar.",
+          "pesos": {
+            "riesgo": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "riesgo-10",
+      "familia": "riesgo",
+      "contextoComparable": null,
+      "texto": "Tenés una idea poco habitual para un trabajo sin consecuencias graves. ¿Cómo la usás?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "La guardo para otra ocasión.",
+          "pesos": {
+            "riesgo": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "La pruebo en una parte pequeña.",
+          "pesos": {
+            "riesgo": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Construyo el trabajo alrededor de ella.",
+          "pesos": {
+            "riesgo": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "perdida-01",
+      "familia": "perdida",
+      "contextoComparable": "objetos-sin-uso",
+      "texto": "Encontrás algo que usabas mucho y ya no necesitás. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Lo guardo por lo que significó.",
+          "pesos": {
+            "perdida": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Busco otro uso.",
+          "pesos": {
+            "perdida": 0,
+            "cambio": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Lo regalo o lo dejo ir.",
+          "pesos": {
+            "perdida": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "perdida-02",
+      "familia": "perdida",
+      "contextoComparable": "objetos-sin-uso",
+      "texto": "Al ordenar tus cosas, encontrás un objeto que hace años no usás. ¿Qué decidís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Conservarlo si tiene valor para mí.",
+          "pesos": {
+            "perdida": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Guardar una foto y decidir luego.",
+          "pesos": {
+            "perdida": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Darle a otra persona que lo aproveche.",
+          "pesos": {
+            "perdida": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "perdida-03",
+      "familia": "perdida",
+      "contextoComparable": null,
+      "texto": "Un borrador viejo no encaja con lo que querés escribir ahora. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Intento rescatar la mayor parte.",
+          "pesos": {
+            "perdida": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Guardo algunas ideas útiles.",
+          "pesos": {
+            "perdida": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Empiezo con una página nueva.",
+          "pesos": {
+            "perdida": 2,
+            "cambio": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "perdida-04",
+      "familia": "perdida",
+      "contextoComparable": null,
+      "texto": "Un hobby dejó de interesarte. ¿Cómo lo vivís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Intento recuperar el interés.",
+          "pesos": {
+            "perdida": -2,
+            "persistencia": -1
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Lo dejo en pausa.",
+          "pesos": {
+            "perdida": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Le hago espacio a otra actividad.",
+          "pesos": {
+            "perdida": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "perdida-05",
+      "familia": "perdida",
+      "contextoComparable": null,
+      "texto": "Perdés una partida por un error temprano. ¿Qué preferís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Revisarla y entender cómo recuperarla.",
+          "pesos": {
+            "perdida": -1,
+            "decision": -1
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Terminarla aunque el resultado sea malo.",
+          "pesos": {
+            "perdida": -2,
+            "persistencia": -1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Empezar otra cuando ya aprendí del error.",
+          "pesos": {
+            "perdida": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "perdida-06",
+      "familia": "perdida",
+      "contextoComparable": null,
+      "texto": "Se rompe un objeto que tiene valor afectivo. ¿Qué intentás?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Repararlo aunque no quede igual.",
+          "pesos": {
+            "perdida": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Conservar una parte o recuerdo.",
+          "pesos": {
+            "perdida": -1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Despedirme del objeto sin reemplazarlo necesariamente.",
+          "pesos": {
+            "perdida": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "perdida-07",
+      "familia": "perdida",
+      "contextoComparable": null,
+      "texto": "Un grupo deja de hacer una actividad que compartían. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Propongo retomarla.",
+          "pesos": {
+            "perdida": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Mantengo el contacto de otra forma.",
+          "pesos": {
+            "perdida": 1,
+            "cooperacion": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Acepto que esa etapa terminó.",
+          "pesos": {
+            "perdida": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "perdida-08",
+      "familia": "perdida",
+      "contextoComparable": null,
+      "texto": "Un trabajo te llevó mucho tiempo, pero una parte ya no aporta. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "La mantengo si todavía puede servir.",
+          "pesos": {
+            "perdida": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "La archivo aparte.",
+          "pesos": {
+            "perdida": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "La elimino para mejorar el conjunto.",
+          "pesos": {
+            "perdida": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "perdida-09",
+      "familia": "perdida",
+      "contextoComparable": null,
+      "texto": "¿Qué preferís hacer con fotografías que ya no representan tu vida actual?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Conservarlas como registro.",
+          "pesos": {
+            "perdida": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Seleccionar unas pocas.",
+          "pesos": {
+            "perdida": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Quedarme solo con las que todavía quiero mirar.",
+          "pesos": {
+            "perdida": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "perdida-10",
+      "familia": "perdida",
+      "contextoComparable": null,
+      "texto": "Un plan que esperabas hace tiempo se cancela definitivamente. ¿Qué te ayuda más?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Buscar otra manera de concretarlo.",
+          "pesos": {
+            "perdida": -2,
+            "persistencia": -1
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Tomarme un tiempo antes de decidir.",
+          "pesos": {
+            "perdida": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Pensar en qué puedo hacer en su lugar.",
+          "pesos": {
+            "perdida": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "cambio-01",
+      "familia": "cambio",
+      "contextoComparable": "metodo-funcional",
+      "texto": "Algo funciona bien, pero podría mejorar. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Lo mantengo mientras cumpla su función.",
+          "pesos": {
+            "cambio": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Pruebo un ajuste pequeño.",
+          "pesos": {
+            "cambio": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Ensayo una alternativa desde cero.",
+          "pesos": {
+            "cambio": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "cambio-02",
+      "familia": "cambio",
+      "contextoComparable": "metodo-funcional",
+      "texto": "Usás un método cómodo para una tarea repetida y aparece otro prometedor. ¿Qué elegís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Seguir con el actual.",
+          "pesos": {
+            "cambio": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Comparar ambos en una prueba.",
+          "pesos": {
+            "cambio": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Pasarme al nuevo y aprenderlo.",
+          "pesos": {
+            "cambio": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "cambio-03",
+      "familia": "cambio",
+      "contextoComparable": null,
+      "texto": "¿Cómo preferís renovar un espacio que usás todos los días?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Conservar su distribución y cambiar detalles.",
+          "pesos": {
+            "cambio": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Modificar las zonas menos útiles.",
+          "pesos": {
+            "cambio": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Reorganizarlo completamente.",
+          "pesos": {
+            "cambio": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "cambio-04",
+      "familia": "cambio",
+      "contextoComparable": null,
+      "texto": "Tu grupo tiene una tradición que ya no entusiasma a todos. ¿Qué proponés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Mantenerla por lo que representa.",
+          "pesos": {
+            "cambio": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Adaptarla a las personas que participan.",
+          "pesos": {
+            "cambio": 1,
+            "cooperacion": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Reemplazarla por algo nuevo.",
+          "pesos": {
+            "cambio": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "cambio-05",
+      "familia": "cambio",
+      "contextoComparable": null,
+      "texto": "Cuando una actividad se vuelve rutinaria, ¿qué buscás?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Perfeccionar lo que ya hago.",
+          "pesos": {
+            "cambio": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Cambiar algunos desafíos.",
+          "pesos": {
+            "cambio": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Aprender otra actividad.",
+          "pesos": {
+            "cambio": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "cambio-06",
+      "familia": "cambio",
+      "contextoComparable": null,
+      "texto": "Una aplicación cambia su interfaz. ¿Qué valorás más?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Que conserve los hábitos que ya aprendí.",
+          "pesos": {
+            "cambio": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Que explique bien los cambios.",
+          "pesos": {
+            "cambio": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Que abra maneras nuevas de usarla.",
+          "pesos": {
+            "cambio": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "cambio-07",
+      "familia": "cambio",
+      "contextoComparable": null,
+      "texto": "Tenés un proyecto personal casi terminado y aparece una idea mejor. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Termino lo que había planeado.",
+          "pesos": {
+            "cambio": -2,
+            "persistencia": -1
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Incorporo lo que no altere demasiado el proyecto.",
+          "pesos": {
+            "cambio": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Replanteo el proyecto si la idea lo merece.",
+          "pesos": {
+            "cambio": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "cambio-08",
+      "familia": "cambio",
+      "contextoComparable": null,
+      "texto": "Al aprender una técnica, ¿qué te interesa más?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Dominar sus formas tradicionales.",
+          "pesos": {
+            "cambio": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Entender qué se puede adaptar.",
+          "pesos": {
+            "cambio": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Inventar mi propia manera de usarla.",
+          "pesos": {
+            "cambio": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "cambio-09",
+      "familia": "cambio",
+      "contextoComparable": null,
+      "texto": "Un lugar que frecuentás cambia de ambiente. ¿Qué preferís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Que conserve su carácter original.",
+          "pesos": {
+            "cambio": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Que combine lo antiguo y lo nuevo.",
+          "pesos": {
+            "cambio": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Descubrir la nueva identidad del lugar.",
+          "pesos": {
+            "cambio": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "cambio-10",
+      "familia": "cambio",
+      "contextoComparable": null,
+      "texto": "¿Cuándo vale la pena cambiar un hábito que no causa problemas?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Cuando deja de funcionar.",
+          "pesos": {
+            "cambio": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Cuando encuentro una mejora concreta.",
+          "pesos": {
+            "cambio": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Cuando quiero probar otra forma de vivirlo.",
+          "pesos": {
+            "cambio": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "persistencia-01",
+      "familia": "persistencia",
+      "contextoComparable": "error-repetido",
+      "texto": "Un método falla varias veces sin mostrar progreso. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Sigo practicándolo un poco más.",
+          "pesos": {
+            "persistencia": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Busco qué está fallando y ajusto.",
+          "pesos": {
+            "persistencia": 0,
+            "decision": -1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Pruebo otro método.",
+          "pesos": {
+            "persistencia": 2,
+            "cambio": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "persistencia-02",
+      "familia": "persistencia",
+      "contextoComparable": "error-repetido",
+      "texto": "Un problema sigue igual después de varios intentos similares. ¿Qué preferís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Dedicarle más tiempo al mismo enfoque.",
+          "pesos": {
+            "persistencia": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Pedir una opinión antes de insistir.",
+          "pesos": {
+            "persistencia": 0,
+            "autonomia": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Cambiar el enfoque.",
+          "pesos": {
+            "persistencia": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "persistencia-03",
+      "familia": "persistencia",
+      "contextoComparable": null,
+      "texto": "Estás aprendiendo una canción y una parte no sale. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Repito esa parte hasta conseguirla.",
+          "pesos": {
+            "persistencia": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "La divido en partes más simples.",
+          "pesos": {
+            "persistencia": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Paso a otra sección y vuelvo luego.",
+          "pesos": {
+            "persistencia": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "persistencia-04",
+      "familia": "persistencia",
+      "contextoComparable": null,
+      "texto": "Un proyecto tarda más de lo previsto. ¿Qué priorizás?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Cumplir el objetivo original.",
+          "pesos": {
+            "persistencia": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Reducir el alcance sin abandonar el objetivo.",
+          "pesos": {
+            "persistencia": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Reevaluar si el objetivo todavía vale la pena.",
+          "pesos": {
+            "persistencia": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "persistencia-05",
+      "familia": "persistencia",
+      "contextoComparable": null,
+      "texto": "Perdés varias veces contra el mismo rival en un juego. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Practico la estrategia que elegí.",
+          "pesos": {
+            "persistencia": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Analizo qué está haciendo el rival.",
+          "pesos": {
+            "persistencia": 0,
+            "decision": -2
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Cambio de estrategia.",
+          "pesos": {
+            "persistencia": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "persistencia-06",
+      "familia": "persistencia",
+      "contextoComparable": null,
+      "texto": "Una conversación no avanza porque nadie logra ponerse de acuerdo. ¿Qué preferís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Seguir explicando mi postura.",
+          "pesos": {
+            "persistencia": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Reformular el problema.",
+          "pesos": {
+            "persistencia": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Dejar la conversación para otro momento.",
+          "pesos": {
+            "persistencia": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "persistencia-07",
+      "familia": "persistencia",
+      "contextoComparable": null,
+      "texto": "¿Qué te da más satisfacción al resolver algo difícil?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Haber insistido hasta lograrlo.",
+          "pesos": {
+            "persistencia": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Haber encontrado una manera más eficiente.",
+          "pesos": {
+            "persistencia": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Haber descubierto una solución inesperada.",
+          "pesos": {
+            "persistencia": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "persistencia-08",
+      "familia": "persistencia",
+      "contextoComparable": null,
+      "texto": "Una reparación doméstica no sale como esperabas. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Continúo mientras pueda hacerlo con seguridad.",
+          "pesos": {
+            "persistencia": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Consulto otra técnica.",
+          "pesos": {
+            "persistencia": 0,
+            "autonomia": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Busco otra solución al problema.",
+          "pesos": {
+            "persistencia": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "persistencia-09",
+      "familia": "persistencia",
+      "contextoComparable": null,
+      "texto": "Un objetivo personal pierde importancia con el tiempo. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Lo termino por compromiso conmigo.",
+          "pesos": {
+            "persistencia": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Lo ajusto a mis prioridades actuales.",
+          "pesos": {
+            "persistencia": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Lo cambio por otro que me interese más.",
+          "pesos": {
+            "persistencia": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "persistencia-10",
+      "familia": "persistencia",
+      "contextoComparable": null,
+      "texto": "Al hacer una tarea difícil, ¿qué preferís cuando te trabás?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Seguir hasta desbloquearme.",
+          "pesos": {
+            "persistencia": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Alternar trabajo y descanso.",
+          "pesos": {
+            "persistencia": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Cambiar de tarea y regresar con otra perspectiva.",
+          "pesos": {
+            "persistencia": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "autonomia-01",
+      "familia": "autonomia",
+      "contextoComparable": "consulta-reversible",
+      "texto": "Tenés que elegir entre dos alternativas razonables y ninguna tiene consecuencias graves. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Decido según mi criterio.",
+          "pesos": {
+            "autonomia": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Escucho una opinión y después decido.",
+          "pesos": {
+            "autonomia": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Converso con varias personas antes de elegir.",
+          "pesos": {
+            "autonomia": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "autonomia-02",
+      "familia": "autonomia",
+      "contextoComparable": "consulta-reversible",
+      "texto": "Vas a hacer un cambio pequeño en algo que es exclusivamente tuyo. ¿Cómo decidís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Me alcanza con mi propia evaluación.",
+          "pesos": {
+            "autonomia": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Le pregunto a alguien que conozca el tema.",
+          "pesos": {
+            "autonomia": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Comparo opiniones de distintas personas.",
+          "pesos": {
+            "autonomia": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "autonomia-03",
+      "familia": "autonomia",
+      "contextoComparable": null,
+      "texto": "Al aprender algo, ¿qué preferís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Descubrirlo por mi cuenta.",
+          "pesos": {
+            "autonomia": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Tener una guía para cuando me trabo.",
+          "pesos": {
+            "autonomia": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Aprender junto a alguien con experiencia.",
+          "pesos": {
+            "autonomia": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "autonomia-04",
+      "familia": "autonomia",
+      "contextoComparable": null,
+      "texto": "Cuando recibís consejos que no coinciden con tu criterio, ¿qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Mantengo mi postura si tengo razones.",
+          "pesos": {
+            "autonomia": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Pruebo si alguno mejora lo que hago.",
+          "pesos": {
+            "autonomia": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Reconsidero mi decisión con esas opiniones.",
+          "pesos": {
+            "autonomia": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "autonomia-05",
+      "familia": "autonomia",
+      "contextoComparable": null,
+      "texto": "¿Qué te resulta más cómodo al crear algo personal?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Trabajar solo hasta terminar.",
+          "pesos": {
+            "autonomia": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Mostrar avances cuando necesito otra mirada.",
+          "pesos": {
+            "autonomia": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Compartir el proceso desde el principio.",
+          "pesos": {
+            "autonomia": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "autonomia-06",
+      "familia": "autonomia",
+      "contextoComparable": null,
+      "texto": "Si no entendés una instrucción, ¿qué hacés primero?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Intento deducir qué significa.",
+          "pesos": {
+            "autonomia": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Busco ejemplos escritos.",
+          "pesos": {
+            "autonomia": 0,
+            "decision": -1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Le pregunto a quien pueda explicarla.",
+          "pesos": {
+            "autonomia": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "autonomia-07",
+      "familia": "autonomia",
+      "contextoComparable": null,
+      "texto": "Un amigo conoce mejor que vos un tema que te interesa. ¿Cómo lo aprovechás?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Investigo por mi cuenta y luego conversamos.",
+          "pesos": {
+            "autonomia": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Le pido recursos para empezar.",
+          "pesos": {
+            "autonomia": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Le pido que me acompañe mientras aprendo.",
+          "pesos": {
+            "autonomia": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "autonomia-08",
+      "familia": "autonomia",
+      "contextoComparable": null,
+      "texto": "Al resolver un desacuerdo, ¿qué te ayuda más?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Pensar a solas antes de hablar.",
+          "pesos": {
+            "autonomia": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Ordenar mis ideas y compartirlas.",
+          "pesos": {
+            "autonomia": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Conversar para ir entendiendo mi postura.",
+          "pesos": {
+            "autonomia": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "autonomia-09",
+      "familia": "autonomia",
+      "contextoComparable": null,
+      "texto": "Si alguien hace una sugerencia para mejorar algo tuyo, ¿qué valorás?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Poder evaluarla sin presión.",
+          "pesos": {
+            "autonomia": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Que explique el motivo.",
+          "pesos": {
+            "autonomia": 0,
+            "decision": -1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Que podamos probarla juntos.",
+          "pesos": {
+            "autonomia": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "autonomia-10",
+      "familia": "autonomia",
+      "contextoComparable": null,
+      "texto": "¿Qué tipo de reconocimiento te importa más en un proyecto propio?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Estar conforme con mi resultado.",
+          "pesos": {
+            "autonomia": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Que alguien entienda lo que intenté hacer.",
+          "pesos": {
+            "autonomia": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Recibir perspectivas que no había considerado.",
+          "pesos": {
+            "autonomia": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "cooperacion-01",
+      "familia": "cooperacion",
+      "contextoComparable": "reparto-equipo",
+      "texto": "En una tarea grupal, ¿cómo preferís organizar el trabajo?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Que cada persona tenga una parte autónoma.",
+          "pesos": {
+            "cooperacion": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Dividir tareas y revisar el conjunto al final.",
+          "pesos": {
+            "cooperacion": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Trabajar en partes que se desarrollen en conjunto.",
+          "pesos": {
+            "cooperacion": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "cooperacion-02",
+      "familia": "cooperacion",
+      "contextoComparable": "reparto-equipo",
+      "texto": "Varias personas tienen que resolver un problema compartido. ¿Qué estructura preferís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Responsabilidades separadas y claras.",
+          "pesos": {
+            "cooperacion": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Pequeños equipos con puntos de encuentro.",
+          "pesos": {
+            "cooperacion": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Un trabajo conjunto desde el comienzo.",
+          "pesos": {
+            "cooperacion": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "cooperacion-03",
+      "familia": "cooperacion",
+      "contextoComparable": null,
+      "texto": "Si dos personas tienen habilidades distintas, ¿qué te parece más útil?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Que cada una perfeccione su parte.",
+          "pesos": {
+            "cooperacion": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Que intercambien consejos cuando haga falta.",
+          "pesos": {
+            "cooperacion": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Que creen algo que ninguna haría sola.",
+          "pesos": {
+            "cooperacion": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "cooperacion-04",
+      "familia": "cooperacion",
+      "contextoComparable": null,
+      "texto": "Al jugar en equipo, ¿qué rol te gusta más?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Uno que pueda desempeñar sin depender demasiado del resto.",
+          "pesos": {
+            "cooperacion": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Uno flexible según lo que necesite el grupo.",
+          "pesos": {
+            "cooperacion": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Uno que conecte las acciones de los demás.",
+          "pesos": {
+            "cooperacion": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "cooperacion-05",
+      "familia": "cooperacion",
+      "contextoComparable": null,
+      "texto": "Cuando alguien se atrasa en una tarea grupal, ¿qué proponés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Que reorganice su parte.",
+          "pesos": {
+            "cooperacion": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Repartir una parte si es necesario.",
+          "pesos": {
+            "cooperacion": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Redefinir el trabajo entre todos.",
+          "pesos": {
+            "cooperacion": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "cooperacion-06",
+      "familia": "cooperacion",
+      "contextoComparable": null,
+      "texto": "¿Qué hace que un grupo funcione bien?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Que todos cumplan sus responsabilidades.",
+          "pesos": {
+            "cooperacion": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Que sepan coordinarse cuando hace falta.",
+          "pesos": {
+            "cooperacion": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Que puedan pensar y decidir juntos.",
+          "pesos": {
+            "cooperacion": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "cooperacion-07",
+      "familia": "cooperacion",
+      "contextoComparable": null,
+      "texto": "En un proyecto con un plazo flexible, ¿qué preferís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Tareas independientes para trabajar a mi ritmo.",
+          "pesos": {
+            "cooperacion": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Reuniones cortas y trabajo separado.",
+          "pesos": {
+            "cooperacion": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Compartir el proceso de manera frecuente.",
+          "pesos": {
+            "cooperacion": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "cooperacion-08",
+      "familia": "cooperacion",
+      "contextoComparable": null,
+      "texto": "Una solución individual es buena, pero otra colectiva podría ser mejor. ¿Cuál preferís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "La individual si ya resuelve el problema.",
+          "pesos": {
+            "cooperacion": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Probar la colectiva en una parte.",
+          "pesos": {
+            "cooperacion": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Explorar la colectiva aunque lleve coordinación.",
+          "pesos": {
+            "cooperacion": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "cooperacion-09",
+      "familia": "cooperacion",
+      "contextoComparable": null,
+      "texto": "Al compartir herramientas, ¿qué sistema te resulta más cómodo?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Que cada persona tenga las que usa siempre.",
+          "pesos": {
+            "cooperacion": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Compartir las que se usan ocasionalmente.",
+          "pesos": {
+            "cooperacion": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Organizar un conjunto común.",
+          "pesos": {
+            "cooperacion": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "cooperacion-10",
+      "familia": "cooperacion",
+      "contextoComparable": null,
+      "texto": "Cuando un equipo recibe una devolución, ¿cómo preferís procesarla?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Que cada persona revise su aporte.",
+          "pesos": {
+            "cooperacion": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Revisar individualmente y después conversar.",
+          "pesos": {
+            "cooperacion": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Interpretarla juntos desde el principio.",
+          "pesos": {
+            "cooperacion": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "recursos-01",
+      "familia": "recursos",
+      "contextoComparable": "presupuesto-ocio",
+      "texto": "Te sobra una parte de un presupuesto destinado a ocio. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "La guardo para otra ocasión.",
+          "pesos": {
+            "recursos": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Uso una parte y guardo el resto.",
+          "pesos": {
+            "recursos": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "La aprovecho en algo que me interesa ahora.",
+          "pesos": {
+            "recursos": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "recursos-02",
+      "familia": "recursos",
+      "contextoComparable": "presupuesto-ocio",
+      "texto": "Después de un mes de gastos previstos, te queda un pequeño excedente para gustos. ¿Qué preferís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Acumularlo para una ocasión futura.",
+          "pesos": {
+            "recursos": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Reservar algo y comprar algo pequeño.",
+          "pesos": {
+            "recursos": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Usarlo para disfrutar una actividad pendiente.",
+          "pesos": {
+            "recursos": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "recursos-03",
+      "familia": "recursos",
+      "contextoComparable": null,
+      "texto": "Una herramienta nueva te ahorraría tiempo, pero la actual funciona. ¿Qué elegís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Seguir usando la actual.",
+          "pesos": {
+            "recursos": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Comprar si el ahorro de tiempo es concreto.",
+          "pesos": {
+            "recursos": 1,
+            "decision": -1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Invertir para poder hacer más cosas.",
+          "pesos": {
+            "recursos": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "recursos-04",
+      "familia": "recursos",
+      "contextoComparable": null,
+      "texto": "En un juego tenés recursos y no hay una amenaza inmediata. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Los guardo para una emergencia.",
+          "pesos": {
+            "recursos": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Invierto una parte en mejorar mi posición.",
+          "pesos": {
+            "recursos": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Los uso para aprovechar el momento.",
+          "pesos": {
+            "recursos": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "recursos-05",
+      "familia": "recursos",
+      "contextoComparable": null,
+      "texto": "¿Qué te hace sentir más cómodo al comenzar una actividad?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Tener recursos de sobra.",
+          "pesos": {
+            "recursos": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Tener lo necesario y un margen.",
+          "pesos": {
+            "recursos": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Empezar con lo justo y conseguir más en el camino.",
+          "pesos": {
+            "recursos": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "recursos-06",
+      "familia": "recursos",
+      "contextoComparable": null,
+      "texto": "Te ofrecen una mejora útil que no necesitás todavía. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Espero hasta necesitarla.",
+          "pesos": {
+            "recursos": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "La evalúo si puede evitar trabajo futuro.",
+          "pesos": {
+            "recursos": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "La consigo si abre posibilidades nuevas.",
+          "pesos": {
+            "recursos": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "recursos-07",
+      "familia": "recursos",
+      "contextoComparable": null,
+      "texto": "Al organizar una semana con tiempo libre, ¿qué preferís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Dejar varios espacios sin comprometer.",
+          "pesos": {
+            "recursos": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Distribuir actividades y descanso.",
+          "pesos": {
+            "recursos": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Aprovechar los espacios para hacer lo pendiente.",
+          "pesos": {
+            "recursos": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "recursos-08",
+      "familia": "recursos",
+      "contextoComparable": null,
+      "texto": "Una tarea puede resolverse reutilizando materiales o comprando otros mejores. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Reutilizo lo que tengo.",
+          "pesos": {
+            "recursos": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Compro solo lo que marca una diferencia.",
+          "pesos": {
+            "recursos": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Invierto en materiales que mejoren el resultado.",
+          "pesos": {
+            "recursos": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "recursos-09",
+      "familia": "recursos",
+      "contextoComparable": null,
+      "texto": "¿Qué valorás más en un recurso limitado?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Que esté disponible cuando haga falta.",
+          "pesos": {
+            "recursos": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Que se use con criterio.",
+          "pesos": {
+            "recursos": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Que produzca algo valioso cuanto antes.",
+          "pesos": {
+            "recursos": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "recursos-10",
+      "familia": "recursos",
+      "contextoComparable": null,
+      "texto": "Una oportunidad de aprender requiere dedicar tiempo que habías reservado. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Conservo ese tiempo para lo previsto.",
+          "pesos": {
+            "recursos": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Reorganizo una parte del horario.",
+          "pesos": {
+            "recursos": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Lo invierto en la oportunidad nueva.",
+          "pesos": {
+            "recursos": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "responsabilidad-01",
+      "familia": "responsabilidad",
+      "contextoComparable": "error-compartido",
+      "texto": "Una tarea compartida sale mal y participaron varias personas. ¿Qué revisás primero?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Lo que podría haber hecho yo distinto.",
+          "pesos": {
+            "responsabilidad": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Cómo se repartieron las tareas.",
+          "pesos": {
+            "responsabilidad": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Qué condiciones dificultaron el trabajo de todos.",
+          "pesos": {
+            "responsabilidad": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "responsabilidad-02",
+      "familia": "responsabilidad",
+      "contextoComparable": "error-compartido",
+      "texto": "Un proyecto grupal no cumple su objetivo, aunque todos intentaron contribuir. ¿Por dónde empezás?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Por revisar mi propia contribución.",
+          "pesos": {
+            "responsabilidad": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Por identificar problemas de coordinación.",
+          "pesos": {
+            "responsabilidad": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Por analizar las condiciones del proyecto completo.",
+          "pesos": {
+            "responsabilidad": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "responsabilidad-03",
+      "familia": "responsabilidad",
+      "contextoComparable": null,
+      "texto": "Un resultado bueno fue posible gracias al esfuerzo de varias personas. ¿Qué destacás?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "La calidad de cada aporte individual.",
+          "pesos": {
+            "responsabilidad": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "La forma en que se conectaron los aportes.",
+          "pesos": {
+            "responsabilidad": 2
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Las decisiones concretas que hicieron la diferencia.",
+          "pesos": {
+            "responsabilidad": -1
+          }
+        }
+      ]
+    },
+    {
+      "id": "responsabilidad-04",
+      "familia": "responsabilidad",
+      "contextoComparable": null,
+      "texto": "Una regla de trabajo produce resultados injustos sin que nadie la incumpla. ¿Qué preferís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Revisar cómo actúa cada persona dentro de la regla.",
+          "pesos": {
+            "responsabilidad": -1
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Modificar la regla.",
+          "pesos": {
+            "responsabilidad": 2,
+            "cambio": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Buscar una excepción para el caso concreto.",
+          "pesos": {
+            "responsabilidad": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "responsabilidad-05",
+      "familia": "responsabilidad",
+      "contextoComparable": null,
+      "texto": "Una decisión tuya no funciona por razones que no anticipaste. ¿Qué te interesa entender?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Qué podía haber previsto.",
+          "pesos": {
+            "responsabilidad": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Qué factores escapaban a mi control.",
+          "pesos": {
+            "responsabilidad": 2
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Qué parte puedo corregir ahora.",
+          "pesos": {
+            "responsabilidad": -1,
+            "persistencia": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "responsabilidad-06",
+      "familia": "responsabilidad",
+      "contextoComparable": null,
+      "texto": "Cuando un equipo tiene éxito, ¿cómo evaluás lo aprendido?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Qué mejoró en mi forma de trabajar.",
+          "pesos": {
+            "responsabilidad": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Qué aprendimos del sistema de trabajo.",
+          "pesos": {
+            "responsabilidad": 2
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Ambas cosas por separado.",
+          "pesos": {
+            "responsabilidad": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "responsabilidad-07",
+      "familia": "responsabilidad",
+      "contextoComparable": null,
+      "texto": "Si alguien no cumple una tarea, ¿qué considerás primero?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Si tenía claro su compromiso.",
+          "pesos": {
+            "responsabilidad": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Qué obstáculos encontró.",
+          "pesos": {
+            "responsabilidad": 2
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Qué hace falta para resolverlo ahora.",
+          "pesos": {
+            "responsabilidad": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "responsabilidad-08",
+      "familia": "responsabilidad",
+      "contextoComparable": null,
+      "texto": "Un procedimiento falla en dos personas distintas. ¿Qué examinás?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Cómo lo ejecutó cada persona.",
+          "pesos": {
+            "responsabilidad": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Si el procedimiento necesita cambiar.",
+          "pesos": {
+            "responsabilidad": 2,
+            "cambio": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Si las instrucciones eran suficientes.",
+          "pesos": {
+            "responsabilidad": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "responsabilidad-09",
+      "familia": "responsabilidad",
+      "contextoComparable": null,
+      "texto": "Ante un problema recurrente en un espacio compartido, ¿qué solución preferís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Que cada quien se haga cargo de su parte.",
+          "pesos": {
+            "responsabilidad": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Un acuerdo común sobre cómo prevenirlo.",
+          "pesos": {
+            "responsabilidad": 2
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Un responsable rotativo que lo coordine.",
+          "pesos": {
+            "responsabilidad": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "responsabilidad-10",
+      "familia": "responsabilidad",
+      "contextoComparable": null,
+      "texto": "Cuando hay que corregir un error, ¿qué te importa más?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Identificar quién puede actuar ahora.",
+          "pesos": {
+            "responsabilidad": -1
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Entender cómo evitar que el sistema lo repita.",
+          "pesos": {
+            "responsabilidad": 2
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Reparar lo que se pueda y revisar luego.",
+          "pesos": {
+            "responsabilidad": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "decision-01",
+      "familia": "decision",
+      "contextoComparable": "opciones-parecidas",
+      "texto": "Dos opciones te parecen igualmente buenas y tenés información limitada. ¿Cómo elegís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Comparo sus diferencias concretas.",
+          "pesos": {
+            "decision": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Elijo una y compruebo si me convence.",
+          "pesos": {
+            "decision": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Me guío por la que me atrae más.",
+          "pesos": {
+            "decision": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "decision-02",
+      "familia": "decision",
+      "contextoComparable": "opciones-parecidas",
+      "texto": "Tenés que elegir entre dos diseños que cumplen la misma función. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Reviso sus puntos fuertes y débiles.",
+          "pesos": {
+            "decision": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Pruebo cómo se sienten en uso.",
+          "pesos": {
+            "decision": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Elijo el que me transmite algo más interesante.",
+          "pesos": {
+            "decision": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "decision-03",
+      "familia": "decision",
+      "contextoComparable": null,
+      "texto": "Cuando una idea te entusiasma, ¿qué hacés primero?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Evalúo si es realizable.",
+          "pesos": {
+            "decision": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Hago un prototipo pequeño.",
+          "pesos": {
+            "decision": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "La sigo mientras conserve el entusiasmo.",
+          "pesos": {
+            "decision": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "decision-04",
+      "familia": "decision",
+      "contextoComparable": null,
+      "texto": "¿Qué te convence más al escuchar una propuesta?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Que tenga fundamentos claros.",
+          "pesos": {
+            "decision": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Que pueda comprobarla en la práctica.",
+          "pesos": {
+            "decision": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Que encaje con algo que ya percibía.",
+          "pesos": {
+            "decision": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "decision-05",
+      "familia": "decision",
+      "contextoComparable": null,
+      "texto": "Al elegir una obra para ver o escuchar, ¿qué pesa más?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Las referencias que tengo sobre ella.",
+          "pesos": {
+            "decision": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Una muestra breve.",
+          "pesos": {
+            "decision": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "La curiosidad que me genera.",
+          "pesos": {
+            "decision": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "decision-06",
+      "familia": "decision",
+      "contextoComparable": null,
+      "texto": "Un resultado te sorprende. ¿Qué buscás primero?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "La causa que lo explica.",
+          "pesos": {
+            "decision": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Repetir la experiencia para comparar.",
+          "pesos": {
+            "decision": -1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Qué posibilidades me sugiere.",
+          "pesos": {
+            "decision": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "decision-07",
+      "familia": "decision",
+      "contextoComparable": null,
+      "texto": "Cuando una decisión es reversible, ¿qué preferís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Pensar un poco antes de tomarla.",
+          "pesos": {
+            "decision": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Probarla y evaluar.",
+          "pesos": {
+            "decision": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Elegir según mi primera impresión.",
+          "pesos": {
+            "decision": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "decision-08",
+      "familia": "decision",
+      "contextoComparable": null,
+      "texto": "Una idea te parece buena aunque todavía no sabés explicarla. ¿Qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Busco argumentos antes de desarrollarla.",
+          "pesos": {
+            "decision": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "La desarrollo para descubrir sus razones.",
+          "pesos": {
+            "decision": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Confío en la impresión inicial y avanzo.",
+          "pesos": {
+            "decision": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "decision-09",
+      "familia": "decision",
+      "contextoComparable": null,
+      "texto": "Al corregir una creación, ¿qué te orienta más?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Criterios concretos que puedo revisar.",
+          "pesos": {
+            "decision": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Comparar versiones.",
+          "pesos": {
+            "decision": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "La sensación de que algo no encaja.",
+          "pesos": {
+            "decision": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "decision-10",
+      "familia": "decision",
+      "contextoComparable": null,
+      "texto": "Si alguien te pide elegir entre tres caminos sin demasiados datos, ¿qué hacés?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Identifico qué sé y qué falta.",
+          "pesos": {
+            "decision": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Elijo el más fácil de probar.",
+          "pesos": {
+            "decision": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Me guío por mi impresión de cada uno.",
+          "pesos": {
+            "decision": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ambicion-01",
+      "familia": "ambicion",
+      "contextoComparable": "objetivo-cumplido",
+      "texto": "Alcanzaste el objetivo de una actividad personal. ¿Qué preferís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Disfrutar el resultado.",
+          "pesos": {
+            "ambicion": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Buscar una mejora pequeña.",
+          "pesos": {
+            "ambicion": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Plantearme un desafío mayor.",
+          "pesos": {
+            "ambicion": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ambicion-02",
+      "familia": "ambicion",
+      "contextoComparable": "objetivo-cumplido",
+      "texto": "Conseguiste hacer algo tan bien como esperabas. ¿Qué te nace hacer después?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Dar por terminado ese esfuerzo.",
+          "pesos": {
+            "ambicion": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Refinar algunos detalles.",
+          "pesos": {
+            "ambicion": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Ver hasta dónde puedo llegar.",
+          "pesos": {
+            "ambicion": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ambicion-03",
+      "familia": "ambicion",
+      "contextoComparable": null,
+      "texto": "¿Qué preferís en un proyecto de larga duración?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Un objetivo modesto que pueda mantener.",
+          "pesos": {
+            "ambicion": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Metas pequeñas que crezcan con el tiempo.",
+          "pesos": {
+            "ambicion": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Un objetivo difícil que me impulse a mejorar.",
+          "pesos": {
+            "ambicion": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ambicion-04",
+      "familia": "ambicion",
+      "contextoComparable": null,
+      "texto": "Tenés tiempo para hacer una cosa muy bien o varias aceptablemente. ¿Qué elegís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Una que me satisfaga completamente.",
+          "pesos": {
+            "ambicion": -1
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Varias si todas me interesan.",
+          "pesos": {
+            "ambicion": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "La que me permita ampliar más mis capacidades.",
+          "pesos": {
+            "ambicion": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ambicion-05",
+      "familia": "ambicion",
+      "contextoComparable": null,
+      "texto": "¿Qué significa para vos terminar algo?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Que cumple el propósito que tenía.",
+          "pesos": {
+            "ambicion": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Que ya no encuentro cambios importantes.",
+          "pesos": {
+            "ambicion": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Que llegué al mejor resultado que puedo alcanzar.",
+          "pesos": {
+            "ambicion": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ambicion-06",
+      "familia": "ambicion",
+      "contextoComparable": null,
+      "texto": "Si una actividad te sale con facilidad, ¿qué buscás?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Disfrutarla sin exigirme más.",
+          "pesos": {
+            "ambicion": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Agregar una dificultad de vez en cuando.",
+          "pesos": {
+            "ambicion": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Un desafío que me obligue a mejorar.",
+          "pesos": {
+            "ambicion": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ambicion-07",
+      "familia": "ambicion",
+      "contextoComparable": null,
+      "texto": "Un hobby te permite participar en una competencia amistosa. ¿Qué te atrae más?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Compartir la actividad sin competir.",
+          "pesos": {
+            "ambicion": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Medir cómo mejoré.",
+          "pesos": {
+            "ambicion": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Intentar superar mi mejor resultado.",
+          "pesos": {
+            "ambicion": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ambicion-08",
+      "familia": "ambicion",
+      "contextoComparable": null,
+      "texto": "Al aprender una habilidad útil, ¿hasta dónde querés llegar?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Hasta poder usarla cuando la necesito.",
+          "pesos": {
+            "ambicion": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Hasta sentirme cómodo en distintas situaciones.",
+          "pesos": {
+            "ambicion": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Hasta dominarla lo más posible.",
+          "pesos": {
+            "ambicion": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ambicion-09",
+      "familia": "ambicion",
+      "contextoComparable": null,
+      "texto": "Una actividad que disfrutás podría convertirse en un proyecto más grande. ¿Qué preferís?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Mantenerla como algo personal.",
+          "pesos": {
+            "ambicion": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Hacer crecer una parte sin perder lo que disfruto.",
+          "pesos": {
+            "ambicion": 0
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Explorar hasta dónde podría llevarla.",
+          "pesos": {
+            "ambicion": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ambicion-10",
+      "familia": "ambicion",
+      "contextoComparable": null,
+      "texto": "¿Qué valorás más al mirar lo que hiciste durante un año?",
+      "respuestas": [
+        {
+          "id": "a",
+          "texto": "Haber tenido una vida que me resultó suficiente.",
+          "pesos": {
+            "ambicion": -2
+          }
+        },
+        {
+          "id": "b",
+          "texto": "Haber mejorado en cosas que me importan.",
+          "pesos": {
+            "ambicion": 1
+          }
+        },
+        {
+          "id": "c",
+          "texto": "Haber alcanzado objetivos que antes parecían difíciles.",
+          "pesos": {
+            "ambicion": 2
+          }
+        }
+      ]
+    }
+  ]
+}

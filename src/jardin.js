@@ -6,7 +6,7 @@ import { crearPlanta } from './entidades/planta.js';
 // Reglas de expansión: una casilla es colocable si está dentro del tablero, libre, tiene una planta
 // en alguna de sus ocho vecinas y la energía alcanza el coste. Todo se calcula desde las plantas existentes.
 export function crearJardin({ tablero, estado, catalogo, frames, alPlantar, alRetirar, economia = ECONOMIA,
-  permitido = () => true, pala = PALA }) {
+  permitido = () => true, pala = PALA, efectos }) {
   const plantas = [];
   const rearme = new Map();
   let central = null;
@@ -26,8 +26,32 @@ export function crearJardin({ tablero, estado, catalogo, frames, alPlantar, alRe
     return cantidad;
   }
 
-  function coste(id) {
-    return costeDe(catalogo[id], vivasDe(id), economia);
+  function vecinas(celda) {
+    const plantas = [];
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        if (!dx && !dy) continue;
+        const planta = tablero.ocupante(celda.x + dx, celda.y + dy);
+        if (planta?.tipo.comprable && !planta.muerta) plantas.push(planta);
+      }
+    }
+    return plantas;
+  }
+
+  function actualizarVecindad(celda) {
+    if (!efectos?.espacial()) return;
+    const actual = tablero.ocupante(celda.x, celda.y);
+    const afectadas = vecinas(celda);
+    if (actual) afectadas.push(actual);
+    for (const planta of afectadas) efectos.actualizarPlanta(planta, vecinas(planta.celda));
+  }
+
+  function precio(base, celda) {
+    return efectos?.precio(base, celda, Boolean(celda && efectos.precioAgrupado() && vecinas(celda).length >= 3)) ?? base;
+  }
+
+  function coste(id, celda) {
+    return precio(costeDe(catalogo[id], vivasDe(id), economia), celda);
   }
 
   function colocable(id, celda) {
@@ -36,7 +60,7 @@ export function crearJardin({ tablero, estado, catalogo, frames, alPlantar, alRe
     if (!tablero.contiene(celda.x, celda.y)) return false;
     if (tablero.ocupante(celda.x, celda.y)) return false;
     if (!tieneVecinaOcupada(celda)) return false;
-    return estado.energia >= coste(id);
+    return estado.energia >= coste(id, celda);
   }
 
   const clave = ({ x, y }) => claveCelda(x, y);
@@ -46,6 +70,7 @@ export function crearJardin({ tablero, estado, catalogo, frames, alPlantar, alRe
     planta.costePagado = costePagado;
     planta.enfriamiento = Math.max(0, (rearme.get(clave(celda)) ?? 0) - (estado.tiempo ?? 0));
     plantas.push(planta);
+    actualizarVecindad(celda);
     if (id === 'central') central = planta;
     alPlantar?.(planta);
     return planta;
@@ -61,6 +86,14 @@ export function crearJardin({ tablero, estado, catalogo, frames, alPlantar, alRe
 
   return {
     plantas,
+    adquirirArcano(carta) {
+      efectos.adquirir(carta);
+      if (!efectos.espacial()) return;
+      for (const planta of plantas) efectos.actualizarPlanta(planta, vecinas(planta.celda));
+    },
+    ataque: planta => efectos?.ataque(planta) ?? planta.tipo.ataque ?? planta.tipo.area,
+    multiplicadorMordida: planta => efectos?.multiplicadorMordida(planta) ?? 1,
+    cerrarInvasion: () => efectos?.cerrarInvasion(plantas),
     get central() {
       return central;
     },
@@ -77,6 +110,7 @@ export function crearJardin({ tablero, estado, catalogo, frames, alPlantar, alRe
       planta.muerta = true;
       tablero.liberar(celda.x, celda.y);
       plantas.splice(plantas.indexOf(planta), 1);
+      actualizarVecindad(celda);
       rearme.set(clave(celda), (estado.tiempo ?? 0) + pala.rearme);
       estado.energia += energia;
       alRetirar?.(planta, true);
@@ -84,12 +118,16 @@ export function crearJardin({ tablero, estado, catalogo, frames, alPlantar, alRe
     },
     plantar(id, celda) {
       if (!colocable(id, celda)) return null;
-      const precio = coste(id);
+      const precio = coste(id, celda);
       estado.energia -= precio;
-      return nacer(id, celda, Math.random() * 4, precio);
+      const planta = nacer(id, celda, Math.random() * 4, precio);
+      planta.enfriamiento = Math.max(planta.enfriamiento, efectos?.descontar(celda) ?? 0);
+      return planta;
     },
     candidatas(id) {
-      if (!catalogo[id]?.comprable || central?.muerta || !permitido() || estado.energia < coste(id)) return [];
+      if (!catalogo[id]?.comprable || central?.muerta || !permitido()) return [];
+      const base = costeDe(catalogo[id], vivasDe(id), economia);
+      if (!efectos?.hayReposiciones() && estado.energia < precio(base)) return [];
       const lista = new Map();
       for (const planta of plantas) {
         if (planta.muerta) continue;
@@ -101,13 +139,15 @@ export function crearJardin({ tablero, estado, catalogo, frames, alPlantar, alRe
           }
         }
       }
-      return [...lista.values()].sort((a, b) => a.y - b.y || a.x - b.x);
+      return [...lista.values()].filter(celda => estado.energia >= precio(base, celda)).sort((a, b) => a.y - b.y || a.x - b.x);
     },
-    destruir(planta) {
+    destruir(planta, porEnemigo = false) {
       if (planta.muerta) return;
       planta.muerta = true;
       planta.tiempoMuerte = 0;
       tablero.liberar(planta.celda.x, planta.celda.y);
+      if (porEnemigo) efectos?.perdida(planta);
+      actualizarVecindad(planta.celda);
     },
     actualizar(dt, reducido) {
       for (const [casilla, hasta] of rearme) {

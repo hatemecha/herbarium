@@ -18,6 +18,9 @@ src/jardin.js           alta, reglas de colocación, marchitez
 src/combate.js          enemigos, disparos, reflejo, eventos, derrota
 src/oleadas.js          director, presupuesto, presión variable y fases
 src/recompensas.js      sorteo con semilla independiente y protección contra rachas
+src/tarot.js            selección reproducible, preguntas, afinidad, tensión y mazo
+src/efectosTarot.js     parámetros de arcanos y composición para el jardín
+src/interfazTarot.js    ritual, mazo y fichas de descubrimientos
 src/interfazOleadas.js  presentación raster del resultado
 src/economia.js         coste según plantas vivas
 src/aleatorio.js        generador con semilla

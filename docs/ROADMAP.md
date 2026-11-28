@@ -18,8 +18,8 @@ Ninguna etapa está aceptada formalmente por el propietario en esta consolidaci�
 | 8 | Game feel, HUD y claridad de estados | Implementados pulsos de interfaz y tablero, lectura de ralentización, alcance diferenciado y destellos por fuente. Ver la revisión visual en [ART_DIRECTION.md](ART_DIRECTION.md). [Etapa 08.5](ETAPA_085.md) incorpora mundo expansible y entradas según el jardín vivo. |
 | 8.2 | Dirección artística, composición y game feel | Implementada: Pliego refinado, cartas, partículas y señales; evaluación comparativa y regresiones en [ART_DIRECTION.md](ART_DIRECTION.md). Aceptación subjetiva del propietario pendiente. |
 | 8.3 | Consolidación estratégica y beta jugable | Implementada en el juego principal y medida con 100 semillas por política. Ver [ETAPA_083.md](ETAPA_083.md). |
-| 9 | Preguntas de personalidad | No empezada. No hay preguntas escritas. |
-| 10 | Tarot y mejoras | No empezada. No hay cartas ni efectos. |
+| 9 | Tarot, decisiones y evolución del jardín | Primer corte activo con 120 preguntas, ocho arcanos en ambas orientaciones, mazo y catálogo. Ver [Etapa 09](tarot/ETAPA_09.md). |
+| 10 | Ampliación del tarot | Quedan catorce arcanos y el ajuste de balance integral. |
 | 11 | Balance de una partida completa | No empezada. Los números actuales son provisionales. |
 | 12 | Sonido y detalle artístico | No empezada. No hay audio. |
 | 13 | Integración en la web personal | No empezada. Notas en [ARCHITECTURE.md](ARCHITECTURE.md). |
@@ -57,4 +57,4 @@ Queda pendiente una partida completa de la beta con jugadores en escritorio y te
 
 ## Fuera de alcance hasta nuevo pedido
 
-Tarot, preguntas de personalidad, sonido, guardado, progresión entre partidas, monetización y la integración en `nicotinalex-web`. El punto `alEntreOleadas` existe y no abre nada.
+Sonido, guardado de partida, progresión de poder entre partidas, monetización e integración en `nicotinalex-web`.

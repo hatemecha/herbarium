@@ -77,6 +77,7 @@ test('el cupo aplaza entradas y un superviviente conserva el combate sin dar ene
   assert.deepEqual(premio, vista.resultado);
   assert.equal(estado.energia, premio.energia);
   assert.equal(director.presentar(0, estado, { continuar: true }), null);
+  if (premio.tipo === 'tarot') assert.ok(director.finalizarTarot(premio));
   assert.equal(director.vista().numero, 2);
   assert.equal(director.vista().fase, 'preparacion');
 });

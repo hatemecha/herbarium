@@ -184,8 +184,8 @@ export function crearDirector({ tablero, aleatorio, semilla = 0, ocupante, olead
     revelarDesde(t) {
       if (fase === 'recompensa' && !aplicado) tiempo = Math.max(tiempo, t);
     },
-    finalizarTarot() {
-      if (fase !== 'recompensa' || !aplicado || resultado.tipo !== 'tarot') return false;
+    finalizarTarot(premio = resultado) {
+      if (fase !== 'recompensa' || !aplicado || premio !== resultado || resultado.tipo !== 'tarot') return false;
       numero++;
       preparar();
       return true;
@@ -201,6 +201,7 @@ export function crearDirector({ tablero, aleatorio, semilla = 0, ocupante, olead
       }
     },
     generaEnergia: () => fase === 'preparacion' || (fase === 'combate' && tiempo <= plan.ventana + oleadas.margenEnergia),
+    enCombate: () => fase === 'combate',
     enRecompensa: () => fase === 'recompensa',
     vista: () => ({
       numero, fase, tiempo, resultado, aplicado, patron: plan.patron, presupuesto: plan.presupuesto,

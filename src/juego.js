@@ -5,6 +5,10 @@ import { COMPRABLES, ENEMIGOS, PLANTAS } from './catalogo.js';
 import { crearAnimacion } from './animacion.js';
 import { crearCatalogoUI } from './catalogoUI.js';
 import { crearColocacion } from './colocacion.js';
+import { crearTarotUI } from './interfazTarot.js';
+import { ARCANOS, crearEfectosTarot } from './efectosTarot.js';
+import { textoFicha } from './ficha.js';
+import { crearTarot } from './tarot.js';
 import { crearCombate } from './combate.js';
 import { crearDerrota } from './derrota.js';
 import { crearDescubrimientos } from './descubrimientos.js';
@@ -14,6 +18,7 @@ import { crearGestos } from './gestos.js';
 import { crearRecompensaUI } from './interfazOleadas.js';
 import { alinearSalida, cargarFuentePixel, colocarSalida, crearRotulo, INTERLINEADO_LECTURA, medirTexto, prepararSalida, presentar, superficie } from './interfazPixel.js';
 import { apagar, crearEstado, avanzar } from './estado.js';
+import { crearRegistro } from './metricas.js';
 import { crearJardin } from './jardin.js';
 import { asegurarVariables, crearRoles, leerPaleta, rgb } from './paleta.js';
 import { crearDirector } from './oleadas.js';
@@ -106,6 +111,13 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
   });
   const aleatorioVisual = crearAleatorio((semilla + 1) >>> 0);
   const estado = crearEstado();
+  const efectos = crearEfectosTarot(estado);
+  const registro = crearRegistro();
+  const comienzo = performance.now();
+  let tiempoPremios = 0;
+  const premios = { energia: 0, vacia: 0, tarot: 0 };
+  let retiradas = 0;
+  let recuperada = 0;
   const eventosUI = new AbortController();
   let usandoPala = false;
   let retiroVista = null;
@@ -119,6 +131,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
   let faseVisual = '';
   let eventoHasta = 0;
   let criticoAnterior = false;
+  let resultadoFinal;
   const pulsos = new Map();
   let ultimoPreview = -Infinity;
   let casillaPreview;
@@ -178,12 +191,14 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
     tablero,
     estado,
     catalogo: PLANTAS,
+    efectos,
     frames,
-    permitido: () => habilitado() && !director.enRecompensa(),
+    permitido: () => habilitado() && !director.enRecompensa() && !tarotUI?.abierta(),
     alPlantar(planta) {
       render.registrarPlanta(planta);
       actualizarEnergia();
       if (planta.id !== 'central') {
+        registro.gastada(planta.costePagado, planta.id);
         inspeccion = null;
         marcar('plantada', planta.celda);
         pulso(dom.energia, 'compra', FEEDBACK.gesto);
@@ -195,6 +210,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
       if (voluntaria) combate.desvincular(planta);
     },
   });
+  let tarotUI;
   jardin.sembrar('central', tablero.centro);
   if (!reducido.matches) particulas.rafaga(jardin.central.nucleo.x, jardin.central.nucleo.y, 10, { familia: 'brote', color: roles.nucleo });
   const combate = crearCombate({
@@ -254,7 +270,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
   let ultimoBrote = -Infinity;
   let trayecto;
 
-  const operable = () => habilitado() && !combate.derrota() && !director.enRecompensa();
+  const operable = () => !tarotUI?.abierta() && habilitado() && !combate.derrota() && !director.enRecompensa();
 
   function cancelarPala() {
     usandoPala = false;
@@ -282,6 +298,8 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
     }
     const retirada = jardin.retirar(celda);
     if (!retirada) return;
+    retiradas++;
+    recuperada += retirada.energia;
     seleccion.limpiar();
     cancelarPala();
     actualizarEnergia();
@@ -304,7 +322,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
     if (!operable()) return false;
     cancelarPala();
     const faltan = Math.ceil(jardin.coste(id) - estado.energia);
-    if (faltan > 0) {
+    if (faltan > 0 && !jardin.candidatas(id).length) {
       if (!conservarSeleccion) {
         colocacion.cancelar();
         seleccion.limpiar();
@@ -371,10 +389,27 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
     },
   });
 
+  tarotUI = crearTarotUI({
+    escenario: dom.escenario, hud: dom.escenario, foco: dom.canvas, habilitado,
+    tarot: crearTarot(semilla, Object.keys(ARCANOS).map(Number)),
+    alAbrir() {
+      gestos.cancelar();
+      colocacion.cancelar();
+      cancelarPala();
+    },
+    alResponder(carta) {
+      jardin.adquirirArcano(carta);
+      descubrimientos.registrar('tarot', carta.id + ':' + Number(carta.invertida));
+    },
+  });
+
   function presentarPremio(dt, continuar = false) {
     const premio = director.presentar(dt, estado, { rapido: reducido.matches, continuar });
+    if (premio) premios[premio.tipo]++;
     if (premio?.tipo === 'tarot') {
-      alTarot?.(premio, () => director.finalizarTarot());
+      const finalizar = () => !eventosUI.signal.aborted && director.finalizarTarot(premio);
+      if (alTarot) alTarot(premio, finalizar);
+      else tarotUI.abrir(finalizar);
     }
     if (premio && !director.enRecompensa() && recompensaUI.teniaFoco()) dom.canvas.focus({ preventScroll: true });
   }
@@ -425,7 +460,9 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
   function procesarEventos() {
     const celda = tablero.celda;
     const reduce = reducido.matches;
-    for (const ev of combate.eventos()) {
+    const eventos = combate.eventos();
+    registro.eventos(eventos);
+    for (const ev of eventos) {
       const x = ev.x * celda;
       const y = ev.y * celda;
       if (ev.tipo === 'mordida' && ev.central) {
@@ -475,7 +512,9 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
   }
 
   function simular(dt) {
+    if (tarotUI.abierta()) return;
     if (director.enRecompensa()) {
+      tiempoPremios += dt;
       presentarPremio(dt);
       return;
     }
@@ -486,11 +525,15 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
     generabaEnergia = genera;
     if (caida) {
       apagar(estado, dt);
-    } else if (avanzar(estado, dt, genera ? undefined : 0)) {
-      actualizarEnergia();
-      if (dom.energia.dataset.pulso !== 'compra') pulso(dom.energia, 'latido', FEEDBACK.gesto);
-      ultimoBrote = estado.tiempo;
-      trayecto = null;
+    } else {
+      registro.generada(efectos.generacion(genera) * dt);
+      const genero = avanzar(estado, dt, efectos.energia(dt, genera, director.enCombate()));
+      if (genero) {
+        actualizarEnergia();
+        if (dom.energia.dataset.pulso !== 'compra') pulso(dom.energia, 'latido', FEEDBACK.gesto);
+        ultimoBrote = estado.tiempo;
+        trayecto = null;
+      }
     }
     for (const [elemento, hasta] of pulsos) {
       if (estado.tiempo < hasta) continue;
@@ -507,6 +550,19 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
     jardin.actualizar(dt, reduce);
     combate.actualizar(dt);
     procesarEventos();
+    if (!resultadoFinal && combate.derrota()) {
+      resultadoFinal = {
+        activo: combate.tiempo(),
+        total: Math.max(combate.tiempo() + tiempoPremios, (performance.now() - comienzo) / 1000),
+        invasiones: director.historial().length,
+        cultivadas: Object.values(registro.datos.compras).reduce((a, b) => a + b, 0),
+        perdidas: registro.datos.plantasPerdidas,
+        retiradas, recuperada,
+        eliminados: registro.datos.insectosEliminados,
+        generada: registro.datos.energiaGenerada,
+        premios: { ...premios },
+      };
+    }
     if (director.enRecompensa()) {
       gestos.cancelar();
       colocacion.cancelar();
@@ -522,7 +578,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
     if (caida && !derrotaAvisada && central.opacidad <= 0) {
       derrotaAvisada = true;
       gestos.cancelar();
-      alDerrota();
+      alDerrota(resultadoFinal);
     }
   }
 
@@ -557,8 +613,10 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
       } else if (faseVisual.endsWith(':recompensa')) texto(dom.evento, '');
       faseVisual = fase;
     }
-    const costes = Object.fromEntries(COMPRABLES.map(({ id }) => [id, jardin.coste(id)]));
     const activa = colocacion.tipoActivo();
+    const costes = Object.fromEntries(COMPRABLES.map(({ id }) => [
+      id, jardin.coste(id, id === activa ? vista?.puntero : undefined),
+    ]));
     const caido = combate.derrota();
     if (caido && dom.evento.textContent) texto(dom.evento, '');
     const panelId = caido ? null : activa ?? consulta ?? inspeccion;
@@ -599,7 +657,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
       reducido: reducido.matches,
       panel: panelId,
       herramienta: usandoPala ? (retiroVista?.energia == null ? 'Elegí una planta para retirar.'
-        : `Recuperás ${retiroVista.energia} de energía.`) : null,
+        : `Recuperás ${retiroVista.energia} de energía.`) : (planta && !panelId ? textoFicha(planta, jardin.ataque(planta)) : null),
       bloqueado: caido || director.enRecompensa(),
       palaLista,
     });
@@ -621,6 +679,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
       trayecto = null;
       catalogo.ajustar();
       recompensaUI.ajustar();
+      tarotUI.ajustar();
     },
     derrota: () => combate.derrota(),
     cancelarGestos() { gestos.cancelar(); cancelarPala(); },
@@ -630,6 +689,7 @@ function crearPartida(dom, roles, frames, reducido, alDerrota, descubrimientos, 
       gestos.destruir();
       eventosUI.abort();
       recompensaUI.destruir();
+      tarotUI.destruir();
       for (const elemento of pulsos.keys()) delete elemento.dataset.pulso;
       texto(dom.anuncio, '');
       dom.motas.hidden = true;
@@ -683,7 +743,7 @@ export function montarHerbario(contenedor, opciones = {}) {
   });
 
   function iniciarPartida() {
-    partida = crearPartida(dom, roles, frames, reducido, () => derrota.mostrar(), descubrimientos,
+    partida = crearPartida(dom, roles, frames, reducido, datos => derrota.mostrar(datos), descubrimientos,
       camara, proyectarTablero, () => !document.hidden && !pausa.abierta(), opciones);
   }
 

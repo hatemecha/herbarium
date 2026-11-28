@@ -14,13 +14,14 @@ test('la ruleta es reproducible, evita vacíos consecutivos y garantiza tarot de
     const bolsa = crearRecompensas(127, config);
     return Array.from({ length: 120 }, (_, i) => bolsa.sortear(i + 1));
   };
-  const produccion = serie(RECOMPENSAS);
-  assert.deepEqual(produccion, serie(RECOMPENSAS));
+  const sinTarot = { ...RECOMPENSAS, tarot: false };
+  const produccion = serie(sinTarot);
+  assert.deepEqual(produccion, serie(sinTarot));
   assert.ok(produccion.some(p => p.tipo === 'vacia'));
   assert.ok(produccion.every((p, i) => p.tipo !== 'tarot' &&
     p.energia <= RECOMPENSAS.topeEnergia &&
     !(p.tipo === 'vacia' && produccion[i - 1]?.tipo === 'vacia')));
-  const futuro = serie({ ...RECOMPENSAS, tarot: true });
+  const futuro = serie(RECOMPENSAS);
   for (let i = 0; i <= futuro.length - 4; i++) {
     assert.ok(futuro.slice(i, i + 4).some(p => p.tipo === 'tarot'));
   }

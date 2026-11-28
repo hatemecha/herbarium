@@ -18,7 +18,12 @@ export function crearDerrota(escenario, alReiniciar) {
   texto.id = 'final-jardin';
   boton.addEventListener('click', alReiniciar);
 
-  raiz.append(texto, boton);
+  const resumen = document.createElement('details');
+  const encabezado = document.createElement('summary');
+  encabezado.textContent = 'Resultado de la partida';
+  const datos = document.createElement('p');
+  resumen.append(encabezado, datos);
+  raiz.append(texto, resumen, boton);
   escenario.append(raiz);
 
   function ajustar() {
@@ -27,15 +32,30 @@ export function crearDerrota(escenario, alReiniciar) {
     reinicio.actualizar();
   }
   boton.addEventListener('focus', ajustar);
+  resumen.addEventListener('toggle', ajustar);
 
   return {
     ajustar,
-    mostrar() {
+    mostrar(final) {
+      const tiempo = segundos => {
+        const entero = Math.floor(segundos);
+        return Math.floor(entero / 60) + ':' + String(entero % 60).padStart(2, '0');
+      };
+      resumen.hidden = !final;
+      if (final) {
+        datos.textContent = [
+          tiempo(final.activo) + ' de juego · ' + tiempo(final.total) + ' en total',
+          final.invasiones + ' invasiones superadas · ' + final.eliminados + ' insectos eliminados',
+          final.cultivadas + ' cultivadas · ' + final.perdidas + ' perdidas · ' + final.retiradas + ' retiradas',
+          Math.floor(final.generada) + ' energía generada · ' + final.recuperada + ' recuperada',
+          final.premios.energia + ' premios de energía · ' + final.premios.vacia + ' vacíos · ' + final.premios.tarot + ' arcanos',
+        ].join('\n');
+      }
       raiz.hidden = false;
       boton.focus({ preventScroll: true });
       ajustar();
     },
-    ocultar() { raiz.hidden = true; },
+    ocultar() { raiz.hidden = true; resumen.open = false; },
     destruir() { raiz.remove(); },
   };
 }

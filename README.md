@@ -2,7 +2,7 @@
 
 Un jardín chico que crece en la oscuridad. Una planta en el centro genera energía y luz. Con esa energía podés extender el jardín con Cerbatanas, Espinos, Campanillas y Hongos. Escarabajos, pulgones y orugas intentan llegar al centro. Si la planta central muere, el jardín cae.
 
-El proyecto es independiente. Más adelante va a vivir dentro de la web personal del autor. Ahora es una partida continua: jardín expansible, cuatro plantas comprables, tres insectos y oleadas procedurales. No hay tarot, sonido ni progresión entre partidas.
+El proyecto es independiente. Más adelante va a vivir dentro de la web personal del autor. Ahora es una partida continua: jardín expansible, cuatro plantas comprables, tres insectos y oleadas procedurales. El [tarot](docs/tarot/ETAPA_09.md) incorpora ocho arcanos en ambas orientaciones, un mazo por partida y un registro local de descubrimientos.
 
 ![Primera oleada, catálogo y contador de energía](docs/capturas/etapa083/primer-combate.png)
 

@@ -159,7 +159,7 @@ export const PALA = { reembolso: 0.5, rearme: 2.5, desdeOleada: 3 };
 
 export const RECOMPENSAS = {
   pesos: { energia: 50, tarot: 30, vacia: 20 },
-  tarot: false,
+  tarot: true,
   limiteTarot: 4,
   baseEnergia: 10,
   incrementoEnergia: 4,

@@ -1,3 +1,4 @@
+import { RECOMPENSAS } from '../src/config.js';
 import { ESTRATEGIAS } from '../src/estrategias.js';
 import { simularPartida } from '../src/simular.js';
 
@@ -31,6 +32,7 @@ for (const nombre of nombres) {
   if (!estrategias[nombre]) throw new Error(`Estrategia desconocida: ${nombre}`);
   const partidas = Array.from({ length: 100 }, (_, i) => simularPartida({
     semilla: 1200 + i, horizonte: 1800, estrategia: estrategias[nombre],
+    ajustes: { recompensas: { ...RECOMPENSAS, tarot: false } },
   }));
   const historial = partidas.flatMap(p => p.historial);
   const porOleada = Array.from({ length: 10 }, (_, i) => {
